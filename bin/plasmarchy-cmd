@@ -134,7 +134,54 @@ copy_url() {
 }
 
 open_url() {
-    local url="$1"
+    local url="$1" new_window="${2:-0}" exec_line argv0
+    local -a argv
+    local browser_id
+
+    # A Web shortcut may ask for a separate window.  Chromium- and Firefox-based
+    # browsers recognise --new-window; examples like ChatGPT and Google Maps then
+    # land in their own window instead of an unexpected tab in the last one.
+    browser_id="$(default_browser_id 2>/dev/null || true)"
+    if [[ -n "$browser_id" ]]; then
+        exec_line="$(desktop_exec_for "$browser_id" 2>/dev/null || true)"
+        if [[ -n "$exec_line" ]]; then
+            exec_line="$(printf '%s' "$exec_line" | sed -E 's/%[fFuUdDnNickvm]//g; s/^[[:space:]]+//')"
+            read -r -a argv <<<"$exec_line"
+            argv0="${argv[0]:-}"
+            while [[ "$argv0" == "env" || "$argv0" == *=* ]] && ((${#argv[@]} > 1)); do
+                argv=("${argv[@]:1}")
+                argv0="${argv[0]:-}"
+            done
+            if ((${#argv[@]})); then
+                case "$argv0" in
+                    *flatpak*)
+                        if [[ "$new_window" == "1" ]]; then
+                            for arg in "${argv[@]}"; do
+                                case "$arg" in
+                                    run) exec "${argv[@]}" --new-window "$url" ;;
+                                esac
+                            done
+                        fi
+                        exec "${argv[@]}" "$url"
+                        ;;
+                    *firefox*|*zen*|*librewolf*|*waterfox*|*floorp*)
+                        if [[ "$new_window" == "1" ]]; then
+                            exec "${argv[@]}" --new-window "$url"
+                        fi
+                        exec "${argv[@]}" "$url"
+                        ;;
+                    *chrom*|*brave*|*edge*|*opera*|*vivaldi*|*chromium*|*chrome*)
+                        if [[ "$new_window" == "1" ]]; then
+                            exec "${argv[@]}" --new-window "$url"
+                        fi
+                        exec "${argv[@]}" "$url"
+                        ;;
+                esac
+                exec "${argv[@]}" "$url"
+            fi
+        fi
+    fi
+
     if have xdg-open; then
         exec xdg-open "$url"
     fi
@@ -317,26 +364,26 @@ case "${1:-}" in
         exec thunderbird -compose
         ;;
     chatgpt)
-        open_url "https://chatgpt.com/"
+        open_url "https://chatgpt.com/" 1
         ;;
     grok)
-        open_url "https://grok.com/"
+        open_url "https://grok.com/" 1
         ;;
     signal)
         command_exists_or_fail signal-desktop "Signal"
         exec signal-desktop
         ;;
     photos)
-        open_url "https://photos.google.com/"
+        open_url "https://photos.google.com/" 1
         ;;
     maps)
-        open_url "https://maps.google.com/"
+        open_url "https://maps.google.com/" 1
         ;;
     whatsapp)
-        open_url "https://web.whatsapp.com/"
+        open_url "https://web.whatsapp.com/" 1
         ;;
     messages)
-        open_url "https://messages.google.com/web/conversations"
+        open_url "https://messages.google.com/web/conversations" 1
         ;;
     obsidian)
         command_exists_or_fail obsidian "Obsidian"
@@ -347,13 +394,13 @@ case "${1:-}" in
         exec kate
         ;;
     x)
-        open_url "https://x.com/"
+        open_url "https://x.com/" 1
         ;;
     x-compose)
-        open_url "https://x.com/compose/post"
+        open_url "https://x.com/compose/post" 1
         ;;
     youtube)
-        open_url "https://youtube.com/"
+        open_url "https://youtube.com/" 1
         ;;
     lazydocker)
         command_exists_or_fail lazydocker "lazydocker"
