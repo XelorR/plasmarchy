@@ -1,0 +1,53 @@
+;; Plasmarchy / Omarchy keyboard behaviour for Windows 11.
+;;
+;; Install target: %USERPROFILE%\kanata.kbd (or $env:KOMOREBI_CONFIG_HOME).
+;; Run with a GUI build, for example:
+;;   kanata_windows_gui_winIOv2_x64.exe --cfg "%USERPROFILE%\kanata.kbd"
+;;
+;; Requires administrator rights because Kanata installs a low-level keyboard
+;; hook. The Windows installer creates a logon scheduled task when run elevated.
+;;
+;; What this file does:
+;;   CapsLock tap          -> Esc
+;;   CapsLock hold         -> Left Ctrl
+;;   Right Ctrl tap        -> F24 (AutoHotkey switches the keyboard layout)
+;;   Right Ctrl hold       -> Left Ctrl
+;;   Physical Win+L        -> F23 (AutoHotkey cycles the Komorebi layout)
+;;
+;; Win+L is reserved by Windows and cannot be intercepted by AutoHotkey.
+;; The defoverridesv2 entries below run before Windows sees the chord, so the
+;; native lock screen is not triggered by bare Win+L. Ctrl/Alt/Shift are
+;; excluded so Win+Ctrl+L (lock), Win+Alt+L (previous layout), and other
+;; modified chords keep their normal meaning.
+
+(defcfg
+  process-unmapped-keys yes
+  override-release-on-activation yes
+)
+
+(defsrc
+  caps
+  rctrl
+)
+
+(defvar
+  tap-time 200
+  hold-time 200
+)
+
+(defalias
+  cap (tap-hold $tap-time $hold-time esc lctl)
+  rctl (tap-hold $tap-time $hold-time f24 lctl)
+)
+
+;; defoverridesv2 fields: input keys, output keys, excluded modifiers,
+;; excluded layers. Only bare Win+L is rewritten; modified chords are ignored.
+(defoverridesv2
+  (lmet l) (f23) (lctl rctl lalt ralt lsft rsft) ()
+  (rmet l) (f23) (lctl rctl lalt ralt lsft rsft) ()
+)
+
+(deflayer base
+  @cap
+  @rctl
+)

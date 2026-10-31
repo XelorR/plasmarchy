@@ -1,0 +1,278 @@
+# Plasmarchy shortcut map.
+#
+# Format: component<TAB>action<TAB>keys<TAB>note
+#   keys are separated by ';'. An empty keys field clears the action.
+#   The first pass clears every empty-key action; the second pass sets the rest.
+#
+# Components must be the exact KGlobalAccel component IDs.  Custom commands are
+# registered by plasmarchy-<id>.desktop and always use the "_launch" action.
+#
+# This file is applied with:
+#   python3 lib/shortcuts.py apply manifests/shortcuts.tsv
+
+# KWin / session / shell actions
+
+kwin	Window Close	Alt+F4;Meta+W;Meta+Q	Close active window (Alt+F4 kept)
+kwin	Window Fullscreen	Meta+F	Fullscreen
+kwin	Window Maximize Horizontal	Meta+Alt+F	Full width
+kwin	Window Maximize	Meta+Ctrl+F	Tiled fullscreen approximation
+kwin	Window Maximize Vertical		Clear default
+kwin	Overview	Meta+Alt+Space	Overview (Omarchy app grid)
+kwin	Activate Window Demanding Attention		Clear Meta+Ctrl+A; used by the audio panel
+kwin	Grid View	Meta+G	Grid View kept; window grouping is skipped
+kwin	Edit Tiles		Clear Meta+T; Meta+T is Krohnkite float
+kwin	Window Quick Tile Left		Clear native quick tile
+kwin	Window Quick Tile Right		Clear native quick tile
+kwin	Window Quick Tile Top		Clear native quick tile
+kwin	Window Quick Tile Bottom		Clear native quick tile
+kwin	Window Quick Tile Top Left		Clear native quick tile
+kwin	Window Quick Tile Top Right		Clear native quick tile
+kwin	Window Quick Tile Bottom Left		Clear native quick tile
+kwin	Window Quick Tile Bottom Right		Clear native quick tile
+kwin	Window Custom Quick Tile Left		Clear native custom tile
+kwin	Window Custom Quick Tile Right		Clear native custom tile
+kwin	Window Custom Quick Tile Top		Clear native custom tile
+kwin	Window Custom Quick Tile Bottom		Clear native custom tile
+kwin	Window One Screen to the Left	Meta+Ctrl+Shift+Left	Move window to the screen on the left
+kwin	Window One Screen to the Right	Meta+Ctrl+Shift+Right	Move window to the screen on the right
+kwin	Window One Screen Up	Meta+Ctrl+Shift+Up	Move window to the screen above
+kwin	Window One Screen Down	Meta+Ctrl+Shift+Down	Move window to the screen below
+kwin	Window to Next Screen		Clear default Meta+Shift+Right
+kwin	Window to Previous Screen		Clear default Meta+Shift+Left
+kwin	Window One Desktop to the Left		Clear default Meta+Ctrl+Shift+Left
+kwin	Window One Desktop to the Right		Clear default Meta+Ctrl+Shift+Right
+kwin	Window One Desktop Up		Clear default Meta+Ctrl+Shift+Up
+kwin	Window One Desktop Down		Clear default Meta+Ctrl+Shift+Down
+kwin	Switch to Desktop 1	Meta+1	Desktop 1
+kwin	Switch to Desktop 2	Meta+2	Desktop 2
+kwin	Switch to Desktop 3	Meta+3	Desktop 3
+kwin	Switch to Desktop 4	Meta+4	Desktop 4
+kwin	Switch to Desktop 5	Meta+5	Desktop 5
+kwin	Switch to Desktop 6	Meta+6	Desktop 6
+kwin	Switch to Desktop 7	Meta+7	Desktop 7
+kwin	Switch to Desktop 8	Meta+8	Desktop 8
+kwin	Switch to Desktop 9	Meta+9	Desktop 9
+kwin	Window to Desktop 1		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 2		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 3		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 4		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 5		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 6		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 7		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 8		Clear native move-only binding; custom wrapper follows
+kwin	Window to Desktop 9		Clear native move-only binding; custom wrapper follows
+kwin	Switch to Next Desktop	Meta+Tab	Next desktop
+kwin	Switch to Previous Desktop	Meta+Shift+Tab	Previous desktop
+kwin	Switch to Next Screen	Ctrl+Alt+Tab	Next screen
+kwin	Switch to Previous Screen	Ctrl+Alt+Shift+Tab	Previous screen
+kwin	Walk Through Windows	Alt+Tab	Window switcher
+kwin	Walk Through Windows (Reverse)	Alt+Shift+Tab	Window switcher reverse
+kwin	Walk Through Windows of Current Application	Meta+Alt+Tab	Same-application switcher
+kwin	Walk Through Windows of Current Application (Reverse)	Meta+Alt+Shift+Tab	Same-application switcher reverse
+kwin	view_zoom_in	Meta+Ctrl+Z	Zoom in
+kwin	view_zoom_out		Clear Meta+-; Meta+- is Krohnkite
+kwin	view_actual_size	Meta+Ctrl+Alt+Z	Zoom reset
+
+# Plasma shell
+
+plasmashell	activate application launcher		Meta+Space opens KRunner instead of Kickoff
+org.kde.krunner.desktop	_launch		No such desktop file; KRunner is toggled via DBus
+plasmashell	activate widget 52		Clear the bare-Meta launcher alias
+plasmashell	activate task manager entry 1		Clear Meta+1 default; used for desktops
+plasmashell	activate task manager entry 2		Clear Meta+2 default
+plasmashell	activate task manager entry 3		Clear Meta+3 default
+plasmashell	activate task manager entry 4		Clear Meta+4 default
+plasmashell	activate task manager entry 5		Clear Meta+5 default
+plasmashell	activate task manager entry 6		Clear Meta+6 default
+plasmashell	activate task manager entry 7		Clear Meta+7 default
+plasmashell	activate task manager entry 8		Clear Meta+8 default
+plasmashell	activate task manager entry 9		Clear Meta+9 default
+plasmashell	activate task manager entry 10		Clear Meta+0 default
+plasmashell	manage activities		Activity Switcher is not used
+plasmashell	previous activity		Free Meta+Shift+A for ChatGPT
+plasmashell	show-on-mouse-pos	Meta+Ctrl+V	Clipboard at mouse
+plasmashell	clear history	Meta+Shift+,	Clear notification history
+plasmashell	toggle do not disturb	Meta+Ctrl+Alt+,	Do Not Disturb
+
+# Session
+
+ksmserver	Lock Session	Meta+Ctrl+L	Lock screen
+ksmserver	Log Out	Meta+Escape;Ctrl+Alt+Del	Logout screen (sleep/reboot/shutdown)
+
+# Power management
+
+org_kde_powerdevil	Increase Screen Brightness Small	Alt+Monitor Brightness Up	+1% screen brightness
+org_kde_powerdevil	Decrease Screen Brightness Small	Alt+Monitor Brightness Down	-1% screen brightness
+org_kde_powerdevil	Increase Keyboard Brightness	Keyboard Brightness Up	Keyboard backlight up
+org_kde_powerdevil	Decrease Keyboard Brightness	Keyboard Brightness Down	Keyboard backlight down
+org_kde_powerdevil	Toggle Keyboard Backlight	Keyboard Light On/Off	Keyboard backlight toggle
+org_kde_powerdevil	PowerOff	Power Off	Power menu key
+
+# Audio and media
+
+kmix	increase_volume	Volume Up	Volume up
+kmix	decrease_volume	Volume Down	Volume down
+kmix	mute	Volume Mute	Mute
+kmix	mic_mute	Microphone Mute	Mute microphone
+kmix	increase_volume_small	Alt+Volume Up	+1% volume
+kmix	decrease_volume_small	Alt+Volume Down	-1% volume
+mediacontrol	nextmedia	Media Next;Alt+Media Play	Next track
+mediacontrol	previousmedia	Media Previous;Alt+Shift+Media Play	Previous track
+mediacontrol	playpausemedia	Media Play	Play/pause
+mediacontrol	stopmedia	Media Stop	Stop
+
+# Keyboard layout: Right Ctrl is configured through kxkbrc (grp:rctrl_toggle).
+# Clear the conflicting Plasma shortcuts; Meta+Space opens KRunner.
+
+KDE Keyboard Layout Switcher	Switch to Next Keyboard Layout		Right Ctrl only
+KDE Keyboard Layout Switcher	Switch to Last-Used Keyboard Layout		Right Ctrl only
+
+# Third-party defaults that would steal our keys
+
+org.kde.konsole.desktop	_launch	Ctrl+Alt+T	Keep Ctrl+Alt+T; remove Meta+Ctrl+C
+org.kde.dolphin.desktop	_launch		Free Meta+E
+org.kde.kcalc.desktop	_launch		Qalculate custom shortcut is used
+org.kde.plasma.emojier.desktop	_launch		Custom emoji shortcut is used
+org.kde.plasma-systemmonitor.desktop	_launch		Free Meta+Escape
+krusader	bring_main_window_to_top		Free Meta+K
+org.kde.spectacle.desktop	_launch		Custom Spectacle wrappers are used
+org.kde.spectacle.desktop	RecordWindow		Clear Spectacle default
+org.kde.spectacle.desktop	RecordRegion		Clear Spectacle default
+org.kde.spectacle.desktop	CurrentMonitorScreenShot		Clear Spectacle default
+org.kde.spectacle.desktop	OpenWithoutScreenshot		Clear Spectacle default
+org.kde.spectacle.desktop	ActiveWindowScreenShot		Clear Spectacle default
+org.kde.spectacle.desktop	RecordScreen		Clear Spectacle default
+org.kde.spectacle.desktop	RectangularRegionScreenShot		Clear Spectacle default
+org.kde.spectacle.desktop	FullScreenScreenShot		Clear Spectacle default
+org.kde.spectacle.desktop	WindowUnderCursorScreenShot		Clear Spectacle default
+
+# Krohnkite.  The layout order is configured separately:
+# Spiral -> Tile -> Floating.  Defaults that are not used are cleared first.
+
+kwin	KrohnkiteFocusNext		Clear default Meta+.
+kwin	KrohnkiteFocusPrev		Clear default Meta+,
+kwin	KrohnkiteFocusLeft	Meta+Left	Focus left
+kwin	KrohnkiteFocusRight	Meta+Right	Focus right
+kwin	KrohnkitetoggleDock		No dock tiling
+kwin	KrohnkiteFocusDown	Meta+Down	Focus down
+kwin	KrohnkiteFocusUp	Meta+Up	Focus up
+kwin	KrohnkiteShiftDown	Meta+Shift+Down	Swap down
+kwin	KrohnkiteShiftUp	Meta+Shift+Up	Swap up
+kwin	KrohnkiteShiftLeft	Meta+Shift+Left	Swap left
+kwin	KrohnkiteShiftRight	Meta+Shift+Right	Swap right
+kwin	KrohnkiteGrowHeight	Meta+Shift+Equal	Grow height
+kwin	KrohnkiteShrinkHeight	Meta+Shift+Minus	Shrink height
+kwin	KrohnkiteShrinkWidth	Meta+Equal	Shrink width
+kwin	KrohnkitegrowWidth	Meta+Minus	Grow width
+kwin	KrohnkiteIncrease		Clear default Meta+I
+kwin	KrohnkiteDecrease		Clear default Meta+D
+kwin	KrohnkiteToggleFloat	Meta+T	Toggle floating
+kwin	KrohnkiteFloatAll		Clear default Meta+Shift+F
+kwin	KrohnkiteNextLayout	Meta+L	Next layout (Spiral -> Tile -> Floating)
+kwin	KrohnkitePreviousLayout	Meta+Alt+L	Previous layout
+kwin	KrohnkiteRotate	Meta+J	Rotate layout
+kwin	KrohnkiteRotatePart		No exact Spiral analogue
+kwin	KrohnkiteSetMaster		Clear default Meta+Return
+kwin	KrohnkiteRaiseSurfaceCapacity		Not used
+kwin	KrohnkiteLowerSurfaceCapacity		Not used
+kwin	KrohnkiteMeta		Not used
+kwin	KrohnkiteTileLayout		Layout chooser is not bound
+kwin	KrohnkiteMonocleLayout		Not in cycle
+kwin	KrohnkiteTreeColumnLayout		Not in cycle
+kwin	KrohnkiteSpreadLayout		Not in cycle
+kwin	KrohnkiteStairLayout		Not in cycle
+kwin	KrohnkiteFloatingLayout		Selected through the layout cycle
+kwin	KrohnkiteQuarterLayout		Not in cycle
+kwin	KrohnkiteStackedLayout		Not in cycle
+kwin	KrohnkiteBTreeLayout		Not in cycle
+kwin	KrohnkiteSpiralLayout		Selected through the layout cycle
+kwin	KrohnkiteColumnsLayout		Not in cycle
+kwin	KrohnkiteCascadeLayout		Not in cycle
+
+# Custom commands (desktop files generated from manifests/commands.tsv)
+
+plasmarchy-terminal.desktop	_launch	Meta+Return	Konsole
+plasmarchy-terminal-tmux.desktop	_launch	Meta+Alt+Return	Konsole + tmux (Work session)
+plasmarchy-copy.desktop	_launch	Meta+C	Copy (terminal-aware)
+plasmarchy-cut.desktop	_launch	Meta+X	Cut (terminal-aware)
+plasmarchy-paste.desktop	_launch	Meta+V	Paste (terminal-aware)
+plasmarchy-copy-url.desktop	_launch	Alt+Shift+L	Copy current browser URL
+plasmarchy-browser.desktop	_launch	Meta+Shift+Return;Meta+Shift+B	Default browser
+plasmarchy-browser-private.desktop	_launch	Meta+Shift+Alt+B	Default browser, private window
+plasmarchy-files.desktop	_launch	Meta+Shift+F	Dolphin
+plasmarchy-keepassxc.desktop	_launch	Meta+Shift+/	KeePassXC
+plasmarchy-qalculate.desktop	_launch	Meta+Shift+Q;Calculator	Qalculate
+plasmarchy-btop.desktop	_launch	Meta+Shift+T	btop in Konsole
+plasmarchy-nvim.desktop	_launch	Meta+Shift+N	Neovim in Konsole
+plasmarchy-calendar.desktop	_launch	Meta+Shift+C	Calendar (kclock) or fallback
+plasmarchy-thunderbird.desktop	_launch	Meta+Shift+E	Thunderbird
+plasmarchy-thunderbird-compose.desktop	_launch	Meta+Shift+Alt+E	Thunderbird compose
+plasmarchy-chatgpt.desktop	_launch	Meta+Shift+A	ChatGPT
+plasmarchy-grok.desktop	_launch	Meta+Shift+Alt+A	Grok
+plasmarchy-signal.desktop	_launch	Meta+Shift+G	Signal
+plasmarchy-photos.desktop	_launch	Meta+Shift+P	Google Photos
+plasmarchy-maps.desktop	_launch	Meta+Shift+S	Google Maps
+plasmarchy-whatsapp.desktop	_launch	Meta+Shift+Alt+G	WhatsApp Web
+plasmarchy-messages.desktop	_launch	Meta+Shift+Ctrl+G	Google Messages
+plasmarchy-obsidian.desktop	_launch	Meta+Shift+O	Obsidian
+plasmarchy-kate.desktop	_launch	Meta+Shift+W	Kate
+plasmarchy-x.desktop	_launch	Meta+Shift+X	X
+plasmarchy-x-compose.desktop	_launch	Meta+Shift+Alt+X	X — new post
+plasmarchy-youtube.desktop	_launch	Meta+Shift+Y	YouTube
+plasmarchy-lazydocker.desktop	_launch	Meta+Shift+D	lazydocker in Konsole
+plasmarchy-screenshot-region.desktop	_launch	Print;Meta+Ctrl+Alt+C	Screenshot region to clipboard
+plasmarchy-screenrecord.desktop	_launch	Alt+Print	Spectacle screen recording
+plasmarchy-color-picker.desktop	_launch	Meta+Print	Color picker
+plasmarchy-ocr.desktop	_launch	Meta+Ctrl+Print	OCR region to clipboard
+plasmarchy-audio-panel.desktop	_launch	Meta+Ctrl+A	Audio settings
+plasmarchy-bluetooth-panel.desktop	_launch	Meta+Ctrl+B	Bluetooth settings
+plasmarchy-network-panel.desktop	_launch	Meta+Ctrl+N	Network settings
+plasmarchy-display-panel.desktop	_launch	Meta+Ctrl+D	Display settings
+plasmarchy-power-panel.desktop	_launch	Meta+Ctrl+P	Power settings
+plasmarchy-calendar-panel.desktop	_launch	Meta+Ctrl+Alt+D	Calendar / clock
+plasmarchy-world-clock.desktop	_launch	Meta+Ctrl+Alt+E	World clock
+plasmarchy-localsend.desktop	_launch	Meta+Ctrl+S	LocalSend
+plasmarchy-spectacle.desktop	_launch	Meta+Ctrl+C	Spectacle GUI
+plasmarchy-krunner.desktop	_launch	Meta+Space	KRunner
+plasmarchy-kinfocenter.desktop	_launch	Meta+Ctrl+H	KInfoCenter
+plasmarchy-emojier.desktop	_launch	Meta+Ctrl+E	Emoji picker
+plasmarchy-handbrake.desktop	_launch	Meta+Ctrl+.	HandBrake
+plasmarchy-shortcuts-settings.desktop	_launch	Meta+K	Keyboard shortcuts
+plasmarchy-theme-picker.desktop	_launch	Meta+Ctrl+T;Meta+Ctrl+Shift+Space	Global theme
+plasmarchy-wallpaper-picker.desktop	_launch	Meta+Ctrl+W;Meta+Ctrl+Space	Wallpaper
+plasmarchy-yakuake-toggle.desktop	_launch	Meta+`	Yakuake
+plasmarchy-display-toggle.desktop	_launch	Meta+Ctrl+Delete	Internal display on/off
+plasmarchy-display-mirror.desktop	_launch	Meta+Ctrl+Alt+Delete	Mirror displays
+plasmarchy-audio-sink-next.desktop	_launch	Shift+Volume Mute	Next audio output
+plasmarchy-notify-time.desktop	_launch	Meta+Ctrl+Alt+T	Time notification
+plasmarchy-notify-battery.desktop	_launch	Meta+Ctrl+Alt+B	Battery notification
+plasmarchy-weather.desktop	_launch	Meta+Ctrl+Alt+W	Weather notification
+plasmarchy-scale-next.desktop	_launch	Meta+/	Next display scale
+plasmarchy-scale-prev.desktop	_launch	Meta+Alt+/	Previous display scale
+plasmarchy-reminders-new.desktop	_launch	Meta+Ctrl+R	New KAlarm reminder
+plasmarchy-reminders-list.desktop	_launch	Meta+Ctrl+Alt+R	KAlarm list
+plasmarchy-vlc.desktop	_launch	Meta+Shift+Alt+M	VLC
+plasmarchy-yt-dlp.desktop	_launch	Alt+Shift+D	Download clipboard URL with yt-dlp
+plasmarchy-dictation.desktop	_launch	Meta+Ctrl+X;F9	Dictation toggle (Voxtype)
+plasmarchy-screenlocker-panel.desktop	_launch	Meta+Ctrl+I	Screen locking settings
+
+# Move the active window to a desktop.  The "follow" wrappers also switch to
+# that desktop; the "silent" wrappers leave the current view untouched.
+plasmarchy-desktop-move-follow-1.desktop	_launch	Meta+Shift+1	Window to desktop 1 and follow
+plasmarchy-desktop-move-follow-2.desktop	_launch	Meta+Shift+2	Window to desktop 2 and follow
+plasmarchy-desktop-move-follow-3.desktop	_launch	Meta+Shift+3	Window to desktop 3 and follow
+plasmarchy-desktop-move-follow-4.desktop	_launch	Meta+Shift+4	Window to desktop 4 and follow
+plasmarchy-desktop-move-follow-5.desktop	_launch	Meta+Shift+5	Window to desktop 5 and follow
+plasmarchy-desktop-move-follow-6.desktop	_launch	Meta+Shift+6	Window to desktop 6 and follow
+plasmarchy-desktop-move-follow-7.desktop	_launch	Meta+Shift+7	Window to desktop 7 and follow
+plasmarchy-desktop-move-follow-8.desktop	_launch	Meta+Shift+8	Window to desktop 8 and follow
+plasmarchy-desktop-move-follow-9.desktop	_launch	Meta+Shift+9	Window to desktop 9 and follow
+plasmarchy-desktop-move-silent-1.desktop	_launch	Meta+Shift+Alt+1	Window to desktop 1, stay here
+plasmarchy-desktop-move-silent-2.desktop	_launch	Meta+Shift+Alt+2	Window to desktop 2, stay here
+plasmarchy-desktop-move-silent-3.desktop	_launch	Meta+Shift+Alt+3	Window to desktop 3, stay here
+plasmarchy-desktop-move-silent-4.desktop	_launch	Meta+Shift+Alt+4	Window to desktop 4, stay here
+plasmarchy-desktop-move-silent-5.desktop	_launch	Meta+Shift+Alt+5	Window to desktop 5, stay here
+plasmarchy-desktop-move-silent-6.desktop	_launch	Meta+Shift+Alt+6	Window to desktop 6, stay here
+plasmarchy-desktop-move-silent-7.desktop	_launch	Meta+Shift+Alt+7	Window to desktop 7, stay here
+plasmarchy-desktop-move-silent-8.desktop	_launch	Meta+Shift+Alt+8	Window to desktop 8, stay here
+plasmarchy-desktop-move-silent-9.desktop	_launch	Meta+Shift+Alt+9	Window to desktop 9, stay here

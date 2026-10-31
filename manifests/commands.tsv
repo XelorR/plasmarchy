@@ -1,0 +1,83 @@
+# id	name	subcommand	icon
+terminal	Terminal	terminal	utilities-terminal
+terminal-tmux	Terminal (tmux)	terminal-tmux	utilities-terminal
+browser	Browser	browser	internet-web-browser
+browser-private	Browser (private)	browser-private	internet-web-browser
+files	Files	files	system-file-manager
+keepassxc	KeePassXC	keepassxc	keepassxc
+qalculate	Qalculate	qalculate	accessories-calculator
+btop	System monitor (btop)	btop	utilities-system-monitor
+nvim	Neovim	nvim	utilities-terminal
+calendar	Calendar	calendar	view-calendar
+thunderbird	Mail (Thunderbird)	thunderbird	internet-mail
+thunderbird-compose	New message	thunderbird-compose	mail-message-new
+chatgpt	ChatGPT	chatgpt	internet-web-browser
+grok	Grok	grok	internet-web-browser
+signal	Signal	signal	signal-desktop
+photos	Google Photos	photos	internet-web-browser
+maps	Google Maps	maps	internet-web-browser
+whatsapp	WhatsApp Web	whatsapp	internet-web-browser
+messages	Google Messages	messages	internet-web-browser
+obsidian	Obsidian	obsidian	obsidian
+kate	Kate	kate	accessories-text-editor
+x	X	x	internet-web-browser
+x-compose	X — new post	x-compose	internet-web-browser
+youtube	YouTube	youtube	internet-web-browser
+lazydocker	Docker (lazydocker)	lazydocker	utilities-terminal
+screenshot-region	Screenshot region	screenshot-region	camera-photo
+copy	Copy	copy	edit-copy
+cut	Cut	cut	edit-cut
+paste	Paste	paste	edit-paste
+copy-url	Copy current URL	copy-url	edit-copy
+screenrecord	Record screen	screenrecord	media-record
+color-picker	Color picker	color-picker	color-picker
+ocr	OCR from screen	ocr	edit-select-all
+audio-panel	Audio settings	audio-panel	audio-card
+bluetooth-panel	Bluetooth settings	bluetooth-panel	preferences-system-bluetooth
+network-panel	Network settings	network-panel	network-wireless
+display-panel	Display settings	display-panel	video-display
+power-panel	Power settings	power-panel	preferences-system-power-management
+calendar-panel	Calendar / clock	calendar-panel	view-calendar
+world-clock	World clock	world-clock	preferences-system-time
+localsend	LocalSend	localsend	internet-web-browser
+spectacle	Spectacle	spectacle	camera-photo
+krunner	KRunner	krunner	system-search
+kinfocenter	System information	kinfocenter	help-about
+emojier	Emoji picker	emojier	face-smile
+handbrake	HandBrake	handbrake	media-video
+shortcuts-settings	Keyboard shortcuts	shortcuts-settings	preferences-desktop-keyboard
+theme-picker	Global theme	theme-picker	preferences-desktop-theme
+wallpaper-picker	Wallpaper	wallpaper-picker	preferences-desktop-wallpaper
+yakuake-toggle	Yakuake	yakuake-toggle	utilities-terminal
+display-toggle	Internal display on/off	display-toggle	video-display
+display-mirror	Mirror displays	display-mirror	video-display
+audio-sink-next	Next audio output	audio-sink-next	audio-speakers
+notify-time	Time notification	notify-time	preferences-system-time
+notify-battery	Battery notification	notify-battery	battery-good
+weather	Weather	weather	weather-clear
+scale-next	Next display scale	scale-next	video-display
+scale-prev	Previous display scale	scale-prev	video-display
+reminders-new	New reminder	reminders-new	appointment-new
+reminders-list	Reminders	reminders-list	view-calendar
+vlc	VLC	vlc	vlc
+yt-dlp	Download video (clipboard URL)	yt-dlp	internet-download
+dictation	Dictation	dictation	audio-input-microphone
+screenlocker-panel	Screen locking settings	screenlocker-panel	preferences-system-lock-screen
+desktop-move-follow-1	Move to desktop 1 and follow	desktop-move-follow-1	go-next
+desktop-move-follow-2	Move to desktop 2 and follow	desktop-move-follow-2	go-next
+desktop-move-follow-3	Move to desktop 3 and follow	desktop-move-follow-3	go-next
+desktop-move-follow-4	Move to desktop 4 and follow	desktop-move-follow-4	go-next
+desktop-move-follow-5	Move to desktop 5 and follow	desktop-move-follow-5	go-next
+desktop-move-follow-6	Move to desktop 6 and follow	desktop-move-follow-6	go-next
+desktop-move-follow-7	Move to desktop 7 and follow	desktop-move-follow-7	go-next
+desktop-move-follow-8	Move to desktop 8 and follow	desktop-move-follow-8	go-next
+desktop-move-follow-9	Move to desktop 9 and follow	desktop-move-follow-9	go-next
+desktop-move-silent-1	Move to desktop 1 and stay	desktop-move-silent-1	edit-move
+desktop-move-silent-2	Move to desktop 2 and stay	desktop-move-silent-2	edit-move
+desktop-move-silent-3	Move to desktop 3 and stay	desktop-move-silent-3	edit-move
+desktop-move-silent-4	Move to desktop 4 and stay	desktop-move-silent-4	edit-move
+desktop-move-silent-5	Move to desktop 5 and stay	desktop-move-silent-5	edit-move
+desktop-move-silent-6	Move to desktop 6 and stay	desktop-move-silent-6	edit-move
+desktop-move-silent-7	Move to desktop 7 and stay	desktop-move-silent-7	edit-move
+desktop-move-silent-8	Move to desktop 8 and stay	desktop-move-silent-8	edit-move
+desktop-move-silent-9	Move to desktop 9 and stay	desktop-move-silent-9	edit-move

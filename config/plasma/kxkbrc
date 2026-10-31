@@ -1,0 +1,7 @@
+[Layout]
+DisplayNames=,
+LayoutList=us,ru
+Options=lv3:ralt_switch,grp:rctrl_toggle
+ResetOldOptions=true
+Use=true
+VariantList=,

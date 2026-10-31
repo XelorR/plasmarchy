@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="420" viewBox="0 0 200 420">
+  <!--
+    Aurorae 9-slice frame.  Each state is a 200x200 cell: active at y=0,
+    inactive at y=220.
+
+    The strips are 4 px wide on purpose.  Plasma normally clamps the theme
+    border to KWin's BorderSize; with BorderSizeAuto=false and BorderSize=Tiny
+    the frame is 2 px, so the outer 2 px of these strips are shown.  If KWin
+    ever uses 4 px again, the same SVG still fills the whole frame instead of
+    leaving a transparent 2 px gap between the border and the client.
+
+    The four gradients approximate one diagonal cyan -> green border:
+    top/left go cyan -> teal, bottom/right go teal -> green.
+  -->
+  <defs>
+    <linearGradient id="active-top" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#33ccff"/>
+      <stop offset="100%" stop-color="#1ae6cc"/>
+    </linearGradient>
+    <linearGradient id="active-left" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#33ccff"/>
+      <stop offset="100%" stop-color="#1ae6cc"/>
+    </linearGradient>
+    <linearGradient id="active-bottom" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1ae6cc"/>
+      <stop offset="100%" stop-color="#00ff99"/>
+    </linearGradient>
+    <linearGradient id="active-right" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1ae6cc"/>
+      <stop offset="100%" stop-color="#00ff99"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Active frame -->
+  <g id="decoration-topleft">
+    <rect x="0" y="0" width="4" height="4" fill="#33ccff"/>
+  </g>
+  <g id="decoration-top">
+    <rect x="4" y="0" width="192" height="4" fill="url(#active-top)"/>
+  </g>
+  <g id="decoration-topright">
+    <rect x="196" y="0" width="4" height="4" fill="#1ae6cc"/>
+  </g>
+  <g id="decoration-left">
+    <rect x="0" y="4" width="4" height="192" fill="url(#active-left)"/>
+  </g>
+  <g id="decoration-center">
+    <rect x="4" y="4" width="192" height="192" fill="none"/>
+  </g>
+  <g id="decoration-right">
+    <rect x="196" y="4" width="4" height="192" fill="url(#active-right)"/>
+  </g>
+  <g id="decoration-bottomleft">
+    <rect x="0" y="196" width="4" height="4" fill="#1ae6cc"/>
+  </g>
+  <g id="decoration-bottom">
+    <rect x="4" y="196" width="192" height="4" fill="url(#active-bottom)"/>
+  </g>
+  <g id="decoration-bottomright">
+    <rect x="196" y="196" width="4" height="4" fill="#00ff99"/>
+  </g>
+
+  <!-- Inactive frame -->
+  <g id="decoration-inactive-topleft">
+    <rect x="0" y="220" width="4" height="4" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-top">
+    <rect x="4" y="220" width="192" height="4" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-topright">
+    <rect x="196" y="220" width="4" height="4" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-left">
+    <rect x="0" y="224" width="4" height="192" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-center">
+    <rect x="4" y="224" width="192" height="192" fill="none"/>
+  </g>
+  <g id="decoration-inactive-right">
+    <rect x="196" y="224" width="4" height="192" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-bottomleft">
+    <rect x="0" y="416" width="4" height="4" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-bottom">
+    <rect x="4" y="416" width="192" height="4" fill="#595959"/>
+  </g>
+  <g id="decoration-inactive-bottomright">
+    <rect x="196" y="416" width="4" height="4" fill="#595959"/>
+  </g>
+</svg>

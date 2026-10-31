@@ -1,0 +1,13 @@
+{
+  "KPackageStructure": "KWin/Script",
+  "KPlugin": {
+    "Id": "plasmarchy-focus",
+    "Name": "Plasmarchy Focus Logger",
+    "Description": "Publishes the active window class for Plasmarchy clipboard shortcuts",
+    "Version": "1.0",
+    "License": "MIT"
+  },
+  "X-Plasma-API": "javascript",
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "X-Plasma-MainScript": "code/main.js"
+}

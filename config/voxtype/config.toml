@@ -1,0 +1,35 @@
+# Plasmarchy Voxtype configuration.
+#
+# KDE registers Meta+Ctrl+X and F9 through KGlobalAccel; they run
+# `voxtype record toggle`.  Voxtype's own hotkey handling stays disabled.
+state_file = "auto"
+
+[hotkey]
+enabled = false
+
+[audio]
+device = "default"
+sample_rate = 16000
+max_duration_secs = 120
+pause_media = true
+
+[whisper]
+# Multilingual model: English and Russian dictation.
+model = "base"
+language = ["en", "ru"]
+translate = false
+
+[output]
+# Paste mode is layout-independent and works in terminals.  ydotool sends the
+# paste keystroke because KDE does not support the wtype virtual-keyboard
+# protocol.
+mode = "paste"
+paste_keys = "shift+insert"
+restore_clipboard = true
+restore_clipboard_delay_ms = 250
+driver_order = ["ydotool"]
+
+[output.notification]
+on_recording_start = true
+on_recording_stop = true
+on_transcription = false

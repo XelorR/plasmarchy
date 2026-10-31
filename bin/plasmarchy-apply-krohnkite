@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# One-shot login fallback: KWin may register Krohnkite's actions only after a
+# new session.  deploy.sh installs this as an autostart entry when that happens.
+set -Eeuo pipefail
+
+DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+RUNTIME="$DATA_HOME/plasmarchy"
+AUTOSTART="${XDG_CONFIG_HOME:-$HOME/.config}/autostart/plasmarchy-apply-krohnkite.desktop"
+LOG_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/plasmarchy"
+mkdir -p "$LOG_DIR"
+LOG="$LOG_DIR/apply-krohnkite.log"
+
+notify() {
+    command -v notify-send >/dev/null 2>&1 &&
+        notify-send -a Plasmarchy -- "$1" "${2:-}" || true
+}
+
+krohnkite_actions_loaded() {
+    gdbus call --session --dest org.kde.kglobalaccel --object-path /kglobalaccel \
+        --method org.kde.KGlobalAccel.allActionsForComponent "['kwin']" 2>/dev/null |
+        grep -q "'Krohnkite"
+}
+
+for _ in $(seq 1 30); do
+    if krohnkite_actions_loaded; then
+        if python3 "$RUNTIME/lib/shortcuts.py" apply "$RUNTIME/shortcuts.tsv" \
+            --only krohnkite --allow-missing --quiet >>"$LOG" 2>&1; then
+            rm -f "$AUTOSTART"
+            notify "Plasmarchy" "Krohnkite shortcuts applied"
+            exit 0
+        fi
+    fi
+    sleep 2
+done
+
+notify "Plasmarchy" "Could not apply Krohnkite shortcuts; see $LOG"
+printf 'Krohnkite did not register its actions in time. See %s\n' "$LOG" >&2
+exit 1

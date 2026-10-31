@@ -1,0 +1,4 @@
+# Optional packages that improve the Omarchy look but are not required.
+# Install with: ./deploy.sh --packages all
+# LocalSend and Voxtype are handled separately by deploy.sh / --with-dictation.
+ttf-jetbrains-mono-nerd

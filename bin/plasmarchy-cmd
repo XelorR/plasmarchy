@@ -1,0 +1,590 @@
+#!/usr/bin/env bash
+# Dispatch the commands used by Plasmarchy's generated .desktop wrappers.
+# It is installed under ~/.local/share/plasmarchy/bin/ and called with one
+# subcommand by the desktop files.
+set -Eeuo pipefail
+
+SELF_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+STATE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/plasmarchy"
+mkdir -p "$STATE_DIR"
+
+notify() {
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -a Plasmarchy -- "$1" "${2:-}"
+    fi
+}
+
+fail() {
+    notify "Plasmarchy" "$1"
+    printf '%s\n' "$1" >&2
+    exit 1
+}
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+# The Plasmarchy Focus Logger KWin script prints
+# "PLASMARCHY-FOCUS <resourceClass>" on every focus change.  Reading the last
+# line costs ~15 ms, which is much faster than a synchronous KWin script query.
+focus_class() {
+    local line=""
+    if have journalctl; then
+        line="$(journalctl --user -n 1000 --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
+            grep -F 'PLASMARCHY-FOCUS ' | tail -n 1 || true)"
+    fi
+    line="${line#PLASMARCHY-FOCUS }"
+    printf '%s' "${line%$'\r'}"
+}
+
+# Fallback used when the logger is not loaded (for example immediately after
+# an upgrade, before the one-shot login script has run).  It takes ~0.5 s, but
+# only the first clipboard action after such an upgrade pays that cost.
+focus_class_live() {
+    have qdbus6 || return 0
+    have journalctl || return 0
+    local js name since out
+    js="$(mktemp "${TMPDIR:-/tmp}/plasmarchy-focus-query.XXXXXX.js")"
+    name="plasmarchy-focus-query-$$"
+    cat >"$js" <<'EOF'
+var w = workspace.activeWindow;
+print("PLASMARCHY-FOCUS-QUERY " + ((w && !w.deleted) ? (w.resourceClass || w.resourceName || "") : ""));
+EOF
+    since="$(date '+%Y-%m-%d %H:%M:%S.%N')"
+    if ! qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.loadScript "$js" "$name" >/dev/null 2>&1; then
+        rm -f "$js"
+        return 0
+    fi
+    qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.start >/dev/null 2>&1 || true
+    sleep 0.45
+    out="$(journalctl --user --since "$since" --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
+        grep -F 'PLASMARCHY-FOCUS-QUERY ' | tail -n 1 || true)"
+    qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.unloadScript "$name" >/dev/null 2>&1 || true
+    rm -f "$js"
+    printf '%s' "${out#PLASMARCHY-FOCUS-QUERY }"
+}
+
+is_terminal_class() {
+    local cls="${1,,}"
+    case "$cls" in
+        *konsole*|*yakuake*|*alacritty*|*kitty*|*wezterm*|*foot*|*ghostty*|*xterm*|\
+        *terminator*|*tilix*|*gnome-terminal*|*org.gnome.console*|*kgx*|*qterminal*|\
+        *lxterminal*|*sakura*|*terminology*|*contour*|*rio*)
+            return 0
+            ;;
+    esac
+    return 1
+}
+
+send_chord() {
+    have ydotool || fail "ydotool is not installed (needed for Super+C/V)"
+    if ! pgrep -x ydotoold >/dev/null 2>&1; then
+        systemctl --user start ydotool.service >/dev/null 2>&1 || true
+        sleep 0.1
+    fi
+    # KGlobalAccel fires while the physical Meta key is still down.  Release
+    # both Meta keys first, otherwise the application sees Meta+Ctrl+C.
+    ydotool key 125:0 126:0 >/dev/null 2>&1 || true
+    sleep 0.03
+    ydotool key "$@" >/dev/null 2>&1 ||
+        fail "Could not send keys: check 'systemctl --user status ydotool' and /dev/uinput"
+}
+
+clipboard_action() {
+    local action="$1" cls
+    cls="$(focus_class)"
+    if [[ -z "$cls" ]]; then
+        cls="$(focus_class_live)"
+    fi
+    # The lock screen and the desktop have no application to receive the chord.
+    case "$cls" in
+        ""|kwin_wayland|kscreenlocker_greet|plasmashell) exit 0 ;;
+    esac
+
+    local -a keys
+    if is_terminal_class "$cls"; then
+        # Konsole and other terminals use Ctrl+Shift+C/V/X.
+        case "$action" in
+            copy) keys=(29:1 42:1 46:1 46:0 42:0 29:0) ;;
+            paste) keys=(29:1 42:1 47:1 47:0 42:0 29:0) ;;
+            cut) keys=(29:1 42:1 45:1 45:0 42:0 29:0) ;;
+        esac
+    else
+        case "$action" in
+            copy) keys=(29:1 46:1 46:0 29:0) ;;
+            paste) keys=(29:1 47:1 47:0 29:0) ;;
+            cut) keys=(29:1 45:1 45:0 29:0) ;;
+        esac
+    fi
+    send_chord "${keys[@]}"
+}
+
+copy_url() {
+    local cls
+    cls="$(focus_class)"
+    if [[ -z "$cls" ]]; then
+        cls="$(focus_class_live)"
+    fi
+    case "${cls,,}" in
+        *zen*|*firefox*|*chrom*|*brave*|*edge*|*vivaldi*|*opera*) ;;
+        *) exit 0 ;;
+    esac
+    # 29 = LeftCtrl, 38 = L, 46 = C.
+    send_chord 29:1 38:1 38:0 29:0
+    sleep 0.08
+    send_chord 29:1 46:1 46:0 29:0
+}
+
+open_url() {
+    local url="$1"
+    if have xdg-open; then
+        exec xdg-open "$url"
+    fi
+    fail "xdg-open is not installed"
+}
+
+run_in_terminal() {
+    if have konsole; then
+        exec konsole -e "$@"
+    elif have xterm; then
+        exec xterm -e "$@"
+    fi
+    fail "No terminal emulator found (install konsole)"
+}
+
+run_in_terminal_hold() {
+    if have konsole; then
+        exec konsole --hold -e "$@"
+    elif have xterm; then
+        exec xterm -hold -e "$@"
+    fi
+    fail "No terminal emulator found (install konsole)"
+}
+
+command_exists_or_fail() {
+    local cmd="$1" label="$2"
+    have "$cmd" || fail "$label is not installed"
+}
+
+# Move the active window with KWin's native action.  KWin only offers a
+# move-only action, so the "follow" variant additionally switches the current
+# desktop.  Invoking the action through KGlobalAccel works even when the
+# native key binding is cleared in favour of the Plasmarchy wrapper.
+desktop_move() {
+    local mode="$1" target="$2" count
+    [[ "$target" =~ ^[1-9]$ ]] || fail "Invalid desktop: $target"
+    have qdbus6 || fail "qdbus6 is not installed"
+    count="$(qdbus6 org.kde.KWin /VirtualDesktopManager \
+        org.freedesktop.DBus.Properties.Get \
+        org.kde.KWin.VirtualDesktopManager count 2>/dev/null || true)"
+    if [[ "$count" =~ ^[0-9]+$ ]] && ((target > count)); then
+        notify "Desktop" "Desktop $target does not exist ($count configured)"
+        exit 0
+    fi
+    qdbus6 org.kde.KWin /component/kwin \
+        org.kde.kglobalaccel.Component.invokeShortcut "Window to Desktop $target" \
+        >/dev/null 2>&1 || fail "Could not move the window to desktop $target"
+    if [[ "$mode" == "follow" ]]; then
+        qdbus6 org.kde.KWin /KWin org.kde.KWin.setCurrentDesktop "$target" \
+            >/dev/null 2>&1 || fail "Could not switch to desktop $target"
+    fi
+}
+
+default_browser_id() {
+    xdg-settings get default-web-browser 2>/dev/null || true
+}
+
+desktop_exec_for() {
+    local id="$1" dir file line
+    [[ -n "$id" ]] || return 1
+    for dir in \
+        "$HOME/.local/share/applications" \
+        /usr/local/share/applications \
+        /usr/share/applications \
+        /var/lib/flatpak/exports/share/applications \
+        "$HOME/.local/share/flatpak/exports/share/applications"; do
+        file="$dir/$id"
+        if [[ -f "$file" ]]; then
+            line="$(sed -n 's/^Exec=//p' "$file" | head -n1)"
+            printf '%s\n' "$line"
+            return 0
+        fi
+    done
+    return 1
+}
+
+browser_plain() {
+    local id exec_line argv0
+    id="$(default_browser_id)"
+    exec_line="$(desktop_exec_for "$id" || true)"
+    if [[ -n "$exec_line" ]]; then
+        exec_line="$(printf '%s' "$exec_line" | sed -E 's/%[fFuUdDnNickvm]//g; s/^[[:space:]]+//')"
+        read -r -a argv <<<"$exec_line"
+        argv0="${argv[0]:-}"
+        while [[ "$argv0" == "env" || "$argv0" == *=* ]]; do
+            argv=("${argv[@]:1}")
+            argv0="${argv[0]:-}"
+        done
+        if ((${#argv[@]})); then
+            exec "${argv[@]}"
+        fi
+    fi
+    open_url "https://www.google.com/"
+}
+
+browser_private() {
+    local id exec_line argv0
+    id="$(default_browser_id)"
+    exec_line="$(desktop_exec_for "$id" || true)"
+    if [[ -n "$exec_line" ]]; then
+        # Drop desktop-entry field codes and any leading environment prefix.
+        exec_line="$(printf '%s' "$exec_line" | sed -E 's/%[fFuUdDnNickvm]//g; s/^[[:space:]]+//')"
+        read -r -a argv <<<"$exec_line"
+        argv0="${argv[0]:-}"
+        while [[ "$argv0" == "env" || "$argv0" == *=* ]]; do
+            argv=("${argv[@]:1}")
+            argv0="${argv[0]:-}"
+        done
+        case "$argv0" in
+            *zen*|*firefox*) exec "$argv0" --private-window ;;
+            *chromium*|*brave*|*chrome*) exec "$argv0" --incognito ;;
+            *flatpak*) exec "${argv[@]}" --private-window ;;
+        esac
+    fi
+
+    # Fallback for a browser whose desktop entry does not expose a private
+    # flag: open the normal window and explain the limitation.
+    notify "Browser" "Private mode is not known for $id; opening the default browser"
+    open_url "https://www.google.com/"
+}
+
+tmux_install_hint() {
+    notify "tmux" "Run ./scripts/install-tmux.sh to install the Omarchy tmux configuration"
+}
+
+case "${1:-}" in
+    terminal)
+        have konsole && exec konsole
+        fail "Konsole is not installed"
+        ;;
+    terminal-tmux)
+        have tmux || fail "tmux is not installed"
+        [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf" ]] || tmux_install_hint
+        run_in_terminal tmux new-session -A -s Work
+        ;;
+    browser)
+        browser_plain
+        ;;
+    browser-private)
+        browser_private
+        ;;
+    files)
+        have dolphin && exec dolphin "$HOME"
+        fail "Dolphin is not installed"
+        ;;
+    keepassxc)
+        command_exists_or_fail keepassxc "KeePassXC"
+        exec keepassxc
+        ;;
+    qalculate)
+        command_exists_or_fail qalculate-qt "Qalculate"
+        exec qalculate-qt
+        ;;
+    vlc)
+        command_exists_or_fail vlc "VLC"
+        exec vlc
+        ;;
+    btop)
+        command_exists_or_fail btop "btop"
+        run_in_terminal btop
+        ;;
+    nvim)
+        command_exists_or_fail nvim "Neovim"
+        run_in_terminal nvim
+        ;;
+    calendar|calendar-panel|world-clock)
+        if have kclock; then
+            exec kclock
+        elif have korganizer; then
+            exec korganizer
+        fi
+        fail "kclock is not installed (optional package: kclock)"
+        ;;
+    thunderbird)
+        command_exists_or_fail thunderbird "Thunderbird"
+        exec thunderbird
+        ;;
+    thunderbird-compose)
+        command_exists_or_fail thunderbird "Thunderbird"
+        exec thunderbird -compose
+        ;;
+    chatgpt)
+        open_url "https://chatgpt.com/"
+        ;;
+    grok)
+        open_url "https://grok.com/"
+        ;;
+    signal)
+        command_exists_or_fail signal-desktop "Signal"
+        exec signal-desktop
+        ;;
+    photos)
+        open_url "https://photos.google.com/"
+        ;;
+    maps)
+        open_url "https://maps.google.com/"
+        ;;
+    whatsapp)
+        open_url "https://web.whatsapp.com/"
+        ;;
+    messages)
+        open_url "https://messages.google.com/web/conversations"
+        ;;
+    obsidian)
+        command_exists_or_fail obsidian "Obsidian"
+        exec obsidian
+        ;;
+    kate)
+        command_exists_or_fail kate "Kate"
+        exec kate
+        ;;
+    x)
+        open_url "https://x.com/"
+        ;;
+    x-compose)
+        open_url "https://x.com/compose/post"
+        ;;
+    youtube)
+        open_url "https://youtube.com/"
+        ;;
+    lazydocker)
+        command_exists_or_fail lazydocker "lazydocker"
+        run_in_terminal lazydocker
+        ;;
+    screenshot-region)
+        command_exists_or_fail spectacle "Spectacle"
+        exec spectacle -r -b -n -c
+        ;;
+    copy)
+        clipboard_action copy
+        ;;
+    cut)
+        clipboard_action cut
+        ;;
+    paste)
+        clipboard_action paste
+        ;;
+    copy-url)
+        copy_url
+        ;;
+    screenrecord)
+        command_exists_or_fail spectacle "Spectacle"
+        exec spectacle -R s
+        ;;
+    color-picker)
+        command_exists_or_fail python3 "python3"
+        exec python3 "$SELF_DIR/plasmarchy-color.py"
+        ;;
+    ocr)
+        command_exists_or_fail spectacle "Spectacle"
+        command_exists_or_fail tesseract "Tesseract"
+        tmp="$(mktemp --suffix=.png)"
+        trap 'rm -f "$tmp"' EXIT
+        if ! spectacle -r -b -n -o "$tmp"; then
+            exit 0
+        fi
+        langs="eng"
+        if tesseract --list-langs 2>/dev/null | grep -qx rus; then
+            langs="eng+rus"
+        fi
+        text="$(tesseract "$tmp" stdout -l "$langs" 2>/dev/null || true)"
+        if [[ -z "${text//[[:space:]]/}" ]]; then
+            notify "OCR" "No text found"
+            exit 0
+        fi
+        if have wl-copy; then
+            printf '%s' "$text" | wl-copy
+        elif have xclip; then
+            printf '%s' "$text" | xclip -selection clipboard
+        else
+            fail "Install wl-clipboard (Wayland) or xclip"
+        fi
+        notify "OCR" "Recognized text copied to clipboard"
+        ;;
+    audio-panel)
+        command_exists_or_fail pavucontrol "pavucontrol"
+        exec pavucontrol
+        ;;
+    bluetooth-panel)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_bluetooth
+        ;;
+    network-panel)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_networkmanagement
+        ;;
+    display-panel)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_kscreen
+        ;;
+    power-panel)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_powerdevilprofilesconfig
+        ;;
+    screenlocker-panel)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_screenlocker
+        ;;
+    localsend)
+        command_exists_or_fail localsend "LocalSend"
+        exec localsend
+        ;;
+    spectacle)
+        command_exists_or_fail spectacle "Spectacle"
+        exec spectacle
+        ;;
+    krunner)
+        if have qdbus6; then
+            qdbus6 org.kde.krunner /App org.kde.krunner.App.toggleDisplay >/dev/null 2>&1 && exit 0
+        fi
+        command_exists_or_fail krunner "KRunner"
+        exec krunner
+        ;;
+    kinfocenter)
+        command_exists_or_fail kinfocenter "KInfoCenter"
+        exec kinfocenter
+        ;;
+    emojier)
+        command_exists_or_fail plasma-emojier "Emoji Selector"
+        exec plasma-emojier
+        ;;
+    handbrake)
+        if have ghb; then
+            exec ghb
+        elif have handbrake; then
+            exec handbrake
+        elif have HandBrakeCLI; then
+            exec HandBrakeCLI
+        fi
+        fail "HandBrake is not installed (optional package: handbrake)"
+        ;;
+    shortcuts-settings)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_keys
+        ;;
+    theme-picker)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_lookandfeel
+        ;;
+    wallpaper-picker)
+        command_exists_or_fail kcmshell6 "kcmshell6"
+        exec kcmshell6 kcm_wallpaper
+        ;;
+    yakuake-toggle)
+        if have qdbus6 && qdbus6 org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindow >/dev/null 2>&1; then
+            exit 0
+        fi
+        if have yakuake; then
+            exec yakuake
+        fi
+        fail "Yakuake is not installed (optional package: yakuake)"
+        ;;
+    display-toggle|display-mirror|scale-next|scale-prev)
+        command_exists_or_fail python3 "python3"
+        case "$1" in
+            display-toggle) sub="toggle" ;;
+            display-mirror) sub="mirror" ;;
+            *) sub="$1" ;;
+        esac
+        exec python3 "$SELF_DIR/plasmarchy-display.py" "$sub"
+        ;;
+    audio-sink-next)
+        command_exists_or_fail pactl "pactl"
+        mapfile -t sinks < <(pactl list short sinks | awk '{print $2}')
+        if ((${#sinks[@]} < 2)); then
+            notify "Audio output" "Only one sink is available"
+            exit 0
+        fi
+        current="$(pactl get-default-sink 2>/dev/null || true)"
+        index=-1
+        for i in "${!sinks[@]}"; do
+            [[ "${sinks[$i]}" == "$current" ]] && index=$i
+        done
+        next="${sinks[$(((index + 1) % ${#sinks[@]}))]}"
+        pactl set-default-sink "$next"
+        while read -r input; do
+            [[ -n "$input" ]] && pactl move-sink-input "$input" "$next" || true
+        done < <(pactl list short sink-inputs | awk '{print $1}')
+        notify "Audio output" "$next"
+        ;;
+    notify-time)
+        notify "Time" "$(date '+%H:%M, %A, %d %B')"
+        ;;
+    notify-battery)
+        found=0
+        message=""
+        for bat in /sys/class/power_supply/BAT*; do
+            [[ -e "$bat/capacity" ]] || continue
+            found=1
+            cap="$(cat "$bat/capacity")"
+            status="$(cat "$bat/status" 2>/dev/null || true)"
+            message+="${message:+$'\n'}$(basename "$bat"): ${cap}% ${status}"
+        done
+        if ((found)); then
+            notify "Battery" "$message"
+        else
+            notify "Battery" "No battery found"
+        fi
+        ;;
+    weather)
+        command_exists_or_fail curl "curl"
+        weather="$(curl -fsS --max-time 10 'https://wttr.in/?format=3' 2>/dev/null || true)"
+        if [[ -n "$weather" ]]; then
+            notify "Weather" "$weather"
+        else
+            notify "Weather" "Could not fetch weather"
+        fi
+        ;;
+    reminders-new)
+        command_exists_or_fail kalarm "KAlarm"
+        exec kalarm --new
+        ;;
+    reminders-list)
+        command_exists_or_fail kalarm "KAlarm"
+        exec kalarm
+        ;;
+    yt-dlp)
+        command_exists_or_fail yt-dlp "yt-dlp"
+        clip=""
+        if have wl-paste; then
+            clip="$(wl-paste --no-newline 2>/dev/null || true)"
+        elif have xclip; then
+            clip="$(xclip -o -selection clipboard 2>/dev/null || true)"
+        fi
+        url="$(printf '%s' "$clip" | tr -d '\r\n')"
+        [[ "$url" =~ ^https?://[^[:space:]]+$ ]] ||
+            fail "Clipboard does not contain a single http(s) URL"
+        download_dir="$(xdg-user-dir DOWNLOAD 2>/dev/null || printf '%s' "$HOME/Downloads")/Plasmarchy"
+        mkdir -p "$download_dir"
+        notify "yt-dlp" "Downloading to $download_dir"
+        run_in_terminal_hold yt-dlp --no-mtime \
+            --paths "$download_dir" \
+            --output "%(title)s [%(id)s].%(ext)s" \
+            "$url"
+        ;;
+    dictation)
+        command_exists_or_fail voxtype "Voxtype"
+        if have systemctl && ! systemctl --user is-active --quiet voxtype.service 2>/dev/null; then
+            systemctl --user start voxtype.service >/dev/null 2>&1 || true
+        fi
+        exec voxtype record toggle
+        ;;
+    desktop-move-follow-[1-9])
+        desktop_move follow "${1##*-}"
+        ;;
+    desktop-move-silent-[1-9])
+        desktop_move silent "${1##*-}"
+        ;;
+    *)
+        printf 'error: unknown plasmarchy command: %s\n' "${1:-}" >&2
+        exit 2
+        ;;
+esac
