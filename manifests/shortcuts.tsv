@@ -147,7 +147,7 @@ org.kde.spectacle.desktop	FullScreenScreenShot		Clear Spectacle default
 org.kde.spectacle.desktop	WindowUnderCursorScreenShot		Clear Spectacle default
 
 # Krohnkite.  The layout order is configured separately:
-# Spiral -> Tile -> Floating.  Defaults that are not used are cleared first.
+# Tile -> Spiral -> Floating.  Defaults that are not used are cleared first.
 
 kwin	KrohnkiteFocusNext		Clear default Meta+.
 kwin	KrohnkiteFocusPrev		Clear default Meta+,
@@ -168,7 +168,7 @@ kwin	KrohnkiteIncrease		Clear default Meta+I
 kwin	KrohnkiteDecrease		Clear default Meta+D
 kwin	KrohnkiteToggleFloat	Meta+T	Toggle floating
 kwin	KrohnkiteFloatAll		Clear default Meta+Shift+F
-kwin	KrohnkiteNextLayout	Meta+L	Next layout (Spiral -> Tile -> Floating)
+kwin	KrohnkiteNextLayout	Meta+L	Next layout (Tile -> Spiral -> Floating)
 kwin	KrohnkitePreviousLayout	Meta+Alt+L	Previous layout
 kwin	KrohnkiteRotate	Meta+J	Rotate layout
 kwin	KrohnkiteRotatePart		No exact Spiral analogue

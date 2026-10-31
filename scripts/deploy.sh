@@ -464,7 +464,7 @@ PY
 write_krohnkite_config() {
     ((SKIP_KROHNKITE)) && return
     if ((DRY_RUN)); then
-        log "Would write Krohnkite config (Spiral -> Tile -> Floating, gaps 10/5)"
+        log "Would write Krohnkite config (Tile -> Spiral -> Floating, gaps 10/5)"
         return
     fi
     log "Writing Krohnkite config"
@@ -478,8 +478,8 @@ write_krohnkite_config() {
 
     # Only three layouts are enabled, in this order.  Its layout list is what
     # KrohnkiteNextLayout cycles through.
-    kc spiralLayoutOrder 1
-    kc tileLayoutOrder 2
+    kc tileLayoutOrder 1
+    kc spiralLayoutOrder 2
     kc floatingLayoutOrder 3
     kc monocleLayoutOrder 0
     kc threeColumnLayoutOrder 0
@@ -490,7 +490,7 @@ write_krohnkite_config() {
     kc stairLayoutOrder 0
     kc binaryTreeLayoutOrder 0
     kc cascadeLayoutOrder 0
-    kc screenDefaultLayout ":Spiral"
+    kc screenDefaultLayout ":Tile"
 
     kc screenGapLeft 10
     kc screenGapRight 10
@@ -951,7 +951,7 @@ summary() {
     cat <<EOF
 
 Applied:
-  - Krohnkite:  $([[ $SKIP_KROHNKITE == 1 ]] && echo skipped || echo "$KROHNKITE_VERSION, Spiral -> Tile -> Floating, gaps 10/5")
+  - Krohnkite:  $([[ $SKIP_KROHNKITE == 1 ]] && echo skipped || echo "$KROHNKITE_VERSION, Tile -> Spiral -> Floating, gaps 10/5")
   - Theme:      $([[ $SKIP_THEME == 1 ]] && echo skipped || echo "plasmarchy (2 px border, no titlebar, server-side decoration)")
   - Rules:      server-side borders for normal windows; browser tiling fix
   - Focus:      $([[ $SKIP_FOCUS == 1 ]] && echo skipped || echo "focus follows mouse + mouse follows focus")

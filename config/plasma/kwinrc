@@ -85,18 +85,18 @@ monocleLayoutOrder=0
 movePointerOnFocus=true
 noTileBorder=false
 quarterLayoutOrder=0
-screenDefaultLayout=:Spiral
+screenDefaultLayout=:Tile
 screenGapBetween=5
 screenGapBottom=10
 screenGapLeft=10
 screenGapRight=10
 screenGapTop=10
-spiralLayoutOrder=1
+spiralLayoutOrder=2
 spreadLayoutOrder=0
 stackedLayoutOrder=0
 stairLayoutOrder=0
 threeColumnLayoutOrder=0
-tileLayoutOrder=2
+tileLayoutOrder=1
 tileNothing=false
 
 [Windows]
