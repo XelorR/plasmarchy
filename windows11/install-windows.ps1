@@ -135,6 +135,49 @@ function Find-Executable {
     return $null
 }
 
+function Install-ScoopPackage {
+    param([string]$Id)
+    if (-not (Get-Command scoop.exe -ErrorAction SilentlyContinue)) { return $false }
+    try {
+        $previous = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        scoop install $Id 2>&1 | Out-Host
+        $ErrorActionPreference = $previous
+        return $true
+    } catch {
+        $ErrorActionPreference = 'Continue'
+        Write-Warning "scoop install $Id failed: $($_.Exception.Message)"
+        return $false
+    }
+}
+
+function Request-ManualComponent {
+    param(
+        [string]$Name,
+        [string]$DownloadUrl = '',
+        [string[]]$Candidates = @(),
+        [string[]]$ExtraDirs = @()
+    )
+    $resolved = $null
+    while (-not $resolved) {
+        Write-Host ''
+        Write-Warning "$Name is still unavailable after the winget/scoop attempts."
+        if (-not [string]::IsNullOrWhiteSpace($DownloadUrl)) {
+            Write-Host "Download it here: $DownloadUrl"
+            try { Start-Process $DownloadUrl | Out-Null } catch { }
+        }
+        Write-Host "Put the resulting binary in this folder and add it to PATH:"
+        Write-Host "  $SoftwareDir"
+        Write-Host "Candidate names: $($Candidates -join ', ')"
+        $answer = Read-Host "Press Enter to re-check, or type 'skip' to continue without $Name"
+        if ($answer -eq 'skip') { break }
+        $resolved = Find-Executable -Names $Candidates -ExtraDirs $ExtraDirs
+    }
+    return $resolved
+}
+
+
+
 function New-StartupShortcut {
     param(
         [string]$Name,
@@ -365,7 +408,9 @@ Set-Content -Path (Join-Path $StateDir 'last-backup.txt') -Value $BackupRoot -En
 # Packages
 
 if (-not $SkipPackages) {
-    Write-Step 'Installing packages (winget)'
+    Write-Step 'Installing packages (winget -> scoop -> direct download -> manual)'
+    New-Item -ItemType Directory -Path $SoftwareDir -Force | Out-Null
+
     $packages = @(
         'LGUG2Z.komorebi',
         'LGUG2Z.masir',
@@ -378,8 +423,48 @@ if (-not $SkipPackages) {
     foreach ($package in $packages) {
         Install-WingetPackage -Id $package
     }
+
+    # Scoop is tried for all package IDs. Package names differ between
+    # managers, but Scoop simply prints an error for unknown IDs.
+    if (Get-Command scoop.exe -ErrorAction SilentlyContinue) {
+        Write-Step 'Trying Scoop for any missing packages'
+        foreach ($package in $packages) {
+            $stillMissing = -not (
+                ($package -eq 'LGUG2Z.komorebi'   -and (Find-Executable -Names @('komorebic.exe'))) -or
+                ($package -eq 'LGUG2Z.masir'        -and (Find-Executable -Names @('masir.exe'))) -or
+                ($package -eq 'AutoHotkey.AutoHotkey' -and (Find-Executable -Names @('AutoHotkey64.exe'))) -or
+                ($package -eq 'Microsoft.PowerToys' -and (Find-Executable -Names @('PowerToys.exe'))) -or
+                ($package -eq 'jtroo.kanata_gui'    -and (Find-Executable -Names @('kanata.exe', 'kanata_gui.exe')))
+            )
+            if ($stillMissing) {
+                Install-ScoopPackage -Id $package | Out-Null
+            }
+        }
+    }
+
+    # Direct downloads are attempted only for the two components whose archive
+    # names are stable enough to build automatically.
+    if (-not (Find-Executable -Names @('komorebic.exe', 'komorebic-no-console.exe'))) {
+        Write-Step 'Trying a direct Komorebi download'
+        $komorebiMsi = Join-Path $SoftwareDir 'komorebi-0.1.41-x86_64.msi'
+        if (-not (Test-Path $komorebiMsi)) {
+            try {
+                Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/LGUG2Z/komorebi/releases/download/v0.1.41/komorebi-0.1.41-x86_64.msi' -OutFile $komorebiMsi
+            } catch {
+                Write-Warning "Komorebi direct download failed: $($_.Exception.Message)"
+            }
+        }
+        if (Test-Path $komorebiMsi) {
+            Start-Process -FilePath 'msiexec.exe' -ArgumentList @('/i', $komorebiMsi, '/qn', '/norestart') -Wait
+        }
+    }
+
+    if ($Kanata -ne 'none' -and -not (Find-Executable -Names @('kanata.exe', 'kanata_windows_gui_winIOv2_x64.exe'))) {
+        Write-Step 'Trying the pinned portable Kanata download'
+        $kanataExe = Install-KanataPortable
+    }
 } else {
-    Write-Step 'Skipping winget packages (-SkipPackages)'
+    Write-Step 'Skipping package managers (-SkipPackages)'
 }
 
 $komorebic = Find-Executable -Names @('komorebic-no-console.exe', 'komorebic.exe')
@@ -392,12 +477,30 @@ $ahk = Find-Executable -Names @('AutoHotkey64.exe') -ExtraDirs @(
 )
 $masir = Find-Executable -Names @('masir.exe')
 $masirOnPath = [bool](Get-Command 'masir.exe' -ErrorAction SilentlyContinue)
+if (-not $masir) {
+    $null = Request-ManualComponent -Name 'masir' -Candidates @('masir.exe') -DownloadUrl 'https://github.com/LGUG2Z/masir/releases/latest'
+}
 
 if (-not $komorebic) {
-    throw 'komorebic.exe was not found. Install LGUG2Z.komorebi and re-run this script.'
+    $komorebic = Request-ManualComponent -Name 'Komorebi' `
+        -Candidates @('komorebic.exe', 'komorebic-no-console.exe') `
+        -DownloadUrl 'https://github.com/LGUG2Z/komorebi/releases/latest'
 }
+if (-not $komorebic) {
+    throw 'komorebic.exe was not found. Install Komorebi and re-run this script.'
+}
+
 if (-not $ahk) {
-    Write-Warning 'AutoHotkey64.exe was not found. Komorebi will start, but the shortcut layer will not.'
+    $ahk = Request-ManualComponent -Name 'AutoHotkey v2' `
+        -Candidates @('AutoHotkey64.exe', 'AutoHotkey.exe') `
+        -ExtraDirs @(
+            (Join-Path $env:ProgramFiles 'AutoHotkey\v2'),
+            (Join-Path $env:ProgramFiles 'AutoHotkey'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\AutoHotkey\v2'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\AutoHotkey')
+        ) `
+        -DownloadUrl 'https://www.autohotkey.com/download/ahk-v2.exe'
+    if (-not $ahk) { Write-Warning 'AutoHotkey64.exe was not found. Komorebi will start, but the shortcut layer will not.' }
 }
 if ($masir -and -not $masirOnPath) {
     Write-Warning "masir.exe was found at $masir but is not on PATH. komorebic start --masir requires PATH, so focus-follows-mouse will be skipped. Add that directory to PATH or install LGUG2Z.masir."
@@ -444,6 +547,11 @@ if ($LASTEXITCODE -ne 0) {
     throw 'komorebic check failed. Fix komorebi.json or restore the backup and re-run.'
 }
 
+if ($Kanata -ne 'none' -and -not $kanataExe) {
+    $kanataExe = Request-ManualComponent -Name 'Kanata' `
+        -Candidates @('kanata_windows_gui_winIOv2_x64.exe', 'kanata_windows_gui_wintercept_x64.exe', 'kanata_gui.exe', 'kanata.exe') `
+        -DownloadUrl 'https://github.com/jtroo/kanata/releases/latest'
+}
 if ($kanataExe) {
     Write-Step 'Validating kanata.kbd'
     & $kanataExe --check --cfg $KanataCfg
