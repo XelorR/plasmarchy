@@ -518,9 +518,9 @@ case "${1:-}" in
         pid_file=""
         view_pid=""
         screen_dims=""
-        list_file="${SELF_DIR}/../docs/plasmarchy-shortcuts.txt"
+        list_file="${SELF_DIR}/../docs/plasmarchy-shortcuts.html"
         if [[ ! -f "$list_file" ]]; then
-            list_file="${STATE_DIR}/docs/plasmarchy-shortcuts.txt"
+            list_file="${STATE_DIR}/docs/plasmarchy-shortcuts.html"
         fi
         [[ -f "$list_file" ]] || fail "Plasmarchy shortcut list is not installed"
         if ! have kdialog; then
@@ -553,8 +553,8 @@ case "${1:-}" in
         # Width is deliberate at about 38 percent of the active screen, which is
         # slightly above one third as requested; the dialog is tall enough to
         # show the whole list without excessive scrolling.
-        nohup kdialog --title "Plasmarchy keyboard shortcuts" \
-            --textbox "$list_file" "$w" "$h"             --geometry "${w}x${h}+${x}+${y}" >/dev/null 2>&1 &
+        html_file="$list_file"
+        nohup kdialog --title "Plasmarchy keyboard shortcuts"             --msgbox "$(cat "$html_file")"             --geometry "${w}x${h}+${x}+${y}" >/dev/null 2>&1 &
         printf '%s\n' "$!" > "$pid_file"
         ( wait "$!" 2>/dev/null; rm -f "$pid_file" ) >/dev/null 2>&1 &
         exit 0

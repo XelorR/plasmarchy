@@ -3,152 +3,152 @@ Plasmarchy keyboard shortcuts
 
 Reference: https://omarchy.org/manual/hotkeys/
 
-Alt+F4, Meta+W, Meta+Q                   Window Close: Close active window (Alt+F4 kept)
-Meta+F                                   Window Fullscreen: Fullscreen
-Meta+Alt+F                               Window Maximize Horizontal: Full width
-Meta+Ctrl+F                              Window Maximize: Tiled fullscreen approximation
-Meta+Alt+Space                           Overview: Overview (Omarchy app grid)
-Meta+G                                   Grid View: Grid View kept; window grouping is skipped
-Meta+Ctrl+Shift+Left                     Window One Screen to the Left: Move window to the screen on the left
-Meta+Ctrl+Shift+Right                    Window One Screen to the Right: Move window to the screen on the right
-Meta+Ctrl+Shift+Up                       Window One Screen Up: Move window to the screen above
-Meta+Ctrl+Shift+Down                     Window One Screen Down: Move window to the screen below
-Meta+1                                   Switch to Desktop 1: Desktop 1
-Meta+2                                   Switch to Desktop 2: Desktop 2
-Meta+3                                   Switch to Desktop 3: Desktop 3
-Meta+4                                   Switch to Desktop 4: Desktop 4
-Meta+5                                   Switch to Desktop 5: Desktop 5
-Meta+6                                   Switch to Desktop 6: Desktop 6
-Meta+7                                   Switch to Desktop 7: Desktop 7
-Meta+8                                   Switch to Desktop 8: Desktop 8
-Meta+9                                   Switch to Desktop 9: Desktop 9
-Meta+Tab                                 Switch to Next Desktop: Next desktop
-Meta+Shift+Tab                           Switch to Previous Desktop: Previous desktop
-Ctrl+Alt+Tab                             Switch to Next Screen: Next screen
-Ctrl+Alt+Shift+Tab                       Switch to Previous Screen: Previous screen
-Alt+Tab                                  Walk Through Windows: Window switcher
-Alt+Shift+Tab                            Walk Through Windows (Reverse): Window switcher reverse
-Meta+Alt+Tab                             Walk Through Windows of Current Application: Same-application switcher
-Meta+Alt+Shift+Tab                       Walk Through Windows of Current Application (Reverse): Same-application switcher reverse
-Meta+Ctrl+Z                              view_zoom_in: Zoom in
-Meta+Ctrl+Alt+Z                          view_actual_size: Zoom reset
-Meta+Ctrl+V                              show-on-mouse-pos: Clipboard at mouse
-Meta+Shift+,                             clear history: Clear notification history
-Meta+Ctrl+Alt+,                          toggle do not disturb: Do Not Disturb
-Meta+Ctrl+L                              Lock Session: Lock screen
-Meta+Escape, Ctrl+Alt+Del                Log Out: Logout screen (sleep/reboot/shutdown)
-Alt+Monitor Brightness Up                Increase Screen Brightness Small: +1% screen brightness
-Alt+Monitor Brightness Down              Decrease Screen Brightness Small: -1% screen brightness
-Keyboard Brightness Up                   Increase Keyboard Brightness: Keyboard backlight up
-Keyboard Brightness Down                 Decrease Keyboard Brightness: Keyboard backlight down
-Keyboard Light On/Off                    Toggle Keyboard Backlight: Keyboard backlight toggle
-Power Off                                PowerOff: Power menu key
-Volume Up                                increase_volume: Volume up
-Volume Down                              decrease_volume: Volume down
-Volume Mute                              mute: Mute
-Microphone Mute                          mic_mute: Mute microphone
-Alt+Volume Up                            increase_volume_small: +1% volume
-Alt+Volume Down                          decrease_volume_small: -1% volume
-Media Next, Alt+Media Play               nextmedia: Next track
-Media Previous, Alt+Shift+Media Play     previousmedia: Previous track
-Media Play                               playpausemedia: Play/pause
-Media Stop                               stopmedia: Stop
-Ctrl+Alt+T                               _launch: Keep Ctrl+Alt+T; remove Meta+Ctrl+C
-Meta+Left                                KrohnkiteFocusLeft: Focus left
-Meta+Right                               KrohnkiteFocusRight: Focus right
-Meta+Down                                KrohnkiteFocusDown: Focus down
-Meta+Up                                  KrohnkiteFocusUp: Focus up
-Meta+Shift+Down                          KrohnkiteShiftDown: Swap down
-Meta+Shift+Up                            KrohnkiteShiftUp: Swap up
-Meta+Shift+Left                          KrohnkiteShiftLeft: Swap left
-Meta+Shift+Right                         KrohnkiteShiftRight: Swap right
-Meta+Shift+Equal                         KrohnkiteGrowHeight: Grow height
-Meta+Shift+Minus                         KrohnkiteShrinkHeight: Shrink height
-Meta+Equal                               KrohnkiteShrinkWidth: Shrink width
-Meta+Minus                               KrohnkitegrowWidth: Grow width
-Meta+T                                   KrohnkiteToggleFloat: Toggle floating
-Meta+L                                   KrohnkiteNextLayout: Next layout (Spiral -> Tile -> Floating)
-Meta+Alt+L                               KrohnkitePreviousLayout: Previous layout
-Meta+J                                   KrohnkiteRotate: Rotate layout
-Meta+Return                              _launch: Konsole
-Meta+Alt+Return                          _launch: Konsole + tmux (Work session)
-Meta+C                                   _launch: Copy (terminal-aware)
-Meta+X                                   _launch: Cut (terminal-aware)
-Meta+V                                   _launch: Paste (terminal-aware)
-Alt+Shift+L                              _launch: Copy current browser URL
-Meta+Shift+Return, Meta+Shift+B          _launch: Default browser
-Meta+Shift+Alt+B                         _launch: Default browser, private window
-Meta+Shift+F                             _launch: Dolphin
-Meta+Shift+/                             _launch: KeePassXC
-Meta+Shift+Q, Calculator                 _launch: Qalculate
-Meta+Shift+T                             _launch: btop in Konsole
-Meta+Shift+N                             _launch: Neovim in Konsole
-Meta+Shift+C                             _launch: Calendar (kclock) or fallback
-Meta+Shift+E                             _launch: Thunderbird
-Meta+Shift+Alt+E                         _launch: Thunderbird compose
-Meta+Shift+A                             _launch: ChatGPT
-Meta+Shift+Alt+A                         _launch: Grok
-Meta+Shift+G                             _launch: Signal
-Meta+Shift+P                             _launch: Google Photos
-Meta+Shift+S                             _launch: Google Maps
-Meta+Shift+Alt+G                         _launch: WhatsApp Web
-Meta+Shift+Ctrl+G                        _launch: Google Messages
-Meta+Shift+O                             _launch: Obsidian
-Meta+Shift+W                             _launch: Kate
-Meta+Shift+X                             _launch: X
-Meta+Shift+Alt+X                         _launch: X — new post
-Meta+Shift+Y                             _launch: YouTube
-Meta+Shift+D                             _launch: lazydocker in Konsole
-Print, Meta+Ctrl+Alt+C                   _launch: Screenshot region to clipboard
-Alt+Print                                _launch: Spectacle screen recording
-Meta+Print                               _launch: Color picker
-Meta+Ctrl+Print                          _launch: OCR region to clipboard
-Meta+Ctrl+A                              _launch: Audio settings
-Meta+Ctrl+B                              _launch: Bluetooth settings
-Meta+Ctrl+N                              _launch: Network settings
-Meta+Ctrl+D                              _launch: Display settings
-Meta+Ctrl+P                              _launch: Power settings
-Meta+Ctrl+Alt+D                          _launch: Calendar / clock
-Meta+Ctrl+Alt+E                          _launch: World clock
-Meta+Ctrl+S                              _launch: LocalSend
-Meta+Ctrl+C                              _launch: Spectacle GUI
-Meta+Space                               _launch: KRunner
-Meta+Ctrl+H                              _launch: KInfoCenter
-Meta+Ctrl+E                              _launch: Emoji picker
-Meta+Ctrl+.                              _launch: HandBrake
-Meta+K                                   _launch: Keyboard shortcuts
-Meta+Ctrl+T, Meta+Ctrl+Shift+Space       _launch: Global theme
-Meta+Ctrl+W, Meta+Ctrl+Space             _launch: Wallpaper
-Meta+`                                   _launch: Yakuake
-Meta+Ctrl+Delete                         _launch: Internal display on/off
-Meta+Ctrl+Alt+Delete                     _launch: Mirror displays
-Shift+Volume Mute                        _launch: Next audio output
-Meta+Ctrl+Alt+T                          _launch: Time notification
-Meta+Ctrl+Alt+B                          _launch: Battery notification
-Meta+Ctrl+Alt+W                          _launch: Weather notification
-Meta+/                                   _launch: Next display scale
-Meta+Alt+/                               _launch: Previous display scale
-Meta+Ctrl+R                              _launch: New KAlarm reminder
-Meta+Ctrl+Alt+R                          _launch: KAlarm list
-Meta+Shift+Alt+M                         _launch: VLC
-Alt+Shift+D                              _launch: Download clipboard URL with yt-dlp
-Meta+Ctrl+X, F9                          _launch: Dictation toggle (Voxtype)
-Meta+Ctrl+I                              _launch: Screen locking settings
-Meta+Shift+1                             _launch: Window to desktop 1 and follow
-Meta+Shift+2                             _launch: Window to desktop 2 and follow
-Meta+Shift+3                             _launch: Window to desktop 3 and follow
-Meta+Shift+4                             _launch: Window to desktop 4 and follow
-Meta+Shift+5                             _launch: Window to desktop 5 and follow
-Meta+Shift+6                             _launch: Window to desktop 6 and follow
-Meta+Shift+7                             _launch: Window to desktop 7 and follow
-Meta+Shift+8                             _launch: Window to desktop 8 and follow
-Meta+Shift+9                             _launch: Window to desktop 9 and follow
-Meta+Shift+Alt+1                         _launch: Window to desktop 1, stay here
-Meta+Shift+Alt+2                         _launch: Window to desktop 2, stay here
-Meta+Shift+Alt+3                         _launch: Window to desktop 3, stay here
-Meta+Shift+Alt+4                         _launch: Window to desktop 4, stay here
-Meta+Shift+Alt+5                         _launch: Window to desktop 5, stay here
-Meta+Shift+Alt+6                         _launch: Window to desktop 6, stay here
-Meta+Shift+Alt+7                         _launch: Window to desktop 7, stay here
-Meta+Shift+Alt+8                         _launch: Window to desktop 8, stay here
-Meta+Shift+Alt+9                         _launch: Window to desktop 9, stay here
+Alt+F4, Meta+W, Meta+Q			Window Close: Close active window (Alt+F4 kept)
+Meta+F			Window Fullscreen: Fullscreen
+Meta+Alt+F			Window Maximize Horizontal: Full width
+Meta+Ctrl+F			Window Maximize: Tiled fullscreen approximation
+Meta+Alt+Space			Overview: Overview (Omarchy app grid)
+Meta+G			Grid View: Grid View kept; window grouping is skipped
+Meta+Ctrl+Shift+Left			Window One Screen to the Left: Move window to the screen on the left
+Meta+Ctrl+Shift+Right			Window One Screen to the Right: Move window to the screen on the right
+Meta+Ctrl+Shift+Up			Window One Screen Up: Move window to the screen above
+Meta+Ctrl+Shift+Down			Window One Screen Down: Move window to the screen below
+Meta+1			Switch to Desktop 1: Desktop 1
+Meta+2			Switch to Desktop 2: Desktop 2
+Meta+3			Switch to Desktop 3: Desktop 3
+Meta+4			Switch to Desktop 4: Desktop 4
+Meta+5			Switch to Desktop 5: Desktop 5
+Meta+6			Switch to Desktop 6: Desktop 6
+Meta+7			Switch to Desktop 7: Desktop 7
+Meta+8			Switch to Desktop 8: Desktop 8
+Meta+9			Switch to Desktop 9: Desktop 9
+Meta+Tab			Switch to Next Desktop: Next desktop
+Meta+Shift+Tab			Switch to Previous Desktop: Previous desktop
+Ctrl+Alt+Tab			Switch to Next Screen: Next screen
+Ctrl+Alt+Shift+Tab			Switch to Previous Screen: Previous screen
+Alt+Tab			Walk Through Windows: Window switcher
+Alt+Shift+Tab			Walk Through Windows (Reverse): Window switcher reverse
+Meta+Alt+Tab			Walk Through Windows of Current Application: Same-application switcher
+Meta+Alt+Shift+Tab			Walk Through Windows of Current Application (Reverse): Same-application switcher reverse
+Meta+Ctrl+Z			view_zoom_in: Zoom in
+Meta+Ctrl+Alt+Z			view_actual_size: Zoom reset
+Meta+Ctrl+V			show-on-mouse-pos: Clipboard at mouse
+Meta+Shift+,			clear history: Clear notification history
+Meta+Ctrl+Alt+,			toggle do not disturb: Do Not Disturb
+Meta+Ctrl+L			Lock Session: Lock screen
+Meta+Escape, Ctrl+Alt+Del			Log Out: Logout screen (sleep/reboot/shutdown)
+Alt+Monitor Brightness Up			Increase Screen Brightness Small: +1% screen brightness
+Alt+Monitor Brightness Down			Decrease Screen Brightness Small: -1% screen brightness
+Keyboard Brightness Up			Increase Keyboard Brightness: Keyboard backlight up
+Keyboard Brightness Down			Decrease Keyboard Brightness: Keyboard backlight down
+Keyboard Light On/Off			Toggle Keyboard Backlight: Keyboard backlight toggle
+Power Off			PowerOff: Power menu key
+Volume Up			increase_volume: Volume up
+Volume Down			decrease_volume: Volume down
+Volume Mute			mute: Mute
+Microphone Mute			mic_mute: Mute microphone
+Alt+Volume Up			increase_volume_small: +1% volume
+Alt+Volume Down			decrease_volume_small: -1% volume
+Media Next, Alt+Media Play			nextmedia: Next track
+Media Previous, Alt+Shift+Media Play			previousmedia: Previous track
+Media Play			playpausemedia: Play/pause
+Media Stop			stopmedia: Stop
+Ctrl+Alt+T			_launch: Keep Ctrl+Alt+T; remove Meta+Ctrl+C
+Meta+Left			KrohnkiteFocusLeft: Focus left
+Meta+Right			KrohnkiteFocusRight: Focus right
+Meta+Down			KrohnkiteFocusDown: Focus down
+Meta+Up			KrohnkiteFocusUp: Focus up
+Meta+Shift+Down			KrohnkiteShiftDown: Swap down
+Meta+Shift+Up			KrohnkiteShiftUp: Swap up
+Meta+Shift+Left			KrohnkiteShiftLeft: Swap left
+Meta+Shift+Right			KrohnkiteShiftRight: Swap right
+Meta+Shift+Equal			KrohnkiteGrowHeight: Grow height
+Meta+Shift+Minus			KrohnkiteShrinkHeight: Shrink height
+Meta+Equal			KrohnkiteShrinkWidth: Shrink width
+Meta+Minus			KrohnkitegrowWidth: Grow width
+Meta+T			KrohnkiteToggleFloat: Toggle floating
+Meta+L			KrohnkiteNextLayout: Next layout (Spiral -> Tile -> Floating)
+Meta+Alt+L			KrohnkitePreviousLayout: Previous layout
+Meta+J			KrohnkiteRotate: Rotate layout
+Meta+Return			_launch: Konsole
+Meta+Alt+Return			_launch: Konsole + tmux (Work session)
+Meta+C			_launch: Copy (terminal-aware)
+Meta+X			_launch: Cut (terminal-aware)
+Meta+V			_launch: Paste (terminal-aware)
+Alt+Shift+L			_launch: Copy current browser URL
+Meta+Shift+Return, Meta+Shift+B			_launch: Default browser
+Meta+Shift+Alt+B			_launch: Default browser, private window
+Meta+Shift+F			_launch: Dolphin
+Meta+Shift+/			_launch: KeePassXC
+Meta+Shift+Q, Calculator			_launch: Qalculate
+Meta+Shift+T			_launch: btop in Konsole
+Meta+Shift+N			_launch: Neovim in Konsole
+Meta+Shift+C			_launch: Calendar (kclock) or fallback
+Meta+Shift+E			_launch: Thunderbird
+Meta+Shift+Alt+E			_launch: Thunderbird compose
+Meta+Shift+A			_launch: ChatGPT
+Meta+Shift+Alt+A			_launch: Grok
+Meta+Shift+G			_launch: Signal
+Meta+Shift+P			_launch: Google Photos
+Meta+Shift+S			_launch: Google Maps
+Meta+Shift+Alt+G			_launch: WhatsApp Web
+Meta+Shift+Ctrl+G			_launch: Google Messages
+Meta+Shift+O			_launch: Obsidian
+Meta+Shift+W			_launch: Kate
+Meta+Shift+X			_launch: X
+Meta+Shift+Alt+X			_launch: X — new post
+Meta+Shift+Y			_launch: YouTube
+Meta+Shift+D			_launch: lazydocker in Konsole
+Print, Meta+Ctrl+Alt+C			_launch: Screenshot region to clipboard
+Alt+Print			_launch: Spectacle screen recording
+Meta+Print			_launch: Color picker
+Meta+Ctrl+Print			_launch: OCR region to clipboard
+Meta+Ctrl+A			_launch: Audio settings
+Meta+Ctrl+B			_launch: Bluetooth settings
+Meta+Ctrl+N			_launch: Network settings
+Meta+Ctrl+D			_launch: Display settings
+Meta+Ctrl+P			_launch: Power settings
+Meta+Ctrl+Alt+D			_launch: Calendar / clock
+Meta+Ctrl+Alt+E			_launch: World clock
+Meta+Ctrl+S			_launch: LocalSend
+Meta+Ctrl+C			_launch: Spectacle GUI
+Meta+Space			_launch: KRunner
+Meta+Ctrl+H			_launch: KInfoCenter
+Meta+Ctrl+E			_launch: Emoji picker
+Meta+Ctrl+.			_launch: HandBrake
+Meta+K			_launch: Keyboard shortcuts
+Meta+Ctrl+T, Meta+Ctrl+Shift+Space			_launch: Global theme
+Meta+Ctrl+W, Meta+Ctrl+Space			_launch: Wallpaper
+Meta+`			_launch: Yakuake
+Meta+Ctrl+Delete			_launch: Internal display on/off
+Meta+Ctrl+Alt+Delete			_launch: Mirror displays
+Shift+Volume Mute			_launch: Next audio output
+Meta+Ctrl+Alt+T			_launch: Time notification
+Meta+Ctrl+Alt+B			_launch: Battery notification
+Meta+Ctrl+Alt+W			_launch: Weather notification
+Meta+/			_launch: Next display scale
+Meta+Alt+/			_launch: Previous display scale
+Meta+Ctrl+R			_launch: New KAlarm reminder
+Meta+Ctrl+Alt+R			_launch: KAlarm list
+Meta+Shift+Alt+M			_launch: VLC
+Alt+Shift+D			_launch: Download clipboard URL with yt-dlp
+Meta+Ctrl+X, F9			_launch: Dictation toggle (Voxtype)
+Meta+Ctrl+I			_launch: Screen locking settings
+Meta+Shift+1			_launch: Window to desktop 1 and follow
+Meta+Shift+2			_launch: Window to desktop 2 and follow
+Meta+Shift+3			_launch: Window to desktop 3 and follow
+Meta+Shift+4			_launch: Window to desktop 4 and follow
+Meta+Shift+5			_launch: Window to desktop 5 and follow
+Meta+Shift+6			_launch: Window to desktop 6 and follow
+Meta+Shift+7			_launch: Window to desktop 7 and follow
+Meta+Shift+8			_launch: Window to desktop 8 and follow
+Meta+Shift+9			_launch: Window to desktop 9 and follow
+Meta+Shift+Alt+1			_launch: Window to desktop 1, stay here
+Meta+Shift+Alt+2			_launch: Window to desktop 2, stay here
+Meta+Shift+Alt+3			_launch: Window to desktop 3, stay here
+Meta+Shift+Alt+4			_launch: Window to desktop 4, stay here
+Meta+Shift+Alt+5			_launch: Window to desktop 5, stay here
+Meta+Shift+Alt+6			_launch: Window to desktop 6, stay here
+Meta+Shift+Alt+7			_launch: Window to desktop 7, stay here
+Meta+Shift+Alt+8			_launch: Window to desktop 8, stay here
+Meta+Shift+Alt+9			_launch: Window to desktop 9, stay here

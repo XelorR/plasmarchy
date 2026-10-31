@@ -32,7 +32,7 @@ def rows():
             purpose = action
             if note:
                 purpose = f"{action}: {note}"
-            lines.append(f"{shortcut:<40} {purpose}")
+            lines.append(f"{shortcut}\t\t\t{purpose}")
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote {OUT}: {sum(1 for x in lines if x.strip())} lines")
