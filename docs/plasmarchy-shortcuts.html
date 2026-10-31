@@ -1,7 +1,8 @@
 <!DOCTYPE html><html><head><meta charset='utf-8'><style>
 body { font-family: sans-serif; font-size: 10pt; margin: 12px; }
 h1 { font-size: 16pt; margin: 0 0 6px 0; }
-p { margin: 0 0 10px 0; color: #454545; }
+h2 { font-size: 12pt; margin: 12px 0 4px 0; }
+p { margin: 0 0 8px 0; color: #454545; }
 table { border-collapse: collapse; table-layout: fixed; width: 100%; }
 th, td { border-bottom: 1px solid #d8d8d8; padding: 4px 8px 4px 0; vertical-align: top; }
 th.shortcut, td.shortcut { font-family: monospace; width: 35%; }
@@ -11,33 +12,18 @@ a { color: #2070d0; }
 </style></head><body>
 <h1>Plasmarchy keyboard shortcuts</h1>
 <p>Working shortcuts from the KGlobalAccel map. Reference: <a href="https://omarchy.org/manual/hotkeys/">Omarchy hotkeys</a>.</p>
+<h2>Windows, desktops and session</h2>
 <table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
-<tr><td class='shortcut'><strong>Volume Down</strong></td><td>decrease_volume: Volume down (kmix)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Volume Down</strong></td><td>decrease_volume_small: -1% volume (kmix)</td></tr>
-<tr><td class='shortcut'><strong>Volume Up</strong></td><td>increase_volume: Volume up (kmix)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Volume Up</strong></td><td>increase_volume_small: +1% volume (kmix)</td></tr>
-<tr><td class='shortcut'><strong>Microphone Mute</strong></td><td>mic_mute: Mute microphone (kmix)</td></tr>
-<tr><td class='shortcut'><strong>Volume Mute</strong></td><td>mute: Mute (kmix)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+L</strong></td><td>Lock Session: Lock screen (ksmserver)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Escape, Ctrl+Alt+Del</strong></td><td>Log Out: Logout screen (sleep/reboot/shutdown) (ksmserver)</td></tr>
-<tr><td class='shortcut'><strong>Meta+G</strong></td><td>Grid View: Grid View kept; window grouping is skipped (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Down</strong></td><td>KrohnkiteFocusDown: Focus down (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Left</strong></td><td>KrohnkiteFocusLeft: Focus left (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Right</strong></td><td>KrohnkiteFocusRight: Focus right (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Up</strong></td><td>KrohnkiteFocusUp: Focus up (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Equal</strong></td><td>KrohnkiteGrowHeight: Grow height (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+L</strong></td><td>KrohnkiteNextLayout: Next layout (Spiral -&gt; Tile -&gt; Floating) (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+L</strong></td><td>KrohnkitePreviousLayout: Previous layout (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+J</strong></td><td>KrohnkiteRotate: Rotate layout (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Down</strong></td><td>KrohnkiteShiftDown: Swap down (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Left</strong></td><td>KrohnkiteShiftLeft: Swap left (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Right</strong></td><td>KrohnkiteShiftRight: Swap right (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Up</strong></td><td>KrohnkiteShiftUp: Swap up (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Minus</strong></td><td>KrohnkiteShrinkHeight: Shrink height (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Equal</strong></td><td>KrohnkiteShrinkWidth: Shrink width (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+T</strong></td><td>KrohnkiteToggleFloat: Toggle floating (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Minus</strong></td><td>KrohnkitegrowWidth: Grow width (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Alt+F4, Meta+W, Meta+Q</strong></td><td>Window Close: Close active window (Alt+F4 kept) (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+F</strong></td><td>Window Fullscreen: Fullscreen (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+F</strong></td><td>Window Maximize Horizontal: Full width (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+F</strong></td><td>Window Maximize: Tiled fullscreen approximation (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Alt+Space</strong></td><td>Overview: Overview (Omarchy app grid) (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+G</strong></td><td>Grid View: Grid View kept; window grouping is skipped (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Left</strong></td><td>Window One Screen to the Left: Move window to the screen on the left (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Right</strong></td><td>Window One Screen to the Right: Move window to the screen on the right (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Up</strong></td><td>Window One Screen Up: Move window to the screen above (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Down</strong></td><td>Window One Screen Down: Move window to the screen below (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+1</strong></td><td>Switch to Desktop 1: Desktop 1 (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+2</strong></td><td>Switch to Desktop 2: Desktop 2 (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+3</strong></td><td>Switch to Desktop 3: Desktop 3 (kwin)</td></tr>
@@ -48,47 +34,138 @@ a { color: #2070d0; }
 <tr><td class='shortcut'><strong>Meta+8</strong></td><td>Switch to Desktop 8: Desktop 8 (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+9</strong></td><td>Switch to Desktop 9: Desktop 9 (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Tab</strong></td><td>Switch to Next Desktop: Next desktop (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Ctrl+Alt+Tab</strong></td><td>Switch to Next Screen: Next screen (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+Tab</strong></td><td>Switch to Previous Desktop: Previous desktop (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Ctrl+Alt+Tab</strong></td><td>Switch to Next Screen: Next screen (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Ctrl+Alt+Shift+Tab</strong></td><td>Switch to Previous Screen: Previous screen (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Shift+Tab</strong></td><td>Walk Through Windows (Reverse): Window switcher reverse (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+Shift+Tab</strong></td><td>Walk Through Windows of Current Application (Reverse): Same-application switcher reverse (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+Tab</strong></td><td>Walk Through Windows of Current Application: Same-application switcher (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Alt+Tab</strong></td><td>Walk Through Windows: Window switcher (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Alt+F4, Meta+W, Meta+Q</strong></td><td>Window Close: Close active window (Alt+F4 kept) (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+F</strong></td><td>Window Fullscreen: Fullscreen (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+F</strong></td><td>Window Maximize Horizontal: Full width (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+F</strong></td><td>Window Maximize: Tiled fullscreen approximation (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Down</strong></td><td>Window One Screen Down: Move window to the screen below (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Up</strong></td><td>Window One Screen Up: Move window to the screen above (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Left</strong></td><td>Window One Screen to the Left: Move window to the screen on the left (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Right</strong></td><td>Window One Screen to the Right: Move window to the screen on the right (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+Z</strong></td><td>view_actual_size: Zoom reset (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Alt+Shift+Tab</strong></td><td>Walk Through Windows (Reverse): Window switcher reverse (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+Tab</strong></td><td>Walk Through Windows of Current Application: Same-application switcher (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+Shift+Tab</strong></td><td>Walk Through Windows of Current Application (Reverse): Same-application switcher reverse (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+Z</strong></td><td>view_zoom_in: Zoom in (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Media Next, Alt+Media Play</strong></td><td>nextmedia: Next track (mediacontrol)</td></tr>
-<tr><td class='shortcut'><strong>Media Play</strong></td><td>playpausemedia: Play/pause (mediacontrol)</td></tr>
-<tr><td class='shortcut'><strong>Media Previous, Alt+Shift+Media Play</strong></td><td>previousmedia: Previous track (mediacontrol)</td></tr>
-<tr><td class='shortcut'><strong>Media Stop</strong></td><td>stopmedia: Stop (mediacontrol)</td></tr>
-<tr><td class='shortcut'><strong>Ctrl+Alt+T</strong></td><td>_launch: Keep Ctrl+Alt+T; remove Meta+Ctrl+C (org.kde.konsole.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Keyboard Brightness Down</strong></td><td>Decrease Keyboard Brightness: Keyboard backlight down (org_kde_powerdevil)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+Z</strong></td><td>view_actual_size: Zoom reset (kwin)</td></tr>
+</tbody></table>
+<h2>Plasma shell and clipboard</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Meta+Ctrl+V</strong></td><td>show-on-mouse-pos: Clipboard at mouse (plasmashell)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+,</strong></td><td>clear history: Clear notification history (plasmashell)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+,</strong></td><td>toggle do not disturb: Do Not Disturb (plasmashell)</td></tr>
+</tbody></table>
+<h2>Session control</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Meta+Ctrl+L</strong></td><td>Lock Session: Lock screen (ksmserver)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Escape, Ctrl+Alt+Del</strong></td><td>Log Out: Logout screen (sleep/reboot/shutdown) (ksmserver)</td></tr>
+</tbody></table>
+<h2>Power and displays</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Alt+Monitor Brightness Up</strong></td><td>Increase Screen Brightness Small: +1% screen brightness (org_kde_powerdevil)</td></tr>
 <tr><td class='shortcut'><strong>Alt+Monitor Brightness Down</strong></td><td>Decrease Screen Brightness Small: -1% screen brightness (org_kde_powerdevil)</td></tr>
 <tr><td class='shortcut'><strong>Keyboard Brightness Up</strong></td><td>Increase Keyboard Brightness: Keyboard backlight up (org_kde_powerdevil)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Monitor Brightness Up</strong></td><td>Increase Screen Brightness Small: +1% screen brightness (org_kde_powerdevil)</td></tr>
-<tr><td class='shortcut'><strong>Power Off</strong></td><td>PowerOff: Power menu key (org_kde_powerdevil)</td></tr>
+<tr><td class='shortcut'><strong>Keyboard Brightness Down</strong></td><td>Decrease Keyboard Brightness: Keyboard backlight down (org_kde_powerdevil)</td></tr>
 <tr><td class='shortcut'><strong>Keyboard Light On/Off</strong></td><td>Toggle Keyboard Backlight: Keyboard backlight toggle (org_kde_powerdevil)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+A</strong></td><td>_launch: Audio settings (plasmarchy-audio-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Shift+Volume Mute</strong></td><td>_launch: Next audio output (plasmarchy-audio-sink-next.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+B</strong></td><td>_launch: Bluetooth settings (plasmarchy-bluetooth-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+B</strong></td><td>_launch: Default browser, private window (plasmarchy-browser-private.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Return, Meta+Shift+B</strong></td><td>_launch: Default browser (plasmarchy-browser.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+T</strong></td><td>_launch: btop in Konsole (plasmarchy-btop.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+D</strong></td><td>_launch: Calendar / clock (plasmarchy-calendar-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+C</strong></td><td>_launch: Calendar (kclock) or fallback (plasmarchy-calendar.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+A</strong></td><td>_launch: ChatGPT (plasmarchy-chatgpt.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Print</strong></td><td>_launch: Color picker (plasmarchy-color-picker.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Shift+L</strong></td><td>_launch: Copy current browser URL (plasmarchy-copy-url.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Power Off</strong></td><td>PowerOff: Power menu key (org_kde_powerdevil)</td></tr>
+</tbody></table>
+<h2>Audio and media</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Volume Up</strong></td><td>increase_volume: Volume up (kmix)</td></tr>
+<tr><td class='shortcut'><strong>Volume Down</strong></td><td>decrease_volume: Volume down (kmix)</td></tr>
+<tr><td class='shortcut'><strong>Volume Mute</strong></td><td>mute: Mute (kmix)</td></tr>
+<tr><td class='shortcut'><strong>Microphone Mute</strong></td><td>mic_mute: Mute microphone (kmix)</td></tr>
+<tr><td class='shortcut'><strong>Alt+Volume Up</strong></td><td>increase_volume_small: +1% volume (kmix)</td></tr>
+<tr><td class='shortcut'><strong>Alt+Volume Down</strong></td><td>decrease_volume_small: -1% volume (kmix)</td></tr>
+<tr><td class='shortcut'><strong>Media Next, Alt+Media Play</strong></td><td>nextmedia: Next track (mediacontrol)</td></tr>
+<tr><td class='shortcut'><strong>Media Previous, Alt+Shift+Media Play</strong></td><td>previousmedia: Previous track (mediacontrol)</td></tr>
+<tr><td class='shortcut'><strong>Media Play</strong></td><td>playpausemedia: Play/pause (mediacontrol)</td></tr>
+<tr><td class='shortcut'><strong>Media Stop</strong></td><td>stopmedia: Stop (mediacontrol)</td></tr>
+</tbody></table>
+<h2>Keyboard layout and cleared defaults</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Ctrl+Alt+T</strong></td><td>_launch: Keep Ctrl+Alt+T; remove Meta+Ctrl+C (org.kde.konsole.desktop)</td></tr>
+</tbody></table>
+<h2>Krohnkite tiling</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Meta+Left</strong></td><td>KrohnkiteFocusLeft: Focus left (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Right</strong></td><td>KrohnkiteFocusRight: Focus right (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Down</strong></td><td>KrohnkiteFocusDown: Focus down (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Up</strong></td><td>KrohnkiteFocusUp: Focus up (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Down</strong></td><td>KrohnkiteShiftDown: Swap down (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Up</strong></td><td>KrohnkiteShiftUp: Swap up (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Left</strong></td><td>KrohnkiteShiftLeft: Swap left (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Right</strong></td><td>KrohnkiteShiftRight: Swap right (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Equal</strong></td><td>KrohnkiteGrowHeight: Grow height (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Minus</strong></td><td>KrohnkiteShrinkHeight: Shrink height (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Equal</strong></td><td>KrohnkiteShrinkWidth: Shrink width (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Minus</strong></td><td>KrohnkitegrowWidth: Grow width (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+T</strong></td><td>KrohnkiteToggleFloat: Toggle floating (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+L</strong></td><td>KrohnkiteNextLayout: Next layout (Spiral -&gt; Tile -&gt; Floating) (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+L</strong></td><td>KrohnkitePreviousLayout: Previous layout (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+J</strong></td><td>KrohnkiteRotate: Rotate layout (kwin)</td></tr>
+</tbody></table>
+<h2>Applications and commands</h2>
+<table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
+<tr><td class='shortcut'><strong>Meta+Return</strong></td><td>_launch: Konsole (plasmarchy-terminal.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+Return</strong></td><td>_launch: Konsole + tmux (Work session) (plasmarchy-terminal-tmux.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+C</strong></td><td>_launch: Copy (terminal-aware) (plasmarchy-copy.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+X</strong></td><td>_launch: Cut (terminal-aware) (plasmarchy-cut.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+V</strong></td><td>_launch: Paste (terminal-aware) (plasmarchy-paste.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Alt+Shift+L</strong></td><td>_launch: Copy current browser URL (plasmarchy-copy-url.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Return, Meta+Shift+B</strong></td><td>_launch: Default browser (plasmarchy-browser.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+B</strong></td><td>_launch: Default browser, private window (plasmarchy-browser-private.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+F</strong></td><td>_launch: Dolphin (plasmarchy-files.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+/</strong></td><td>_launch: KeePassXC (plasmarchy-keepassxc.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Q, Calculator</strong></td><td>_launch: Qalculate (plasmarchy-qalculate.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+T</strong></td><td>_launch: btop in Konsole (plasmarchy-btop.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+N</strong></td><td>_launch: Neovim in Konsole (plasmarchy-nvim.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+C</strong></td><td>_launch: Calendar (kclock) or fallback (plasmarchy-calendar.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+E</strong></td><td>_launch: Thunderbird (plasmarchy-thunderbird.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+E</strong></td><td>_launch: Thunderbird compose (plasmarchy-thunderbird-compose.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+A</strong></td><td>_launch: ChatGPT (plasmarchy-chatgpt.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+A</strong></td><td>_launch: Grok (plasmarchy-grok.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+G</strong></td><td>_launch: Signal (plasmarchy-signal.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+P</strong></td><td>_launch: Google Photos (plasmarchy-photos.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+S</strong></td><td>_launch: Google Maps (plasmarchy-maps.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+G</strong></td><td>_launch: WhatsApp Web (plasmarchy-whatsapp.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Ctrl+G</strong></td><td>_launch: Google Messages (plasmarchy-messages.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+O</strong></td><td>_launch: Obsidian (plasmarchy-obsidian.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+W</strong></td><td>_launch: Kate (plasmarchy-kate.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+X</strong></td><td>_launch: X (plasmarchy-x.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+X</strong></td><td>_launch: X — new post (plasmarchy-x-compose.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Y</strong></td><td>_launch: YouTube (plasmarchy-youtube.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+D</strong></td><td>_launch: lazydocker in Konsole (plasmarchy-lazydocker.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Print, Meta+Ctrl+Alt+C</strong></td><td>_launch: Screenshot region to clipboard (plasmarchy-screenshot-region.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Alt+Print</strong></td><td>_launch: Spectacle screen recording (plasmarchy-screenrecord.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Print</strong></td><td>_launch: Color picker (plasmarchy-color-picker.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Print</strong></td><td>_launch: OCR region to clipboard (plasmarchy-ocr.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+A</strong></td><td>_launch: Audio settings (plasmarchy-audio-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+B</strong></td><td>_launch: Bluetooth settings (plasmarchy-bluetooth-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+N</strong></td><td>_launch: Network settings (plasmarchy-network-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+D</strong></td><td>_launch: Display settings (plasmarchy-display-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+P</strong></td><td>_launch: Power settings (plasmarchy-power-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+D</strong></td><td>_launch: Calendar / clock (plasmarchy-calendar-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+E</strong></td><td>_launch: World clock (plasmarchy-world-clock.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+S</strong></td><td>_launch: LocalSend (plasmarchy-localsend.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+C</strong></td><td>_launch: Spectacle GUI (plasmarchy-spectacle.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Space</strong></td><td>_launch: KRunner (plasmarchy-krunner.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+H</strong></td><td>_launch: KInfoCenter (plasmarchy-kinfocenter.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+E</strong></td><td>_launch: Emoji picker (plasmarchy-emojier.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+.</strong></td><td>_launch: HandBrake (plasmarchy-handbrake.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+K</strong></td><td>_launch: Keyboard shortcuts (plasmarchy-shortcuts-settings.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+T, Meta+Ctrl+Shift+Space</strong></td><td>_launch: Global theme (plasmarchy-theme-picker.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+W, Meta+Ctrl+Space</strong></td><td>_launch: Wallpaper (plasmarchy-wallpaper-picker.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+`</strong></td><td>_launch: Yakuake (plasmarchy-yakuake-toggle.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Delete</strong></td><td>_launch: Internal display on/off (plasmarchy-display-toggle.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+Delete</strong></td><td>_launch: Mirror displays (plasmarchy-display-mirror.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Shift+Volume Mute</strong></td><td>_launch: Next audio output (plasmarchy-audio-sink-next.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+T</strong></td><td>_launch: Time notification (plasmarchy-notify-time.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+B</strong></td><td>_launch: Battery notification (plasmarchy-notify-battery.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+W</strong></td><td>_launch: Weather notification (plasmarchy-weather.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+/</strong></td><td>_launch: Next display scale (plasmarchy-scale-next.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+/</strong></td><td>_launch: Previous display scale (plasmarchy-scale-prev.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+R</strong></td><td>_launch: New KAlarm reminder (plasmarchy-reminders-new.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+R</strong></td><td>_launch: KAlarm list (plasmarchy-reminders-list.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+M</strong></td><td>_launch: VLC (plasmarchy-vlc.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Alt+Shift+D</strong></td><td>_launch: Download clipboard URL with yt-dlp (plasmarchy-yt-dlp.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+X, F9</strong></td><td>_launch: Dictation toggle (Voxtype) (plasmarchy-dictation.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+I</strong></td><td>_launch: Screen locking settings (plasmarchy-screenlocker-panel.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+1</strong></td><td>_launch: Window to desktop 1 and follow (plasmarchy-desktop-move-follow-1.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+2</strong></td><td>_launch: Window to desktop 2 and follow (plasmarchy-desktop-move-follow-2.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+3</strong></td><td>_launch: Window to desktop 3 and follow (plasmarchy-desktop-move-follow-3.desktop)</td></tr>
@@ -107,58 +184,5 @@ a { color: #2070d0; }
 <tr><td class='shortcut'><strong>Meta+Shift+Alt+7</strong></td><td>_launch: Window to desktop 7, stay here (plasmarchy-desktop-move-silent-7.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+Alt+8</strong></td><td>_launch: Window to desktop 8, stay here (plasmarchy-desktop-move-silent-8.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+Alt+9</strong></td><td>_launch: Window to desktop 9, stay here (plasmarchy-desktop-move-silent-9.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+X, F9</strong></td><td>_launch: Dictation toggle (Voxtype) (plasmarchy-dictation.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+Delete</strong></td><td>_launch: Mirror displays (plasmarchy-display-mirror.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+D</strong></td><td>_launch: Display settings (plasmarchy-display-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Delete</strong></td><td>_launch: Internal display on/off (plasmarchy-display-toggle.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+E</strong></td><td>_launch: Emoji picker (plasmarchy-emojier.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+F</strong></td><td>_launch: Dolphin (plasmarchy-files.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+A</strong></td><td>_launch: Grok (plasmarchy-grok.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+.</strong></td><td>_launch: HandBrake (plasmarchy-handbrake.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+W</strong></td><td>_launch: Kate (plasmarchy-kate.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+/</strong></td><td>_launch: KeePassXC (plasmarchy-keepassxc.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+H</strong></td><td>_launch: KInfoCenter (plasmarchy-kinfocenter.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Space</strong></td><td>_launch: KRunner (plasmarchy-krunner.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+D</strong></td><td>_launch: lazydocker in Konsole (plasmarchy-lazydocker.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+S</strong></td><td>_launch: LocalSend (plasmarchy-localsend.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+S</strong></td><td>_launch: Google Maps (plasmarchy-maps.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Ctrl+G</strong></td><td>_launch: Google Messages (plasmarchy-messages.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+N</strong></td><td>_launch: Network settings (plasmarchy-network-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+B</strong></td><td>_launch: Battery notification (plasmarchy-notify-battery.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+T</strong></td><td>_launch: Time notification (plasmarchy-notify-time.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+N</strong></td><td>_launch: Neovim in Konsole (plasmarchy-nvim.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+O</strong></td><td>_launch: Obsidian (plasmarchy-obsidian.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Print</strong></td><td>_launch: OCR region to clipboard (plasmarchy-ocr.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+V</strong></td><td>_launch: Paste (terminal-aware) (plasmarchy-paste.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+P</strong></td><td>_launch: Google Photos (plasmarchy-photos.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+P</strong></td><td>_launch: Power settings (plasmarchy-power-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Q, Calculator</strong></td><td>_launch: Qalculate (plasmarchy-qalculate.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+R</strong></td><td>_launch: KAlarm list (plasmarchy-reminders-list.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+R</strong></td><td>_launch: New KAlarm reminder (plasmarchy-reminders-new.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+/</strong></td><td>_launch: Next display scale (plasmarchy-scale-next.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+/</strong></td><td>_launch: Previous display scale (plasmarchy-scale-prev.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+I</strong></td><td>_launch: Screen locking settings (plasmarchy-screenlocker-panel.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Print</strong></td><td>_launch: Spectacle screen recording (plasmarchy-screenrecord.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Print, Meta+Ctrl+Alt+C</strong></td><td>_launch: Screenshot region to clipboard (plasmarchy-screenshot-region.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+K</strong></td><td>_launch: Keyboard shortcuts (plasmarchy-shortcuts-settings.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+G</strong></td><td>_launch: Signal (plasmarchy-signal.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+C</strong></td><td>_launch: Spectacle GUI (plasmarchy-spectacle.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+Return</strong></td><td>_launch: Konsole + tmux (Work session) (plasmarchy-terminal-tmux.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Return</strong></td><td>_launch: Konsole (plasmarchy-terminal.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+T, Meta+Ctrl+Shift+Space</strong></td><td>_launch: Global theme (plasmarchy-theme-picker.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+E</strong></td><td>_launch: Thunderbird compose (plasmarchy-thunderbird-compose.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+E</strong></td><td>_launch: Thunderbird (plasmarchy-thunderbird.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+M</strong></td><td>_launch: VLC (plasmarchy-vlc.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+W, Meta+Ctrl+Space</strong></td><td>_launch: Wallpaper (plasmarchy-wallpaper-picker.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+W</strong></td><td>_launch: Weather notification (plasmarchy-weather.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+G</strong></td><td>_launch: WhatsApp Web (plasmarchy-whatsapp.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+E</strong></td><td>_launch: World clock (plasmarchy-world-clock.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+X</strong></td><td>_launch: X — new post (plasmarchy-x-compose.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+X</strong></td><td>_launch: X (plasmarchy-x.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+`</strong></td><td>_launch: Yakuake (plasmarchy-yakuake-toggle.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Y</strong></td><td>_launch: YouTube (plasmarchy-youtube.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Alt+Shift+D</strong></td><td>_launch: Download clipboard URL with yt-dlp (plasmarchy-yt-dlp.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+,</strong></td><td>clear history: Clear notification history (plasmashell)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+V</strong></td><td>show-on-mouse-pos: Clipboard at mouse (plasmashell)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+Alt+,</strong></td><td>toggle do not disturb: Do Not Disturb (plasmashell)</td></tr>
-</tbody></table></body></html>
+</tbody></table>
+</body></html>
