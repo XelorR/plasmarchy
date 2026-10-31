@@ -23,6 +23,7 @@
 #   --skip-deploy         Do not run deploy.sh
 #   --skip-software       Alias for --packages none
 #   --no-backup           Do not create a pre-install snapshot
+#   --reset-plasma        Remove core Plasma configs so KDE regenerates defaults on next login
 #   -h, --help            Show this help
 #
 # The script must run as the desktop user.  Subcommands pass their
@@ -46,6 +47,7 @@ SKIP_ROOT=0
 SKIP_CONFIG=0
 SKIP_DEPLOY=0
 BACKUP=1
+RESET_PLASMA=0
 PRESERVE_DOCK_LAUNCHERS=1
 EXTRACTED_DOCK_LAUNCHERS=""
 OVERWRITE_PANEL_LAYOUT=0
@@ -104,6 +106,7 @@ while (($#)); do
         --overwrite-panel-layout) PRESERVE_DOCK_LAUNCHERS=0; shift ;;
         --skip-deploy) SKIP_DEPLOY=1; shift ;;
         --no-backup) BACKUP=0; shift ;;
+        --reset-plasma) RESET_PLASMA=1; shift ;;
         -h|--help) usage; exit 0 ;;
         *) die "unknown option: $1" ;;
     esac
@@ -113,6 +116,29 @@ case "$PACKAGES" in
     required|all|none) ;;
     *) die "invalid --packages value: $PACKAGES (use required, all or none)" ;;
 esac
+
+if ((RESET_PLASMA)); then
+    if ((!ASSUME_YES && !DRY_RUN)); then
+        [[ -t 0 ]] || die "no terminal for confirmation; rerun with --yes"
+        read -r -p "Reset Plasma settings to defaults? [y/N] " reply
+        [[ "$reply" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
+    fi
+    if ((BACKUP && !DRY_RUN)); then
+        log "Creating a safety backup before resetting"
+        "$ROOT/scripts/create-backup.sh" --tag pre-reset
+    elif ((DRY_RUN)); then
+        log "Would create a safety backup before resetting"
+    fi
+    if ((DRY_RUN)); then
+        log "Would remove core Plasma settings; KDE will regenerate defaults on the next login"
+        exit 0
+    fi
+    log "Removing core Plasma settings"
+    rm -f         "$CONFIG_HOME/kdeglobals"         "$CONFIG_HOME/kwinrc"         "$CONFIG_HOME/kglobalshortcutsrc"         "$CONFIG_HOME/kxkbrc"         "$CONFIG_HOME/plasma-localerc"         "$CONFIG_HOME/plasmarc"         "$CONFIG_HOME/powerdevilrc"         "$CONFIG_HOME/powermanagementprofilesrc"         "$CONFIG_HOME/kcminputrc"         "$CONFIG_HOME/krunnerrc"         "$CONFIG_HOME/ksplashrc"         "$CONFIG_HOME/plasma-org.kde.plasma.desktop-appletsrc"         "$CONFIG_HOME/konsolerc"
+    rm -rf "$CONFIG_HOME/plasma" "$HOME/.cache/plasmashell" "$HOME/.cache/ksycoca*" 2>/dev/null || true
+    echo "Plasma defaults will be regenerated after you log out and log in again."
+    exit 0
+fi
 
 [[ $EUID -ne 0 ]] || die "run this as your desktop user, not as root"
 [[ -f "$ROOT/scripts/root-setup.sh" ]] || die "root-setup.sh is missing"

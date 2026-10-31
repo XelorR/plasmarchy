@@ -18,6 +18,7 @@
 #   --skip-focus          Do not configure focus-follows-mouse / pointer follow
 #   --skip-shortcuts      Do not change any shortcuts
 #   --skip-tmux           Do not install the Omarchy tmux configuration
+#   --skip-konsole          Do not install the Plasmarchy Konsole profile
 #   --install-software    Install distro, AUR and third-party applications too
 #   --with-dictation      Install Voxtype dictation (AUR + model download)
 #   --dictation-languages  Comma-separated list (auto-detected by default)
@@ -51,6 +52,7 @@ SKIP_THEME=0
 SKIP_FOCUS=0
 SKIP_SHORTCUTS=0
 SKIP_TMUX=0
+SKIP_KONSOLE=0
 WITH_DICTATION=0
 FORCE=0
 INSTALL_SOFTWARE=0
@@ -108,6 +110,7 @@ while (($#)); do
         --skip-focus) SKIP_FOCUS=1; shift ;;
         --skip-shortcuts) SKIP_SHORTCUTS=1; shift ;;
         --skip-tmux) SKIP_TMUX=1; shift ;;
+        --skip-konsole) SKIP_KONSOLE=1; shift ;;
         --with-dictation)
             WITH_DICTATION=1
             if [[ $# -ge 2 && "$2" != -* ]]; then
@@ -743,6 +746,23 @@ configure_ydotool() {
     fi
 }
 
+install_konsole_config() {
+    if ((SKIP_KONSOLE)); then
+        log "Skipping Konsole configuration"
+        return
+    fi
+    if ((DRY_RUN)); then
+        log "Would install the Plasmarchy Konsole profile"
+        return
+    fi
+    if ! command -v konsole >/dev/null 2>&1; then
+        log "Konsole is not installed; skipping Konsole defaults"
+        return
+    fi
+    log "Installing Konsole defaults"
+    "$ROOT/scripts/install-konsole.sh" || warn "Konsole profile installation failed"
+}
+
 install_tmux_config() {
     ((SKIP_TMUX)) && { log "Skipping tmux configuration"; return; }
     if ((DRY_RUN)); then
@@ -991,6 +1011,7 @@ install_theme
 install_focus_logger
 write_xkb_layout_option
 install_tmux_config
+install_konsole_config
 install_dictation
 generate_desktops
 

@@ -83,6 +83,7 @@ Common flags:
 | `--check`                 | Preflight only.                                            |
 | `--dry-run`               | Print actions without changing anything.                   |
 | `--no-backup`             | Skip the pre-deploy snapshot.                              |
+| `--reset-plasma`         | Remove core Plasma configs so KDE regenerates defaults.    |
 | `--install-software`      | Install the distro/AUR/third-party applications too.       |
 | `--with-dictation`        | Install and configure Voxtype.                              |
 | `--dictation-languages`   | Language list; auto-detected from the KDE keymap otherwise.|
