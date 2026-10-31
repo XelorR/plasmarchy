@@ -340,6 +340,10 @@ install_runtime_files() {
     install -m 0755 "$ROOT/bin/plasmarchy-cmd" "$RUNTIME/bin/plasmarchy-cmd"
     install -m 0755 "$ROOT/bin/plasmarchy-display.py" "$RUNTIME/bin/plasmarchy-display.py"
     install -m 0755 "$ROOT/bin/plasmarchy-color.py" "$RUNTIME/bin/plasmarchy-color.py"
+    install -d "$RUNTIME/docs"
+    if [[ -f "$ROOT/docs/plasmarchy-shortcuts.txt" ]]; then
+        install -m 0644 "$ROOT/docs/plasmarchy-shortcuts.txt" "$RUNTIME/docs/plasmarchy-shortcuts.txt"
+    fi
     install -m 0755 "$ROOT/bin/plasmarchy-apply-krohnkite" "$RUNTIME/bin/plasmarchy-apply-krohnkite"
     install -m 0644 "$ROOT/manifests/shortcuts.tsv" "$RUNTIME/shortcuts.tsv"
     install -m 0644 "$ROOT/manifests/commands.tsv" "$RUNTIME/commands.tsv"

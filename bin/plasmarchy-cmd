@@ -514,8 +514,50 @@ case "${1:-}" in
         fail "HandBrake is not installed (optional package: handbrake)"
         ;;
     shortcuts-settings)
-        command_exists_or_fail kcmshell6 "kcmshell6"
-        exec kcmshell6 kcm_keys
+        list_file=""
+        pid_file=""
+        view_pid=""
+        screen_dims=""
+        list_file="${SELF_DIR}/../docs/plasmarchy-shortcuts.txt"
+        if [[ ! -f "$list_file" ]]; then
+            list_file="${STATE_DIR}/docs/plasmarchy-shortcuts.txt"
+        fi
+        [[ -f "$list_file" ]] || fail "Plasmarchy shortcut list is not installed"
+        if ! have kdialog; then
+            fail "kdialog is not installed (required to show the shortcut list)"
+        fi
+
+        mkdir -p "$STATE_DIR"
+        pid_file="$STATE_DIR/plasmarchy-shortcuts-viewer.pid"
+        if [[ -s "$pid_file" ]]; then
+            view_pid="$(tr -dc '0-9' <"$pid_file" 2>/dev/null || true)"
+            if [[ -n "$view_pid" ]] && kill -0 "$view_pid" 2>/dev/null; then
+                kill "$view_pid" 2>/dev/null || true
+                rm -f "$pid_file"
+                exit 0
+            fi
+            rm -f "$pid_file"
+        fi
+
+        screen_dims="$(kscreen-doctor --json 2>/dev/null | python3 -c 'import json,sys; d=json.load(sys.stdin); outs=[o for o in d.get("outputs",[]) if o.get("enabled")]; c=next((o for o in outs if o.get("priority")==1), outs[0] if outs else None); m=next((m for m in (c.get("modes",[]) if c else []) if m.get("id")==c.get("currentModeId")), None); sw=int(m["size"]["width"]) if m else 2560; sh=int(m["size"]["height"]) if m else 1440; w=max(700,min(1200,round(sw*0.38))); h=max(600,min(1080,round(sh*0.80))); x=max(0,(sw-w)//2); y=max(0,(sh-h)//2); print(w,h,x,y)' 2>/dev/null || true)"
+        [[ -n "$screen_dims" ]] || screen_dims="960 1080 800 180"
+        read -r w h x y <<<"$screen_dims"
+        : "${w:=960}" "${h:=810}" "${x:=800}" "${y:=315}"
+        if ((w < 700)); then w=700; fi
+        if ((w > 1200)); then w=1200; fi
+        if ((h < 600)); then h=600; fi
+        if ((h > 1200)); then h=1200; fi
+        if ((x < 0)); then x=0; fi
+        if ((y < 0)); then y=0; fi
+
+        # Width is deliberate at about 38 percent of the active screen, which is
+        # slightly above one third as requested; the dialog is tall enough to
+        # show the whole list without excessive scrolling.
+        nohup kdialog --title "Plasmarchy keyboard shortcuts" \
+            --textbox "$list_file" "$w" "$h"             --geometry "${w}x${h}+${x}+${y}" >/dev/null 2>&1 &
+        printf '%s\n' "$!" > "$pid_file"
+        ( wait "$!" 2>/dev/null; rm -f "$pid_file" ) >/dev/null 2>&1 &
+        exit 0
         ;;
     theme-picker)
         command_exists_or_fail kcmshell6 "kcmshell6"
