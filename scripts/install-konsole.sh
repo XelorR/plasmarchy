@@ -20,8 +20,11 @@ if [[ ! -f "$KONSOLE_RC" ]]; then
     install -m 0644 "$ROOT/config/konsole/konsolerc" "$KONSOLE_RC"
 else
     # Keep the user's Konsole UI customizations and simply select Plasmarchy as
-    # the default profile for new windows.
-    kwriteconfig6 --file "$KONSOLE_RC" --group General --key DefaultProfile Plasmarchy >/dev/null 2>&1 || true
+    # the default profile for new windows.  Konsole reads DefaultProfile from
+    # [Desktop Entry]; writing it to [General] is silently ignored.  Remove the
+    # old misplaced key when upgrading an earlier Plasmarchy installation.
+    kwriteconfig6 --file "$KONSOLE_RC" --group "Desktop Entry" --key DefaultProfile Plasmarchy.profile >/dev/null 2>&1 || true
+    kwriteconfig6 --file "$KONSOLE_RC" --group General --key DefaultProfile --delete >/dev/null 2>&1 || true
 fi
 
 echo "Installed Konsole defaults to $KONSOLE_PROFILE"
