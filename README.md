@@ -15,7 +15,7 @@ visual friction and predictable focus behaviour.
 Linux (Arch or CachyOS):
 
 ```bash
-git clone https://github.com/peter/plasmarchy.git
+git clone https://github.com/XeloR/plasmarchy.git
 cd plasmarchy
 ./install.sh --yes
 ```
@@ -55,6 +55,8 @@ configures:
 - Focus follows mouse immediately plus keyboard-driven pointer warp.
 - Clipboard shortcuts that behave logically in both GUI applications and
   Konsole.
+- A Plasmarchy Konsole profile with a hidden scrollbar.
+- Meta+K opens a categorized keyboard-shortcut reference.
 - Right Ctrl as the only keyboard-layout switch.
 - A portable Plasma/KWin configuration snapshot.
 
@@ -96,6 +98,7 @@ Common flags:
 | `--krohnkite-version`  | Download a specific Krohnkite tag; default is latest.       |
 | `--krohnkite-bundled`  | Use the copy shipped in `vendor/` instead of downloading.    |
 | `--skip-tmux`             | Do not install the tmux configuration.                     |
+| `--skip-konsole`          | Do not install the Plasmarchy Konsole profile.             |
 
 Dictation:
 
