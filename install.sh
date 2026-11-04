@@ -13,7 +13,7 @@
 # install options:
 #   --dry-run             Show what would happen, change nothing
 #   --yes, -y             Do not ask for confirmation
-#   --packages MODE       required or all
+#   --packages MODE       required, all or none
 #   --with-dictation      Install and configure Voxtype
 #   --dictation-languages LANGS
 #                         Auto-detected by default
@@ -23,6 +23,8 @@
 #   --skip-deploy         Do not run deploy.sh
 #   --skip-software       Alias for --packages none
 #   --no-backup           Do not create a pre-install snapshot
+#   --overwrite-panel-layout
+#                         Replace the panel layout instead of preserving dock apps
 #   --reset-plasma        Remove core Plasma configs so KDE regenerates defaults on next login
 #   -h, --help            Show this help
 #
@@ -57,7 +59,7 @@ warn() { printf 'warning: %s\n' "$*" >&2; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 
 usage() {
-    sed -n '2,48p' "$0"
+    awk 'NR > 1 && /^#/ { print; next } NR > 1 { exit }' "$0"
 }
 
 COMMAND="install"

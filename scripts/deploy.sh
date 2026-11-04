@@ -163,8 +163,8 @@ if ((RESTORE_BACKUP)); then
         log "Would restore Plasma/KWin snapshot: $RESTORE_SNAPSHOT"
         exit 0
     fi
-    [[ -x "$ROOT/restore-plasma.sh" ]] || die "restore-plasma.sh is missing"
-    exec "$ROOT/restore-plasma.sh" --yes --reload "$RESTORE_SNAPSHOT"
+    [[ -x "$ROOT/scripts/restore-plasma.sh" ]] || die "restore-plasma.sh is missing"
+    exec "$ROOT/scripts/restore-plasma.sh" --yes --reload "$RESTORE_SNAPSHOT"
 fi
 
 
@@ -976,7 +976,7 @@ Next steps:
   5. $([[ $WITH_DICTATION == 1 ]] && echo "Dictation is installed. Test Meta+Ctrl+X or F9 after login." || echo "Dictation is opt-in: rerun ./deploy.sh --with-dictation.")
 
 Rollback:
-  - Shortcuts/theme/config: ./restore-plasma.sh latest --reload
+  - Shortcuts/theme/config: ./install.sh restore latest --reload
   - Theme only:             /usr/lib/plasma-apply-aurorae org.kde.breeze
   - Krohnkite only:         kwriteconfig6 --file kwinrc --group Plugins --key krohnkiteEnabled --type bool false
 
