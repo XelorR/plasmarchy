@@ -20,8 +20,17 @@ cd plasmarchy
 ./install.sh --yes
 ```
 
-Afterwards log out and log in once.  That applies the input group, the Aurorae
-theme, the focus logger and the deferred Krohnkite shortcuts.
+The guided installer creates a safety snapshot, installs the required
+packages, copies the Plasma/KWin configuration snapshot and runs the
+user-side deployer.  Log out and log in once afterwards to apply the input
+group, the Aurorae theme, the focus logger and any shortcuts that could not
+be registered in the current session.
+
+If no Plasma session is available during the install, finish later with:
+
+```bash
+./install.sh deploy --yes
+```
 
 Windows 11:
 
@@ -30,12 +39,18 @@ cd windows11
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install-windows.ps1
 ```
 
+or, from the repository root:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
+```
+
 ## Requirements
 
 - Arch Linux or CachyOS.
 - KDE Plasma 6 on Wayland.
 - `sudo`.
-- A working Plasma session for `deploy.sh`.
+- A working Plasma session for `./install.sh deploy`.
 
 The Windows edition is a separate implementation.  It uses Komorebi,
 AutoHotkey v2 and Kanata instead of KWin/Krohnkite.  See
@@ -43,10 +58,13 @@ AutoHotkey v2 and Kanata instead of KWin/Krohnkite.  See
 
 ## What Plasmarchy changes
 
-By default the deployer does **not** install unrelated applications.  It
-configures:
+By default the deployer does **not** install unrelated applications.  The
+Linux installation configures:
 
-- KDE Plasma tiling through a vendored Krohnkite 0.9.10.0 build.
+- Krohnkite tiling.  The latest release is downloaded from Codeberg on
+  demand and cached locally; `--krohnkite-version TAG` pins a release and
+  `--krohnkite-bundled` uses the vendored 0.9.10.0 fallback.
+- Layout order Tile -> Spiral -> Floating.
 - Hyprland-like daily-driver shortcuts for navigation, resize, layout and
   workspace movement.
 - Server-side decoration with a 2 px border, an active cyan to green
@@ -55,56 +73,96 @@ configures:
 - Focus follows mouse immediately plus keyboard-driven pointer warp.
 - Clipboard shortcuts that behave logically in both GUI applications and
   Konsole.
-- A Plasmarchy Konsole profile with a hidden scrollbar.
-- Meta+K opens a categorized keyboard-shortcut reference.
+- A Plasmarchy Konsole profile with a hidden scrollbar, selected as the
+  default profile for new windows.
+- Meta+K toggles a categorized keyboard-shortcut reference.
 - Right Ctrl as the only keyboard-layout switch.
+- A panel layout from the portable snapshot.  The existing dock launcher
+  list is preserved, and an existing panel file is backed up as
+  `plasma-org.kde.plasma.desktop-appletsrc.plasmarchy-user-backup`.
+  Desktop files are left untouched.
 - A portable Plasma/KWin configuration snapshot.
 
 Optional software installation is available with explicit flags, so a
 clean base system can remain small.
 
-## Deployer flags
+## Installation commands
 
-`deploy.sh` is the user-side installer.  `install.sh` runs it as part of a
-full one-command installation.
+`install.sh` is the public Linux entry point.  Internal helpers live under
+`scripts/`.
 
-Linux:
+| Command                    | Purpose                                             |
+| -------------------------- | --------------------------------------------------- |
+| `./install.sh`             | Full guided installation (default command).          |
+| `./install.sh deploy`      | Run the in-session deployer (`scripts/deploy.sh`).   |
+| `./install.sh backup`      | Create a Plasma/KWin snapshot.                       |
+| `./install.sh restore`     | Restore a snapshot.                                  |
+
+Examples:
 
 ```bash
-./deploy.sh [--yes] [--check] [--dry-run]
-./deploy.sh --install-software
-./deploy.sh --with-dictation [--dictation-languages ru,en]
-./deploy.sh --restore-backup latest
+./install.sh --yes
+./install.sh deploy --check
+./install.sh backup --tag before-experiment
+./install.sh restore --list
+./install.sh restore latest --reload
 ```
 
-Common flags:
+## Installation options
 
-| Flag                      | Effect                                                     |
-| ------------------------- | ---------------------------------------------------------- |
-| `--yes`                   | Do not ask for confirmation.                               |
-| `--check`                 | Preflight only.                                            |
-| `--dry-run`               | Print actions without changing anything.                   |
-| `--no-backup`             | Skip the pre-deploy snapshot.                              |
-| `--reset-plasma`         | Remove core Plasma configs so KDE regenerates defaults.    |
-| `--install-software`      | Install the distro/AUR/third-party applications too.       |
-| `--with-dictation`        | Install and configure Voxtype.                              |
-| `--dictation-languages`   | Language list; auto-detected from the KDE keymap otherwise.|
-| `--restore-backup SNAP`   | Restore a Plasma/KWin snapshot and exit.                    |
-| `--skip-packages`         | Skip distribution package installation.                    |
-| `--skip-krohnkite`        | Do not install or configure Krohnkite.                     |
-| `--skip-theme`            | Do not install or activate the border theme.               |
-| `--skip-focus`            | Do not change focus behaviour.                             |
-| `--skip-shortcuts`        | Do not change shortcuts.                                   |
-| `--krohnkite-version`  | Download a specific Krohnkite tag; default is latest.       |
-| `--krohnkite-bundled`  | Use the copy shipped in `vendor/` instead of downloading.    |
-| `--skip-tmux`             | Do not install the tmux configuration.                     |
-| `--skip-konsole`          | Do not install the Plasmarchy Konsole profile.             |
+| Flag                       | Effect                                                    |
+| -------------------------- | --------------------------------------------------------- |
+| `--yes`, `-y`              | Do not ask for confirmation.                               |
+| `--dry-run`                | Print actions without changing anything.                   |
+| `--packages MODE`          | `required`, `all`, or `none`.                              |
+| `--skip-software`          | Alias for `--packages none`.                               |
+| `--with-dictation`         | Install and configure Voxtype.                             |
+| `--dictation-languages L`  | Comma-separated languages; auto-detected otherwise.        |
+| `--restore-backup SNAP`    | Restore a snapshot instead of deploying.                   |
+| `--skip-root`              | Do not run `scripts/root-setup.sh`.                        |
+| `--skip-config`            | Do not copy `config/plasma/` into `~/.config`.             |
+| `--skip-deploy`            | Do not run the in-session deployer.                        |
+| `--no-backup`              | Do not create a pre-install snapshot.                      |
+| `--overwrite-panel-layout` | Replace the panel layout instead of preserving dock apps.  |
+| `--reset-plasma`           | Remove core Plasma configs; KDE regenerates them on login. |
+
+`--reset-plasma` creates a safety backup first and exits without deploying.
+Log out and log in again before running the installer anew.
+
+## Deployer options
+
+`./install.sh deploy` (or `scripts/deploy.sh` directly) applies the live
+KWin, shortcut, theme, tmux and Konsole configuration in the current Plasma
+session.
+
+| Flag                       | Effect                                                    |
+| -------------------------- | --------------------------------------------------------- |
+| `--yes`                    | Do not ask for confirmation.                               |
+| `--check`                  | Run preflight checks and exit.                             |
+| `--dry-run`                | Print actions without changing anything.                   |
+| `--packages MODE`          | `required`, `all`, or `none`.                              |
+| `--skip-packages`          | Alias for `--packages none`.                               |
+| `--no-backup`              | Skip the pre-deploy snapshot.                              |
+| `--skip-krohnkite`         | Do not install or configure Krohnkite.                     |
+| `--krohnkite-version TAG`  | Download a specific Krohnkite tag; default is latest.      |
+| `--krohnkite-bundled`      | Use the copy shipped in `vendor/` instead of downloading.   |
+| `--skip-theme`             | Do not install or activate the border theme.               |
+| `--skip-focus`             | Do not change focus behaviour.                             |
+| `--skip-shortcuts`         | Do not change shortcuts.                                   |
+| `--skip-tmux`              | Do not install the tmux configuration.                     |
+| `--skip-konsole`           | Do not install the Plasmarchy Konsole profile.             |
+| `--install-software`       | Install the distro/AUR/third-party applications too.       |
+| `--with-dictation`         | Install and configure Voxtype.                             |
+| `--dictation-languages L`  | Comma-separated languages; auto-detected otherwise.        |
+| `--restore-backup SNAP`    | Restore a snapshot and exit.                               |
+| `--force`                  | Continue even if the session checks are unusual.           |
 
 Dictation:
 
 ```bash
-./deploy.sh --with-dictation
-./deploy.sh --with-dictation --dictation-languages en,ru
+./install.sh --with-dictation
+./install.sh --with-dictation --dictation-languages en,ru
+./install.sh deploy --with-dictation --skip-packages
 ```
 
 The installer detects the installed KDE keyboard layouts automatically.  The
@@ -115,11 +173,23 @@ dictation language list can be forced with `--dictation-languages`.
 The shortcuts are applied from `manifests/shortcuts.tsv` and
 `manifests/commands.tsv`.  Examples and supporting scripts are in `bin/`.
 
+`Meta+K` toggles a categorized HTML cheat sheet.  The second press closes the
+open viewer.  The runtime copy is installed to
+`~/.local/share/plasmarchy/docs/plasmarchy-shortcuts.html`.
+
 Check the shortcut map:
 
 ```bash
 python3 lib/shortcuts.py lint manifests/shortcuts.tsv
 python3 lib/shortcuts.py check manifests/shortcuts.tsv --conflicts --allow-missing
+```
+
+Regenerate the shortcut reference after changing the manifest:
+
+```bash
+python3 scripts/generate-shortcuts-html.py
+python3 scripts/generate-shortcuts-text.py
+python3 scripts/generate-shortcuts-pdf.py
 ```
 
 Generate command wrappers manually:
@@ -133,20 +203,23 @@ python3 lib/shortcuts.py gen-desktops \
 ## Backups and rollback
 
 A normal deployment creates a snapshot first.  Manual snapshots and restores
-are available:
+are available through the main entry point:
 
 ```bash
-./create-backup.sh --tag before-experiment
-./restore-plasma.sh latest --reload
+./install.sh backup --tag before-experiment
+./install.sh restore --list
+./install.sh restore latest --reload
 ```
 
 Restore a specific snapshot:
 
 ```bash
-./restore-plasma.sh plasma-2026-... --reload
+./install.sh restore plasma-2026-... --reload
 ```
 
-`restore-plasma.sh` also creates a safety snapshot of the state it replaces.
+`restore` also creates a safety snapshot of the state it replaces.  The
+underlying helpers are `scripts/create-backup.sh` and
+`scripts/restore-plasma.sh`.
 
 ## Diagnostics
 
@@ -158,26 +231,33 @@ Restore a specific snapshot:
 - Focus logger: check `journalctl --user -n 200 _COMM=kwin_wayland`.
 - Animations remain: verify `AnimationDurationFactor=0`,
   `[Windows] ElectricBorderTiling=false` and the loaded Plasma effects.
+- Konsole default profile: `kreadconfig6 --file konsolerc --group "Desktop Entry" --key DefaultProfile`
+  should print `Plasmarchy.profile`.  The profile itself should contain
+  `[Scrolling]` with `ScrollBarPosition=2`.
+- Meta+K does nothing: verify that `kdialog` is installed and that
+  `~/.local/share/plasmarchy/docs/plasmarchy-shortcuts.html` exists.
 - Dictation: check `systemctl --user status ydotool voxtype` and `/dev/uinput`.
 
 ## Repository layout
 
-| Path               | Purpose                                           |
-| ------------------ | ------------------------------------------------- |
-| `deploy.sh`        | Main user-side installer.                         |
-| `install.sh`       | One-command guided installer.                     |
-| `install.ps1`      | Windows PowerShell entry point.                  |
-| `root-setup.sh`    | Root-side packages, LocalSend, AUR, `/dev/uinput`. |
-| `create-backup.sh` | Plasma/KWin snapshot.                             |
-| `restore-plasma.sh`| Restore a snapshot.                                |
-| `lib/shortcuts.py` | KGlobalAccel map tooling.                         |
-| `manifests/`       | Shortcut map, command map and package lists.       |
-| `scripts/`         | Backup, restore, deployment, root and optional installers. |
-| `bin/`             | Command wrappers and helpers.                     |
-| `config/plasma/`   | Portable Plasma/KWin configuration snapshot.      |
-| `theme/plasmarchy/`| Aurorae border theme.                             |
-| `windows11/`       | Windows 11 implementation and specification.      |
-| `vendor/`          | Optional offline fallback Krohnkite and its checksum. |
+| Path                       | Purpose                                                |
+| -------------------------- | ------------------------------------------------------ |
+| `install.sh`               | Linux entry point (install, deploy, backup, restore).   |
+| `install.ps1`              | Windows PowerShell entry point.                        |
+| `scripts/deploy.sh`        | User-side, in-session deployer.                        |
+| `scripts/root-setup.sh`    | Root packages, LocalSend, AUR and `/dev/uinput`.       |
+| `scripts/create-backup.sh` | Plasma/KWin snapshot.                                  |
+| `scripts/restore-plasma.sh` | Restore a snapshot.                                    |
+| `scripts/install-*.sh`     | Theme, tmux, Konsole and dictation helpers.            |
+| `bin/`                     | Runtime command wrappers and helpers.                  |
+| `lib/shortcuts.py`         | KGlobalAccel map tooling.                              |
+| `manifests/`               | Shortcut map, command map and package lists.           |
+| `config/plasma/`           | Portable Plasma/KWin configuration snapshot.           |
+| `config/konsole/`          | Plasmarchy Konsole profile and `konsolerc`.            |
+| `docs/`                    | Generated shortcut reference (HTML, text and PDF).     |
+| `theme/plasmarchy/`        | Aurorae border theme.                                  |
+| `windows11/`               | Windows 11 implementation and specification.           |
+| `vendor/`                  | Offline fallback Krohnkite and its checksum.           |
 
 Backups are deliberately ignored by Git because they contain personal system
 state.  Do not commit them to a public repository.
@@ -186,23 +266,25 @@ state.  Do not commit them to a public repository.
 
 - Keep every user-visible file in English.
 - Treat `manifests/*.tsv` as the source of truth for shortcuts.
+- Regenerate `docs/plasmarchy-shortcuts.*` after changing the manifest.
 - Do not store personal machine identifiers, snapshots or backups.
-- Prefer small, testable changes.  Use `bash -n`, `deploy.sh --check`,
+- Prefer small, testable changes.  Use `bash -n`, `./install.sh deploy --check`,
   `python3 lib/shortcuts.py lint/check` and the Windows PowerShell parse
   checks when editing deployment code.
 
 ## Windows 11 (Komorebi)
 
 The `windows11/` directory is a separate implementation.  It does not
-participate in the Linux deployment and does not modify `deploy.sh` or
-`install.sh`:
+participate in the Linux deployment and does not modify `install.sh` or
+`scripts/deploy.sh`:
 
 - Komorebi v0.1.41, layout `BSP`, 2 px borders, nine desktops per monitor.
 - masir for focus follows mouse.
 - AutoHotkey v2 for shortcuts and terminal-aware copy/paste.
 - Kanata v1.12.0 for Right Ctrl layout switching and `Win+L` cycling.
-- winget is tried first, then scoop, then direct downloads.  The user is
-  asked for missing binaries if no automated installer is available.
+- Missing components are resolved in this order: winget, scoop, direct
+  download, then manual placement.  The user is asked for anything that
+  remains unavailable.
 
 Install from the repository root:
 
@@ -217,7 +299,7 @@ cd windows11
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install-windows.ps1
 ```
 
-Verify and rollback:
+Verify and roll back from `windows11/`:
 
 ```powershell
 .\verify-windows.ps1
@@ -226,7 +308,6 @@ Verify and rollback:
 
 The complete specification is in
 [`windows11/SPEC.md`](windows11/SPEC.md) (English).
-
 
 ## License
 
