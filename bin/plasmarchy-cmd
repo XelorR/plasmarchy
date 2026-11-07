@@ -133,6 +133,29 @@ copy_url() {
     send_chord 29:1 46:1 46:0 29:0
 }
 
+open_webapp() {
+    local url="$1" bin
+
+    # Web-app shortcuts get a Chromium app window when Chromium is available:
+    # no tabs, no address bar, and always a separate window even when the
+    # default browser is Firefox or the user's everyday Chromium profile is
+    # already open.
+    for bin in chromium chromium-browser google-chrome-stable google-chrome \
+        brave-browser brave; do
+        if have "$bin"; then
+            exec "$bin" --app="$url"
+        fi
+    done
+
+    if have flatpak && flatpak info org.chromium.Chromium >/dev/null 2>&1; then
+        exec flatpak run org.chromium.Chromium --app="$url"
+    fi
+
+    # No Chromium-family browser: fall back to a new window in the default
+    # browser rather than silently opening another tab.
+    open_url "$url" 1
+}
+
 open_url() {
     local url="$1" new_window="${2:-0}" exec_line argv0
     local -a argv
@@ -373,26 +396,26 @@ case "${1:-}" in
         exec thunderbird -compose
         ;;
     chatgpt)
-        open_url "https://chatgpt.com/" 1
+        open_webapp "https://chatgpt.com/"
         ;;
     grok)
-        open_url "https://grok.com/" 1
+        open_webapp "https://grok.com/"
         ;;
     signal)
         command_exists_or_fail signal-desktop "Signal"
         exec signal-desktop
         ;;
     photos)
-        open_url "https://photos.google.com/" 1
+        open_webapp "https://photos.google.com/"
         ;;
     maps)
-        open_url "https://maps.google.com/" 1
+        open_webapp "https://maps.google.com/"
         ;;
     whatsapp)
-        open_url "https://web.whatsapp.com/" 1
+        open_webapp "https://web.whatsapp.com/"
         ;;
     messages)
-        open_url "https://messages.google.com/web/conversations" 1
+        open_webapp "https://messages.google.com/web/conversations"
         ;;
     obsidian)
         command_exists_or_fail obsidian "Obsidian"
@@ -403,13 +426,13 @@ case "${1:-}" in
         exec kate
         ;;
     x)
-        open_url "https://x.com/" 1
+        open_webapp "https://x.com/"
         ;;
     x-compose)
-        open_url "https://x.com/compose/post" 1
+        open_webapp "https://x.com/compose/post"
         ;;
     youtube)
-        open_url "https://youtube.com/" 1
+        open_webapp "https://youtube.com/"
         ;;
     lazydocker)
         command_exists_or_fail lazydocker "lazydocker"

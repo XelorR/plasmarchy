@@ -178,6 +178,11 @@ active for that key to work.
 The shortcuts are applied from `manifests/shortcuts.tsv` and
 `manifests/commands.tsv`.  Examples and supporting scripts are in `bin/`.
 
+Web-app shortcuts such as ChatGPT, Grok, Google Photos, Google Maps, WhatsApp,
+Google Messages, X and YouTube open a Chromium app window when Chromium (or
+another Chromium-family browser) is installed.  Without one they fall back to
+a new window in the default browser, never to a tab in the last window.
+
 `Meta+K` toggles a categorized HTML cheat sheet.  The second press closes the
 open viewer.  The runtime copy is installed to
 `~/.local/share/plasmarchy/docs/plasmarchy-shortcuts.html`.
