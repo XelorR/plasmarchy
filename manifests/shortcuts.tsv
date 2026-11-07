@@ -19,7 +19,7 @@ kwin	Window Maximize	Meta+Ctrl+F	Tiled fullscreen approximation
 kwin	Window Maximize Vertical		Clear default
 kwin	Overview	Meta+Alt+Space	Overview (Omarchy app grid)
 kwin	Activate Window Demanding Attention		Clear Meta+Ctrl+A; used by the audio panel
-kwin	Grid View	Meta+G	Grid View kept; window grouping is skipped
+kwin	Grid View	Meta+G	Grid View replaces Omarchy's window grouping
 kwin	Edit Tiles		Clear Meta+T; Meta+T is Krohnkite float
 kwin	Window Quick Tile Left		Clear native quick tile
 kwin	Window Quick Tile Right		Clear native quick tile
@@ -89,6 +89,7 @@ plasmashell	activate task manager entry 8		Clear Meta+8 default
 plasmashell	activate task manager entry 9		Clear Meta+9 default
 plasmashell	activate task manager entry 10		Clear Meta+0 default
 plasmashell	manage activities		Activity Switcher is not used
+plasmashell	next activity		Free Meta+A for select all
 plasmashell	previous activity		Free Meta+Shift+A for ChatGPT
 plasmashell	show-on-mouse-pos	Meta+Ctrl+V	Clipboard at mouse
 plasmashell	clear history	Meta+Shift+,	Clear notification history
@@ -168,9 +169,9 @@ kwin	KrohnkiteIncrease		Clear default Meta+I
 kwin	KrohnkiteDecrease		Clear default Meta+D
 kwin	KrohnkiteToggleFloat	Meta+T	Toggle floating
 kwin	KrohnkiteFloatAll		Clear default Meta+Shift+F
-kwin	KrohnkiteNextLayout	Meta+L	Next layout (Tile -> Spiral -> Floating)
-kwin	KrohnkitePreviousLayout	Meta+Alt+L	Previous layout
-kwin	KrohnkiteRotate	Meta+J	Rotate layout
+kwin	KrohnkiteNextLayout	Meta+L	Cycle layout: Tile -> Spiral -> Floating
+kwin	KrohnkitePreviousLayout	Meta+Alt+L	Cycle layout in reverse
+kwin	KrohnkiteRotate	Meta+J	Toggle split orientation (rotate layout)
 kwin	KrohnkiteRotatePart		No exact Spiral analogue
 kwin	KrohnkiteSetMaster		Clear default Meta+Return
 kwin	KrohnkiteRaiseSurfaceCapacity		Not used
@@ -193,10 +194,14 @@ kwin	KrohnkiteCascadeLayout		Not in cycle
 
 plasmarchy-terminal.desktop	_launch	Meta+Return	Konsole
 plasmarchy-terminal-tmux.desktop	_launch	Meta+Alt+Return	Konsole + tmux (Work session)
+plasmarchy-herdr.desktop	_launch	Meta+Ctrl+Return	Herdr agent manager in Konsole
 plasmarchy-copy.desktop	_launch	Meta+C	Copy (terminal-aware)
 plasmarchy-cut.desktop	_launch	Meta+X	Cut (terminal-aware)
 plasmarchy-paste.desktop	_launch	Meta+V	Paste (terminal-aware)
+plasmarchy-select-all.desktop	_launch	Meta+A	Select all (native chord)
 plasmarchy-copy-url.desktop	_launch	Alt+Shift+L	Copy current browser URL
+plasmarchy-spotify.desktop	_launch	Meta+Shift+M	Music (Spotify)
+plasmarchy-cliamp.desktop	_launch	Meta+Shift+Alt+M	Music TUI (cliamp)
 plasmarchy-browser.desktop	_launch	Meta+Shift+Return;Meta+Shift+B	Default browser
 plasmarchy-browser-private.desktop	_launch	Meta+Shift+Alt+B	Default browser, private window
 plasmarchy-files.desktop	_launch	Meta+Shift+F	Dolphin
@@ -251,10 +256,13 @@ plasmarchy-scale-next.desktop	_launch	Meta+/	Next display scale
 plasmarchy-scale-prev.desktop	_launch	Meta+Alt+/	Previous display scale
 plasmarchy-reminders-new.desktop	_launch	Meta+Ctrl+R	New KAlarm reminder
 plasmarchy-reminders-list.desktop	_launch	Meta+Ctrl+Alt+R	KAlarm list
-plasmarchy-vlc.desktop	_launch	Meta+Shift+Alt+M	VLC
+plasmarchy-vlc.desktop	_launch	Meta+Shift+Alt+V	VLC
 plasmarchy-yt-dlp.desktop	_launch	Alt+Shift+D	Download clipboard URL with yt-dlp
 plasmarchy-dictation.desktop	_launch	Alt+Space;Meta+Ctrl+X	Dictation toggle (Voxtype); hold F9 to dictate
-plasmarchy-screenlocker-panel.desktop	_launch	Meta+Ctrl+I	Screen locking settings
+plasmarchy-window-pop.desktop	_launch	Meta+O	Pop window out (float, keep above, all desktops)
+plasmarchy-idle-lock-toggle.desktop	_launch	Meta+Ctrl+I	Toggle locking on idle
+plasmarchy-gaps-toggle.desktop	_launch	Meta+Shift+Backspace	Toggle window gaps
+plasmarchy-screenlocker-panel.desktop	_launch		Screen locking settings remain in System Settings
 
 # Move the active window to a desktop.  The "follow" wrappers also switch to
 # that desktop; the "silent" wrappers leave the current view untouched.

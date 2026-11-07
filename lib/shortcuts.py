@@ -609,7 +609,9 @@ def gen_desktops(commands: Path, map_path: Path, dest: Path, bindir: Path) -> in
         print(f"error: {exc}", file=sys.stderr)
         return 2
     by_component: dict[str, list[str]] = {}
+    declared: set[str] = set()
     for entry in entries:
+        declared.add(entry.component)
         if entry.keys:
             by_component.setdefault(entry.component, []).append(entry.key_text)
 
@@ -680,7 +682,9 @@ def gen_desktops(commands: Path, map_path: Path, dest: Path, bindir: Path) -> in
         if "X-Plasmarchy=true" in text:
             old.unlink()
 
-    missing = sorted({f"plasmarchy-{i}.desktop" for i in command_ids} - set(by_component))
+    # A command may be deliberately left unbound; only warn when the map does
+    # not mention it at all.
+    missing = sorted({f"plasmarchy-{i}.desktop" for i in command_ids} - declared)
     for component in missing:
         print(f"warning: no shortcut map entry for {component}", file=sys.stderr)
     extra = sorted(

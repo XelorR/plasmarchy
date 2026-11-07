@@ -8,7 +8,7 @@ Meta+F			Window Fullscreen: Fullscreen
 Meta+Alt+F			Window Maximize Horizontal: Full width
 Meta+Ctrl+F			Window Maximize: Tiled fullscreen approximation
 Meta+Alt+Space			Overview: Overview (Omarchy app grid)
-Meta+G			Grid View: Grid View kept; window grouping is skipped
+Meta+G			Grid View: Grid View replaces Omarchy's window grouping
 Meta+Ctrl+Shift+Left			Window One Screen to the Left: Move window to the screen on the left
 Meta+Ctrl+Shift+Right			Window One Screen to the Right: Move window to the screen on the right
 Meta+Ctrl+Shift+Up			Window One Screen Up: Move window to the screen above
@@ -67,15 +67,19 @@ Meta+Shift+Minus			KrohnkiteShrinkHeight: Shrink height
 Meta+Equal			KrohnkiteShrinkWidth: Shrink width
 Meta+Minus			KrohnkitegrowWidth: Grow width
 Meta+T			KrohnkiteToggleFloat: Toggle floating
-Meta+L			KrohnkiteNextLayout: Next layout (Tile -> Spiral -> Floating)
-Meta+Alt+L			KrohnkitePreviousLayout: Previous layout
-Meta+J			KrohnkiteRotate: Rotate layout
+Meta+L			KrohnkiteNextLayout: Cycle layout: Tile -> Spiral -> Floating
+Meta+Alt+L			KrohnkitePreviousLayout: Cycle layout in reverse
+Meta+J			KrohnkiteRotate: Toggle split orientation (rotate layout)
 Meta+Return			_launch: Konsole
 Meta+Alt+Return			_launch: Konsole + tmux (Work session)
+Meta+Ctrl+Return			_launch: Herdr agent manager in Konsole
 Meta+C			_launch: Copy (terminal-aware)
 Meta+X			_launch: Cut (terminal-aware)
 Meta+V			_launch: Paste (terminal-aware)
+Meta+A			_launch: Select all (native chord)
 Alt+Shift+L			_launch: Copy current browser URL
+Meta+Shift+M			_launch: Music (Spotify)
+Meta+Shift+Alt+M			_launch: Music TUI (cliamp)
 Meta+Shift+Return, Meta+Shift+B			_launch: Default browser
 Meta+Shift+Alt+B			_launch: Default browser, private window
 Meta+Shift+F			_launch: Dolphin
@@ -130,10 +134,12 @@ Meta+/			_launch: Next display scale
 Meta+Alt+/			_launch: Previous display scale
 Meta+Ctrl+R			_launch: New KAlarm reminder
 Meta+Ctrl+Alt+R			_launch: KAlarm list
-Meta+Shift+Alt+M			_launch: VLC
+Meta+Shift+Alt+V			_launch: VLC
 Alt+Shift+D			_launch: Download clipboard URL with yt-dlp
 Alt+Space, Meta+Ctrl+X			_launch: Dictation toggle (Voxtype); hold F9 to dictate
-Meta+Ctrl+I			_launch: Screen locking settings
+Meta+O			_launch: Pop window out (float, keep above, all desktops)
+Meta+Ctrl+I			_launch: Toggle locking on idle
+Meta+Shift+Backspace			_launch: Toggle window gaps
 Meta+Shift+1			_launch: Window to desktop 1 and follow
 Meta+Shift+2			_launch: Window to desktop 2 and follow
 Meta+Shift+3			_launch: Window to desktop 3 and follow

@@ -19,7 +19,7 @@ a { color: #2070d0; }
 <tr><td class='shortcut'><strong>Meta+Alt+F</strong></td><td>Window Maximize Horizontal: Full width (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+F</strong></td><td>Window Maximize: Tiled fullscreen approximation (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Alt+Space</strong></td><td>Overview: Overview (Omarchy app grid) (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+G</strong></td><td>Grid View: Grid View kept; window grouping is skipped (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+G</strong></td><td>Grid View: Grid View replaces Omarchy&#x27;s window grouping (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Left</strong></td><td>Window One Screen to the Left: Move window to the screen on the left (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Right</strong></td><td>Window One Screen to the Right: Move window to the screen on the right (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+Shift+Up</strong></td><td>Window One Screen Up: Move window to the screen above (kwin)</td></tr>
@@ -96,18 +96,22 @@ a { color: #2070d0; }
 <tr><td class='shortcut'><strong>Meta+Equal</strong></td><td>KrohnkiteShrinkWidth: Shrink width (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Minus</strong></td><td>KrohnkitegrowWidth: Grow width (kwin)</td></tr>
 <tr><td class='shortcut'><strong>Meta+T</strong></td><td>KrohnkiteToggleFloat: Toggle floating (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+L</strong></td><td>KrohnkiteNextLayout: Next layout (Tile -&gt; Spiral -&gt; Floating) (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Alt+L</strong></td><td>KrohnkitePreviousLayout: Previous layout (kwin)</td></tr>
-<tr><td class='shortcut'><strong>Meta+J</strong></td><td>KrohnkiteRotate: Rotate layout (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+L</strong></td><td>KrohnkiteNextLayout: Cycle layout: Tile -&gt; Spiral -&gt; Floating (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Alt+L</strong></td><td>KrohnkitePreviousLayout: Cycle layout in reverse (kwin)</td></tr>
+<tr><td class='shortcut'><strong>Meta+J</strong></td><td>KrohnkiteRotate: Toggle split orientation (rotate layout) (kwin)</td></tr>
 </tbody></table>
 <h2>Applications and commands</h2>
 <table><thead><tr><th class='shortcut'>Shortcut</th><th>What it does</th></tr></thead><tbody>
 <tr><td class='shortcut'><strong>Meta+Return</strong></td><td>_launch: Konsole (plasmarchy-terminal.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Alt+Return</strong></td><td>_launch: Konsole + tmux (Work session) (plasmarchy-terminal-tmux.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+Return</strong></td><td>_launch: Herdr agent manager in Konsole (plasmarchy-herdr.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+C</strong></td><td>_launch: Copy (terminal-aware) (plasmarchy-copy.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+X</strong></td><td>_launch: Cut (terminal-aware) (plasmarchy-cut.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+V</strong></td><td>_launch: Paste (terminal-aware) (plasmarchy-paste.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+A</strong></td><td>_launch: Select all (native chord) (plasmarchy-select-all.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Alt+Shift+L</strong></td><td>_launch: Copy current browser URL (plasmarchy-copy-url.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+M</strong></td><td>_launch: Music (Spotify) (plasmarchy-spotify.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+M</strong></td><td>_launch: Music TUI (cliamp) (plasmarchy-cliamp.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+Return, Meta+Shift+B</strong></td><td>_launch: Default browser (plasmarchy-browser.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+Alt+B</strong></td><td>_launch: Default browser, private window (plasmarchy-browser-private.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+F</strong></td><td>_launch: Dolphin (plasmarchy-files.desktop)</td></tr>
@@ -162,10 +166,12 @@ a { color: #2070d0; }
 <tr><td class='shortcut'><strong>Meta+Alt+/</strong></td><td>_launch: Previous display scale (plasmarchy-scale-prev.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+R</strong></td><td>_launch: New KAlarm reminder (plasmarchy-reminders-new.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Ctrl+Alt+R</strong></td><td>_launch: KAlarm list (plasmarchy-reminders-list.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Shift+Alt+M</strong></td><td>_launch: VLC (plasmarchy-vlc.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Alt+V</strong></td><td>_launch: VLC (plasmarchy-vlc.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Alt+Shift+D</strong></td><td>_launch: Download clipboard URL with yt-dlp (plasmarchy-yt-dlp.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Alt+Space, Meta+Ctrl+X</strong></td><td>_launch: Dictation toggle (Voxtype); hold F9 to dictate (plasmarchy-dictation.desktop)</td></tr>
-<tr><td class='shortcut'><strong>Meta+Ctrl+I</strong></td><td>_launch: Screen locking settings (plasmarchy-screenlocker-panel.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+O</strong></td><td>_launch: Pop window out (float, keep above, all desktops) (plasmarchy-window-pop.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Ctrl+I</strong></td><td>_launch: Toggle locking on idle (plasmarchy-idle-lock-toggle.desktop)</td></tr>
+<tr><td class='shortcut'><strong>Meta+Shift+Backspace</strong></td><td>_launch: Toggle window gaps (plasmarchy-gaps-toggle.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+1</strong></td><td>_launch: Window to desktop 1 and follow (plasmarchy-desktop-move-follow-1.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+2</strong></td><td>_launch: Window to desktop 2 and follow (plasmarchy-desktop-move-follow-2.desktop)</td></tr>
 <tr><td class='shortcut'><strong>Meta+Shift+3</strong></td><td>_launch: Window to desktop 3 and follow (plasmarchy-desktop-move-follow-3.desktop)</td></tr>

@@ -6,7 +6,8 @@ set -Eeuo pipefail
 
 SELF_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 STATE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/plasmarchy"
-mkdir -p "$STATE_DIR"
+STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}/plasmarchy"
+mkdir -p "$STATE_DIR" "$STATE_HOME"
 
 notify() {
     if command -v notify-send >/dev/null 2>&1; then
@@ -115,6 +116,83 @@ clipboard_action() {
         esac
     fi
     send_chord "${keys[@]}"
+}
+
+select_all() {
+    # 29 = LeftCtrl, 30 = A.  Omarchy sends the native chord even in
+    # terminals, where Ctrl+A means "beginning of line".
+    send_chord 29:1 30:1 30:0 29:0
+}
+
+invoke_kwin_shortcut() {
+    command_exists_or_fail qdbus6 "qdbus6"
+    qdbus6 org.kde.KWin /component/kwin \
+        org.kde.kglobalaccel.Component.invokeShortcut "$1" >/dev/null 2>&1 ||
+        fail "Could not invoke KWin shortcut: $1"
+}
+
+window_pop() {
+    # Float the window, keep it above other windows and show it on every
+    # desktop.  Repeating the shortcut toggles all three KWin actions back off.
+    invoke_kwin_shortcut KrohnkiteToggleFloat
+    invoke_kwin_shortcut "Window Above Other Windows"
+    invoke_kwin_shortcut "Window On All Desktops"
+}
+
+idle_lock_toggle() {
+    command_exists_or_fail kreadconfig6 "kreadconfig6"
+    command_exists_or_fail kwriteconfig6 "kwriteconfig6"
+    local current new message
+    current="$(kreadconfig6 --file kscreenlockerrc --group Daemon --key Autolock --default true 2>/dev/null || true)"
+    if [[ "$current" == "false" ]]; then
+        new=true
+        message="Idle locking enabled"
+    else
+        new=false
+        message="Idle locking disabled"
+    fi
+    kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock "$new" ||
+        fail "Could not update kscreenlockerrc"
+    notify "Idle lock" "$message"
+}
+
+gaps_toggle() {
+    command_exists_or_fail kreadconfig6 "kreadconfig6"
+    command_exists_or_fail kwriteconfig6 "kwriteconfig6"
+    command_exists_or_fail qdbus6 "qdbus6"
+
+    local state="$STATE_HOME/krohnkite-gaps"
+    local key value message
+    local -a keys=(
+        screenGapBetween
+        screenGapLeft
+        screenGapRight
+        screenGapTop
+        screenGapBottom
+    )
+
+    if [[ -s "$state" ]]; then
+        while IFS='=' read -r key value; do
+            [[ -n "$key" ]] || continue
+            kwriteconfig6 --file kwinrc --group Script-krohnkite --key "$key" "$value" ||
+                fail "Could not restore Krohnkite gap setting: $key"
+        done <"$state"
+        rm -f "$state"
+        message="Window gaps restored"
+    else
+        : >"$state"
+        for key in "${keys[@]}"; do
+            value="$(kreadconfig6 --file kwinrc --group Script-krohnkite --key "$key" --default 0 2>/dev/null || true)"
+            [[ -n "$value" ]] || value=0
+            printf '%s=%s\n' "$key" "$value" >>"$state"
+            kwriteconfig6 --file kwinrc --group Script-krohnkite --key "$key" 0 ||
+                fail "Could not disable Krohnkite gap setting: $key"
+        done
+        message="Window gaps disabled"
+    fi
+
+    qdbus6 org.kde.KWin /KWin org.kde.KWin.reconfigure >/dev/null 2>&1 || true
+    notify "Window gaps" "$message"
 }
 
 copy_url() {
@@ -355,6 +433,23 @@ case "${1:-}" in
     browser-private)
         browser_private
         ;;
+    spotify)
+        if have spotify; then
+            exec spotify
+        fi
+        if have flatpak && flatpak info com.spotify.Client >/dev/null 2>&1; then
+            exec flatpak run com.spotify.Client
+        fi
+        open_webapp "https://open.spotify.com/"
+        ;;
+    cliamp)
+        command_exists_or_fail cliamp "cliamp"
+        run_in_terminal cliamp
+        ;;
+    herdr)
+        command_exists_or_fail herdr "Herdr"
+        run_in_terminal herdr
+        ;;
     files)
         have dolphin && exec dolphin "$HOME"
         fail "Dolphin is not installed"
@@ -451,6 +546,9 @@ case "${1:-}" in
     paste)
         clipboard_action paste
         ;;
+    select-all)
+        select_all
+        ;;
     copy-url)
         copy_url
         ;;
@@ -511,6 +609,15 @@ case "${1:-}" in
     screenlocker-panel)
         command_exists_or_fail kcmshell6 "kcmshell6"
         exec kcmshell6 kcm_screenlocker
+        ;;
+    idle-lock-toggle)
+        idle_lock_toggle
+        ;;
+    window-pop)
+        window_pop
+        ;;
+    gaps-toggle)
+        gaps_toggle
         ;;
     localsend)
         command_exists_or_fail localsend "LocalSend"

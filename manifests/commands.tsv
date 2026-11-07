@@ -3,6 +3,9 @@ terminal	Terminal	terminal	utilities-terminal
 terminal-tmux	Terminal (tmux)	terminal-tmux	utilities-terminal
 browser	Browser	browser	internet-web-browser
 browser-private	Browser (private)	browser-private	internet-web-browser
+spotify	Music (Spotify)	spotify	multimedia-audio-player
+cliamp	Music (cliamp)	cliamp	multimedia-audio-player
+herdr	Herdr (agent manager)	herdr	utilities-terminal
 files	Files	files	system-file-manager
 keepassxc	KeePassXC	keepassxc	keepassxc
 qalculate	Qalculate	qalculate	accessories-calculator
@@ -28,6 +31,7 @@ screenshot-region	Screenshot region	screenshot-region	camera-photo
 copy	Copy	copy	edit-copy
 cut	Cut	cut	edit-cut
 paste	Paste	paste	edit-paste
+select-all	Select all	select-all	edit-select-all
 copy-url	Copy current URL	copy-url	edit-copy
 screenrecord	Record screen	screenrecord	media-record
 color-picker	Color picker	color-picker	color-picker
@@ -63,6 +67,9 @@ vlc	VLC	vlc	vlc
 yt-dlp	Download video (clipboard URL)	yt-dlp	internet-download
 dictation	Dictation	dictation	audio-input-microphone
 screenlocker-panel	Screen locking settings	screenlocker-panel	preferences-system-lock-screen
+idle-lock-toggle	Toggle idle locking	idle-lock-toggle	preferences-system-lock-screen
+window-pop	Pop window out	window-pop	preferences-system-windows
+gaps-toggle	Toggle window gaps	gaps-toggle	distribute-horizontal-gaps
 desktop-move-follow-1	Move to desktop 1 and follow	desktop-move-follow-1	go-next
 desktop-move-follow-2	Move to desktop 2 and follow	desktop-move-follow-2	go-next
 desktop-move-follow-3	Move to desktop 3 and follow	desktop-move-follow-3	go-next
