@@ -2,11 +2,12 @@
 # Install and configure Voxtype dictation on Arch/CachyOS KDE Plasma.
 #
 # Usage:
-#   ./config/install-dictation.sh [--dry-run] [--skip-packages] [--no-download]
+#   ./scripts/install-dictation.sh [--dry-run] [--skip-packages] [--no-download]
 #
 # Voxtype is an AUR package (voxtype-bin).  The installer:
 #   - installs voxtype-bin, ydotool, wl-clipboard and libnotify;
 #   - writes ~/.config/voxtype/config.toml (English/Russian, paste mode);
+#   - binds F9 as push-to-talk in Voxtype and leaves Alt+Space to KGlobalAccel;
 #   - adds the user to the input group and enables ydotool;
 #   - downloads the Whisper base model and enables voxtype.service.
 #
@@ -32,14 +33,14 @@ while (($#)); do
             LANGUAGES="$2"
             shift 2
             ;;
-        -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
+        -h|--help) awk 'NR > 1 && /^#/ { print; next } NR > 1 { exit }' "$0"; exit 0 ;;
         *) echo "error: unknown option: $1" >&2; exit 2 ;;
     esac
 done
 
 [[ $EUID -ne 0 ]] || { echo "error: run as your desktop user, not root" >&2; exit 1; }
-[[ -f "$ROOT/voxtype/config.toml" ]] || {
-    echo "error: missing $ROOT/voxtype/config.toml" >&2
+[[ -f "$ROOT/config/voxtype/config.toml" ]] || {
+    echo "error: missing $ROOT/config/voxtype/config.toml" >&2
     exit 1
 }
 
@@ -81,7 +82,7 @@ fi
 if ((DRY_RUN)); then
     log "Dry run"
     echo "would install packages: ydotool wl-clipboard libnotify voxtype-bin (AUR)"
-    echo "would write $VOXTYPE_DIR/config.toml"
+    echo "would write $VOXTYPE_DIR/config.toml (F9 push-to-talk)"
     echo "would add $USER to the input group"
     echo "would enable ydotool.service and voxtype.service"
     ((DOWNLOAD_MODEL)) && echo "would download the Whisper base model"
@@ -120,7 +121,7 @@ command -v ydotoold >/dev/null 2>&1 || {
 log "Writing Voxtype configuration"
 lang_json="$(printf '%s' "$LANGUAGES" | tr ',' '\n' | sed -e 's/^ *//; s/ *$//' | awk 'BEGIN{printf "["} {if(NR>1)printf ","; printf "\"%s\"", $0} END{printf "]"}')"
 tmp_config="$(mktemp)"
-sed 's/^language = .*/language = '"$lang_json"'/' "$ROOT/voxtype/config.toml" > "$tmp_config"
+sed 's/^language = .*/language = '"$lang_json"'/' "$ROOT/config/voxtype/config.toml" > "$tmp_config"
 
 mkdir -p "$VOXTYPE_DIR"
 if [[ -f "$VOXTYPE_DIR/config.toml" ]] && ! cmp -s "$tmp_config" "$VOXTYPE_DIR/config.toml"; then
@@ -178,12 +179,14 @@ cat <<EOF
 
 Voxtype dictation installed.
 
-  Toggle dictation: Meta+Ctrl+X or F9
+  Push-to-talk:     hold F9 while speaking, release to transcribe
+  Toggle dictation: Alt+Space (also Meta+Ctrl+X)
   Config:           $VOXTYPE_DIR/config.toml
   Service:          systemctl --user status voxtype.service
 
-The shortcuts are registered by deploy.sh.  If the input group was just added,
-log out and back in once before testing dictation.
+The Alt+Space shortcut is registered by deploy.sh.  F9 is read directly by
+Voxtype through /dev/input.  If the input group was just added, log out and
+back in once before testing dictation.
 EOF
 
 if ((NEED_RELOGIN)); then

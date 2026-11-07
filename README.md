@@ -168,6 +168,11 @@ Dictation:
 The installer detects the installed KDE keyboard layouts automatically.  The
 dictation language list can be forced with `--dictation-languages`.
 
+`F9` is push-to-talk: hold it while speaking and release it to transcribe.
+`Alt+Space` toggles dictation on and off; `Meta+Ctrl+X` remains an alias.
+Voxtype reads `F9` directly through `/dev/input`, so the input group must be
+active for that key to work.
+
 ## Applications and shortcuts
 
 The shortcuts are applied from `manifests/shortcuts.tsv` and
@@ -236,7 +241,9 @@ underlying helpers are `scripts/create-backup.sh` and
   `[Scrolling]` with `ScrollBarPosition=2`.
 - Meta+K does nothing: verify that `kdialog` is installed and that
   `~/.local/share/plasmarchy/docs/plasmarchy-shortcuts.html` exists.
-- Dictation: check `systemctl --user status ydotool voxtype` and `/dev/uinput`.
+- Dictation: check `systemctl --user status ydotool voxtype`, `/dev/uinput`
+  and that the current user is in the `input` group (needed for the F9
+  push-to-talk listener).
 
 ## Repository layout
 

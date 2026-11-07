@@ -211,6 +211,15 @@ command_exists_or_fail() {
     have "$cmd" || fail "$label is not installed"
 }
 
+voxtype_action() {
+    local action="$1"
+    command_exists_or_fail voxtype "Voxtype"
+    if have systemctl && ! systemctl --user is-active --quiet voxtype.service 2>/dev/null; then
+        systemctl --user start voxtype.service >/dev/null 2>&1 || true
+    fi
+    exec voxtype record "$action"
+}
+
 # Move the active window with KWin's native action.  KWin only offers a
 # move-only action, so the "follow" variant additionally switches the current
 # desktop.  Invoking the action through KGlobalAccel works even when the
@@ -659,12 +668,14 @@ case "${1:-}" in
             --output "%(title)s [%(id)s].%(ext)s" \
             "$url"
         ;;
-    dictation)
-        command_exists_or_fail voxtype "Voxtype"
-        if have systemctl && ! systemctl --user is-active --quiet voxtype.service 2>/dev/null; then
-            systemctl --user start voxtype.service >/dev/null 2>&1 || true
-        fi
-        exec voxtype record toggle
+    dictation|dictation-toggle)
+        voxtype_action toggle
+        ;;
+    dictation-start)
+        voxtype_action start
+        ;;
+    dictation-stop)
+        voxtype_action stop
         ;;
     desktop-move-follow-[1-9])
         desktop_move follow "${1##*-}"

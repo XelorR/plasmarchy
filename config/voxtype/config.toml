@@ -1,11 +1,14 @@
 # Plasmarchy Voxtype configuration.
 #
-# KDE registers Meta+Ctrl+X and F9 through KGlobalAccel; they run
-# `voxtype record toggle`.  Voxtype's own hotkey handling stays disabled.
+# Voxtype owns F9 as a push-to-talk key through its built-in evdev listener:
+# hold F9 while speaking and release it to transcribe.  Alt+Space (and the
+# Meta+Ctrl+X alias) toggles dictation through KGlobalAccel.
 state_file = "auto"
 
 [hotkey]
-enabled = false
+enabled = true
+key = "F9"
+mode = "push_to_talk"
 
 [audio]
 device = "default"

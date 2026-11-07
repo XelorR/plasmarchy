@@ -959,7 +959,7 @@ Applied:
   - Clipboard:  Meta+C/X/V via ydotool, terminal-aware
   - Shortcuts:  $([[ $SKIP_SHORTCUTS == 1 ]] && echo skipped || echo "see manifests/shortcuts.tsv")
   - tmux:       $([[ $SKIP_TMUX == 1 ]] && echo skipped || echo "Omarchy config + tdl/tds/tdlm/tsl")
-  - Dictation:  $([[ $WITH_DICTATION == 1 ]] && echo "Voxtype (Meta+Ctrl+X / F9)" || echo "not installed; rerun with --with-dictation")
+  - Dictation:  $([[ $WITH_DICTATION == 1 ]] && echo "Voxtype (hold F9 / Alt+Space toggle)" || echo "not installed; rerun with --with-dictation")
   - Runtime:    $RUNTIME
   - Backup:     $([[ $BACKUP == 1 ]] && echo "backups/plasma-*-pre-deploy" || echo "skipped")
 
@@ -973,7 +973,7 @@ Next steps:
      focus logger is installed as the plasmarchy-focus KWin script.
   4. If Krohnkite shortcuts were deferred, the one-shot autostart applies
      them automatically at login.
-  5. $([[ $WITH_DICTATION == 1 ]] && echo "Dictation is installed. Test Meta+Ctrl+X or F9 after login." || echo "Dictation is opt-in: rerun ./deploy.sh --with-dictation.")
+  5. $([[ $WITH_DICTATION == 1 ]] && echo "Dictation is installed. Hold F9 to dictate, or press Alt+Space to toggle." || echo "Dictation is opt-in: rerun ./deploy.sh --with-dictation.")
 
 Rollback:
   - Shortcuts/theme/config: ./install.sh restore latest --reload

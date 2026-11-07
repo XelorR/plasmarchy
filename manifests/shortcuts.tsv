@@ -253,7 +253,7 @@ plasmarchy-reminders-new.desktop	_launch	Meta+Ctrl+R	New KAlarm reminder
 plasmarchy-reminders-list.desktop	_launch	Meta+Ctrl+Alt+R	KAlarm list
 plasmarchy-vlc.desktop	_launch	Meta+Shift+Alt+M	VLC
 plasmarchy-yt-dlp.desktop	_launch	Alt+Shift+D	Download clipboard URL with yt-dlp
-plasmarchy-dictation.desktop	_launch	Meta+Ctrl+X;F9	Dictation toggle (Voxtype)
+plasmarchy-dictation.desktop	_launch	Alt+Space;Meta+Ctrl+X	Dictation toggle (Voxtype); hold F9 to dictate
 plasmarchy-screenlocker-panel.desktop	_launch	Meta+Ctrl+I	Screen locking settings
 
 # Move the active window to a desktop.  The "follow" wrappers also switch to

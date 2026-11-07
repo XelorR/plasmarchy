@@ -132,7 +132,7 @@ Meta+Ctrl+R			_launch: New KAlarm reminder
 Meta+Ctrl+Alt+R			_launch: KAlarm list
 Meta+Shift+Alt+M			_launch: VLC
 Alt+Shift+D			_launch: Download clipboard URL with yt-dlp
-Meta+Ctrl+X, F9			_launch: Dictation toggle (Voxtype)
+Alt+Space, Meta+Ctrl+X			_launch: Dictation toggle (Voxtype); hold F9 to dictate
 Meta+Ctrl+I			_launch: Screen locking settings
 Meta+Shift+1			_launch: Window to desktop 1 and follow
 Meta+Shift+2			_launch: Window to desktop 2 and follow
