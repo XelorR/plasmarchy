@@ -187,6 +187,9 @@ a new window in the default browser, never to a tab in the last window.
 open viewer.  The runtime copy is installed to
 `~/.local/share/plasmarchy/docs/plasmarchy-shortcuts.html`.
 
+The remaining Omarchy gaps, including the analysis of a custom Krohnkite
+dwindle layout, are tracked in [`docs/parity-roadmap.md`](docs/parity-roadmap.md).
+
 Check the shortcut map:
 
 ```bash
