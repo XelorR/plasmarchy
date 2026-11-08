@@ -613,6 +613,31 @@ install_theme() {
     done
 }
 
+
+configure_default_image_viewer() {
+    if ((DRY_RUN)); then
+        log "Would set the default image viewer to imv or nsxiv"
+        return
+    fi
+
+    local viewer=""
+    if command -v imv >/dev/null 2>&1; then
+        install -m 0644 "$ROOT/config/applications/imv.desktop" "$APPLICATIONS/imv.desktop"
+        viewer="imv.desktop"
+    elif command -v nsxiv >/dev/null 2>&1; then
+        install -m 0644 "$ROOT/config/applications/nsxiv.desktop" "$APPLICATIONS/nsxiv.desktop"
+        viewer="nsxiv.desktop"
+    else
+        warn "neither imv nor nsxiv is installed; leaving the default image viewer unchanged"
+        return
+    fi
+
+    log "Setting the default image viewer to ${viewer}"
+    xdg-mime default "$viewer"         image/jpeg image/jpg image/pjpeg image/jfif         image/png image/gif image/bmp image/tiff image/heic image/heif         image/webp image/svg+xml image/x-eps image/x-portable-bitmap
+
+    kbuildsycoca6 --noincremental >/dev/null 2>&1 || true
+}
+
 configure_window_rules() {
     if ((DRY_RUN)); then
         log "Would write KWin window rules: server-side borders and browser fixes"
@@ -1060,6 +1085,7 @@ install_runtime_files
 install_krohnkite
 write_krohnkite_config
 configure_window_rules
+configure_default_image_viewer
 configure_animations
 configure_focus
 install_theme

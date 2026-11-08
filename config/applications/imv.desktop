@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=imv
+GenericName=Image viewer
+Comment=Minimal image viewer for X11/Wayland
+Exec=imv %f
+Terminal=false
+Categories=Graphics;Viewer;
+MimeType=image/jpeg;image/jpg;image/png;image/gif;image/bmp;image/tiff;image/webp;image/heic;image/heif;image/svg+xml;

@@ -39,3 +39,5 @@ kalarm
 yakuake
 handbrake
 lazydocker
+imv
+nsxiv
