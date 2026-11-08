@@ -33,7 +33,10 @@ focus_class() {
             grep -F 'PLASMARCHY-FOCUS ' | tail -n 1 || true)"
     fi
     line="${line#PLASMARCHY-FOCUS }"
-    printf '%s' "${line%$'\r'}"
+    line="${line%%$'\r'}"
+    # The focus logger may now publish pid/caption after the class.  Keep
+    # consuming only the class so existing callers are unchanged.
+    printf '%s' "${line%% *}"
 }
 
 # Fallback used when the logger is not loaded (for example immediately after
@@ -129,6 +132,41 @@ invoke_kwin_shortcut() {
     qdbus6 org.kde.KWin /component/kwin \
         org.kde.kglobalaccel.Component.invokeShortcut "$1" >/dev/null 2>&1 ||
         fail "Could not invoke KWin shortcut: $1"
+}
+
+context_dir() {
+    local line cls pid caption service sid fp dir
+    line="$(focus_class_full)" 2>/dev/null || true
+    [[ -n "${line:-}" ]] || return 0
+    read -r cls pid caption <<<"$line"
+    cls="${cls,,}"
+    case "$cls" in
+        *konsole*)
+            service="org.kde.konsole-${pid}"
+            sid="$(qdbus6 "$service" /Windows/1 currentSession 2>/dev/null || true)"
+            sid="${sid//[!0-9]/}"
+            if [[ -n "$sid" ]]; then
+                fp="$(qdbus6 "$service" "/Sessions/$sid" foregroundProcessId 2>/dev/null || true)"
+                fp="${fp//[!0-9]/}"
+            fi
+            [[ -n "${fp:-}" ]] && readlink -f "/proc/$fp/cwd" 2>/dev/null
+            ;;
+        *dolphin*|*kate*)
+            [[ -r "/proc/$pid/cwd" ]] && readlink -f "/proc/$pid/cwd" 2>/dev/null
+            ;;
+    esac
+}
+
+# Unlike focus_class(), keep pid and caption so context-aware launchers know
+# which window was active.
+focus_class_full() {
+    local line=""
+    if have journalctl; then
+        line="$(journalctl --user -n 1000 --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
+            grep -F 'PLASMARCHY-FOCUS ' | tail -n 1 || true)"
+    fi
+    line="${line#PLASMARCHY-FOCUS }"
+    printf '%s' "${line%%$'\r'}"
 }
 
 window_pop() {
@@ -419,6 +457,10 @@ tmux_install_hint() {
 
 case "${1:-}" in
     terminal)
+        dir="$(context_dir)"
+        if [[ -n "$dir" && "$dir" != "/" ]] && have konsole; then
+            exec konsole --workdir "$dir"
+        fi
         have konsole && exec konsole
         fail "Konsole is not installed"
         ;;
@@ -451,7 +493,9 @@ case "${1:-}" in
         run_in_terminal herdr
         ;;
     files)
-        have dolphin && exec dolphin "$HOME"
+        dir="$(context_dir)"
+        [[ -z "${dir:-}" ]] && dir="$HOME"
+        have dolphin && exec dolphin "$dir"
         fail "Dolphin is not installed"
         ;;
     keepassxc)
