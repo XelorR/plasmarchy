@@ -28,7 +28,7 @@ configuration snapshot.
 
 | Omarchy / KDE Plasma | Windows 11 implementation | Fidelity |
 | --- | --- | --- |
-| Krohnkite `Spiral` tiling | Komorebi `BSP` | Close; BSP is not identical to Spiral |
+| Krohnkite `Dwindle` tiling | Komorebi `BSP` | Close; BSP insertion order differs from Dwindle |
 | Aurorae 2 px active gradient border | Komorebi 2 px square border, solid teal `#00D9B0` | Approximation; no native gradient |
 | Inactive grey border `#595959` | Komorebi unfocused border `#595959` | Exact colour |
 | No titlebars on tiles | `remove_titlebar_applications` regex for all executables | Global; see risks |

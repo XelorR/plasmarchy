@@ -148,7 +148,7 @@ org.kde.spectacle.desktop	FullScreenScreenShot		Clear Spectacle default
 org.kde.spectacle.desktop	WindowUnderCursorScreenShot		Clear Spectacle default
 
 # Krohnkite.  The layout order is configured separately:
-# Tile -> Spiral -> Floating.  Defaults that are not used are cleared first.
+# Dwindle -> Columns -> Floating.  Defaults that are not used are cleared first.
 
 kwin	KrohnkiteFocusNext		Clear default Meta+.
 kwin	KrohnkiteFocusPrev		Clear default Meta+,
@@ -169,10 +169,10 @@ kwin	KrohnkiteIncrease		Clear default Meta+I
 kwin	KrohnkiteDecrease		Clear default Meta+D
 kwin	KrohnkiteToggleFloat	Meta+T	Toggle floating
 kwin	KrohnkiteFloatAll		Clear default Meta+Shift+F
-kwin	KrohnkiteNextLayout	Meta+L	Cycle layout: Tile -> Spiral -> Floating
+kwin	KrohnkiteNextLayout	Meta+L	Cycle layout: Dwindle -> Columns -> Floating
 kwin	KrohnkitePreviousLayout	Meta+Alt+L	Cycle layout in reverse
 kwin	KrohnkiteRotate	Meta+J	Toggle split orientation (rotate layout)
-kwin	KrohnkiteRotatePart		No exact Spiral analogue
+kwin	KrohnkiteRotatePart		No default binding
 kwin	KrohnkiteSetMaster		Clear default Meta+Return
 kwin	KrohnkiteRaiseSurfaceCapacity		Not used
 kwin	KrohnkiteLowerSurfaceCapacity		Not used
@@ -186,8 +186,8 @@ kwin	KrohnkiteFloatingLayout		Selected through the layout cycle
 kwin	KrohnkiteQuarterLayout		Not in cycle
 kwin	KrohnkiteStackedLayout		Not in cycle
 kwin	KrohnkiteBTreeLayout		Not in cycle
-kwin	KrohnkiteSpiralLayout		Selected through the layout cycle
-kwin	KrohnkiteColumnsLayout		Not in cycle
+kwin	KrohnkiteSpiralLayout		Not in cycle
+kwin	KrohnkiteColumnsLayout		Selected through the layout cycle
 kwin	KrohnkiteCascadeLayout		Not in cycle
 
 # Custom commands (desktop files generated from manifests/commands.tsv)

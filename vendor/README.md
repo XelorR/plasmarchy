@@ -1,15 +1,32 @@
 # Vendored Krohnkite
 
-`krohnkite-0.9.10.0.kwinscript` is the official release asset from:
+`krohnkite-0.9.11.1.kwinscript` is the Plasmarchy Krohnkite fork build from:
 
-- Project: https://codeberg.org/anametologin/Krohnkite
-- Release: `0.9.10.0`
-- Asset: `krohnkite-0.9.10.0.kwinscript`
-- SHA256: `7fe9b1af925061577004e8e46be17c014d081f06891779f1db72b9361dfcad40`
+- Project: https://github.com/XelorR/Krohnkite
+- Tag: `0.9.11.1`
+- Asset: `dist/krohnkite.kwinscript`
+- SHA256: `c0cbf2b863d0b60e6f881368f81d44f4ee82dd5ef5250414a777e22c563732e3`
 
-Krohnkite is MIT-licensed. The archive is kept here so a fresh machine can be
-deployed offline and reproducibly. `deploy.sh` verifies the checksum before
-installing it with `kpackagetool6`.
+The fork adds the Hyprland-compatible `DwindleLayout`, which is Plasmarchy's
+default layout.  The upstream project remains
+https://codeberg.org/anametologin/Krohnkite; the fork syncs from it.
 
-To update Krohnkite, download the new official asset, update the filename and
-`SHA256SUMS`, and rerun `deploy.sh`.
+Krohnkite is MIT-licensed.  The archive is kept here so a fresh machine can be
+deployed offline and reproducibly.  `deploy.sh` verifies this checksum before
+installing the archive with `kpackagetool6`.
+
+The same file is published at:
+
+```
+https://raw.githubusercontent.com/XelorR/Krohnkite/0.9.11.1/dist/krohnkite.kwinscript
+https://raw.githubusercontent.com/XelorR/Krohnkite/master/dist/krohnkite.kwinscript
+```
+
+To update the fork build:
+
+1. bump the version and tag the Krohnkite fork;
+2. run `make clean && make package` there and copy the archive to
+   `dist/krohnkite.kwinscript`;
+3. update `KROHNKITE_DEFAULT_VERSION` in `scripts/deploy.sh`;
+4. replace the file in this directory and regenerate `SHA256SUMS`:
+   `(cd vendor && sha256sum krohnkite-<version>.kwinscript > SHA256SUMS)`.

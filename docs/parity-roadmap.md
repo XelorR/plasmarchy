@@ -17,7 +17,8 @@ Plasmarchy now covers the daily-driver shortcut set:
 - global desktops 1-9, next/previous desktop, move window with follow and
   silent move;
 - moving a window between screens and walking through windows;
-- Krohnkite layout cycling, resize and pointer-follow;
+- focus-aware Dwindle tiling, the Dwindle -> Columns -> Floating layout
+  cycle, resize and pointer-follow;
 - terminal, tmux, Herdr, browser, private browser, files, editor, calculator,
   password manager, music, Docker and the main web apps;
 - universal copy, cut, paste and select-all;
@@ -37,7 +38,7 @@ Plasma and KWin having different primitives from Hyprland.
 | --- | --- | --- | --- |
 | Push-to-talk key | Hold Right Alt | Hold `F9` | Hardware-independent and does not clash with the Right Alt input-method convention; `Alt+Space` still toggles. |
 | Workspaces | Per-monitor workspaces 1-4/1-10 | Nine global virtual desktops | Plasma virtual desktops are global. Per-monitor workspaces need a custom window-management layer. |
-| Layouts | Dwindle, scrolling, floating | Tile, Spiral, Floating (Krohnkite) | Krohnkite ships static layouts and has no layout plugin API. See the dwindle section below. |
+| Layouts | Dwindle, scrolling, floating | Dwindle, Columns, Floating (Krohnkite fork) | The Plasmarchy fork adds focus-aware Dwindle. Krohnkite has no scrolling layout. |
 | App choices | Nautilus, Omawrite, HEY web apps, 1Password, Omacalc | Dolphin, Kate, Thunderbird/kclock, KeePassXC, Qalculate | The Plasmarchy set is packaged on Arch/CachyOS and does not require an Omarchy account. |
 | Shell | Omarchy bar and menu | Plasma panel and KRunner | Plasmarchy keeps Plasma's shell instead of replacing it. |
 | Window grouping | Hyprland groups | KWin Grid View on `Meta+G` | KWin has no equivalent tabbed/grouped window model. |
@@ -102,87 +103,68 @@ These are Omarchy-specific or would require replacing a large part of Plasma:
 - Omarchy's scrolling layout unless it is implemented as a custom Krohnkite
   layout.
 
-## Dwindle layout: can Krohnkite be extended?
+## Dwindle layout
 
-### What Krohnkite provides
+Plasmarchy uses a pinned Krohnkite fork with a `DwindleLayout` class beside
+the upstream layouts.  The reference implementation is Hyprland 0.56.2
+(`src/layout/algorithm/tiled/dwindle/DwindleAlgorithm.cpp`); the fork keeps
+the same tree, child-order and split semantics inside KWin.
 
-Krohnkite 0.9.10.0 keeps every layout in `contents/code/script.js`.  The
-layout registry is a hard-coded list:
+### Implemented behavior
 
-```js
-const layoutsList = [
-  [TileLayout, true],
-  [MonocleLayout, false],
-  [ThreeColumnLayout, true],
-  [SpiralLayout, true],
-  // ...
-];
-```
+- Each workspace has a binary tree of window leaves.  Leaves hold window ids,
+  so a floating, minimized or desktop-switched window keeps its slot.
+- A new window splits the focused window's leaf.  It never appends to a global
+  window sequence, so unrelated branches and their split ratios stay intact.
+- With Hyprland's default `force_split = 0` and `use_active_for_splits = true`,
+  the cursor's half of the focused tile decides whether the new window is the
+  first or second child.  The focused window keeps the opposite child.
+- The split is side-by-side when `width > height * split_width_multiplier` and
+  top/bottom otherwise.  A square area is top/bottom, matching Hyprland's
+  strict comparison with the default multiplier of 1.0.
+- A new split uses the default 0.5 ratio and is unlocked, mirroring
+  `default_split_ratio = 1.0` and `preserve_split = false`.  `Meta+J` and
+  `RotatePart` lock an explicit orientation; an unlocked split reorients when
+  its area changes shape.
+- Closing a window replaces its parent with the sibling.  Resizing adjusts
+  the nearest ancestor split that can consume the delta.
+- `Meta+Left`/`Meta+Right` use the rendered geometry.  With all four
+  `focusMoveScreens*`/`focusMoveVDesktops*` flags off, focus stops at the edge
+  instead of wrapping or switching virtual desktops.
 
-`SpiralLayout` is built from `HalfSplitLayoutPart` and `FillLayoutPart`.  It
-creates a fixed nested split for every window count.  For the common case of
-opening windows one after another it looks close to Hyprland's dwindle layout:
-the first window fills the screen, the next window splits the deepest area in
-half, and the split direction rotates as the tree deepens.
+### Plasmarchy integration
 
-It is not the same algorithm:
+- The layout cycle is `Dwindle -> Columns -> Floating`; every other Krohnkite
+  layout is disabled.  `Floating` is the "window" state of the cycle.
+- `screenDefaultLayout` is `:DwindleLayout`.
+- The fork build is pinned as `vendor/krohnkite-0.9.11.1.kwinscript` with a
+  SHA256 checksum.  The same fixed-path asset is published at
+  `dist/krohnkite.kwinscript` on the fork's tag and `master`, so the deployer
+  can download it without GitHub releases or API authentication.
+- `DwindleLayout` shares the tree implementation with `BinaryTreeLayout`.
+  The user-facing names and layout ids remain separate.
+- Tests cover four-plus windows, root-adjacent and deeply nested focused
+  leaves, unrelated-branch ratio preservation, subsequent insertions, and
+  the unlocked/default-ratio behavior of new splits.
 
-- Hyprland inserts a new window at the **focused leaf**, not at the deepest
-  end of a fixed spiral.
-- Hyprland chooses the split direction from the cursor position or the
-  `force_split` setting, and `Super+J` changes the next split.
-- Hyprland keeps the tree across window closes and focus changes.  Krohnkite
-  rebuilds its spiral from the current window count.
-- Krohnkite's `SpiralLayout` has no public extension point, so a new layout
-  cannot be dropped into a config directory.
+### Not implemented
 
-### Is a custom layout feasible?
+- `force_split`, `smart_split`, `smart_resizing`, `split_width_multiplier`
+  and `default_split_ratio` are not exposed as Krohnkite settings.  KWin
+  scripting has no Hyprland-style cursor dispatcher or live layout messages,
+  so the fork follows the defaults above instead of pretending to support
+  every runtime mode.
+- Hyprland's `scrolling` layout is a separate algorithm and is not planned.
+- Exact Hyprland `pseudo` content stretching and window groups remain
+  unavailable; see the sections above.
 
-Yes, but it is a fork/patch, not a configuration change.  The reusable
-geometry primitives (`HalfSplitLayoutPart`, `StackLayoutPart`,
-`LayoutUtils`) already do the hard pixel math, so a `DwindleLayout` class can
-reuse them.  The work is in the tree state:
+## Backlog
 
-1. Pin/fork Krohnkite and add `DwindleLayout` (or replace the body of
-   `SpiralLayout` to keep the KCM unchanged).
-2. Keep a per-screen, per-desktop binary tree.  Each leaf owns one window;
-   each internal node stores orientation, split ratio and children.
-3. On a new window, insert it as a sibling of the focused leaf.  Choose the
-   orientation from the cursor half or a configurable force-split mode.
-   Collapse the parent when a window closes.
-4. Reuse the existing split parts for geometry and implement `adjust`,
-   `clone` and `handleShortcut` (for rotate/toggle-split).
-5. Register the class in `layoutsList`, set its order key, and optionally add
-   a KCM group so it can be ordered and disabled.
-6. Add a pinned patched `.kwinscript` under `vendor/` with a checksum, and a
-   deploy flag that selects it instead of the Codeberg latest release.
-
-The configuration-only alternatives are cheaper:
-
-- **Keep stock Krohnkite and use Spiral as the default.**  This is the
-  closest existing approximation with zero fork maintenance.  It matches the
-  sequential-open feel but not focus-aware insertion.
-- **Use Tile as the default.**  Predictable master/stack tiling, but visibly
-  different from Hyprland.
-
-### Recommendation
-
-Do not build a tiler from scratch.  If exact dwindle behaviour matters after
-daily use, build a **pinned Krohnkite fork** with a `DwindleLayout` class and
-ship it as a versioned vendored asset.  Keep stock Krohnkite selectable with
-an explicit flag.  This keeps the geometry work small and the risk contained.
-
-Rough effort:
-
-- focus-aware prototype: 1-2 days;
-- robust close/reopen, screen hotplug, resize and multi-desktop handling:
-  4-7 days;
-- KCM integration and upstream-quality review: 1-2 weeks.
-
-Until that exists, the honest description is "dwindle-like" rather than
-"Hyprland dwindle".  The current Tile -> Spiral -> Floating order is a useful
-compromise: Tile for predictable master/stack work, Spiral for the closest
-sequential split behaviour, Floating for free placement.
+- Voice dictation (voxtype) hold-to-talk on **F9**.  A quick press or the
+  toggle shortcut works, but simply holding F9 to record and then releasing it
+  does not, even though the service reports itself as correctly installed.
+  Confirm that the Dwindle integration and its focused-leaf insertion tests
+  are working as intended before investigating this one.
 
 ## Suggested milestones
 
@@ -190,8 +172,8 @@ sequential split behaviour, Floating for free placement.
    all, clear reminders, panel/full-screen-desktop toggles.
 2. **Window-state parity** - transparency, square aspect, scratchpad/Quake
    moves, split-step resizing.
-3. **Dwindle prototype** - pinned fork, `DwindleLayout`, A/B against Spiral
-   on a real session, then decide whether to make it the default.
+3. **Dwindle hardening** - screen hotplug, dock/panel interactions, capacity
+   changes, and multi-desktop restore paths on real hardware.
 4. **Shell parity** - notification actions, tmux/Herdr keybinding viewers,
    panel toggles where they make sense on Plasma.
 

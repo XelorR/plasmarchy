@@ -26,7 +26,8 @@ of this machine's outputs and are meaningless on different hardware. Krohnkite
 creates the correct per-output groups on first use.
 
 `deploy.sh` still rewrites the important generated settings after the copy:
-Krohnkite layout/gaps, focus policy, `BorderSizeAuto=false`, window rules,
+the Krohnkite layout cycle (Dwindle -> Columns -> Floating), disabled layouts,
+gaps, focus isolation, focus policy, `BorderSizeAuto=false`, window rules,
 animation switches, the decoration theme, and the shortcut map. The snapshot
 is there to keep everything else (power, languages, input, extra hotkeys,
 desktop names, a neutralized panel/dock layout) without copying machine-specific

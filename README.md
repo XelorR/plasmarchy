@@ -6,9 +6,9 @@ machines: KDE Plasma 6 on Arch/CachyOS and Windows 11.
 Reference look and feel: [Omarchy hotkeys](https://omarchy.org/manual/hotkeys/).
 
 Plasmarchy does not install Omarchy itself.  It reproduces the ergonomic
-parts that matter on your existing desktop: a Hyprland-style `dwindle`-like
-tiling layout, practical keyboard shortcuts, server-side window borders, low
-visual friction and predictable focus behaviour.
+parts that matter on your existing desktop: a Hyprland-style Dwindle tiling
+layout, practical keyboard shortcuts, server-side window borders, low visual
+friction and predictable focus behaviour.
 
 ## Quick start
 
@@ -61,10 +61,15 @@ AutoHotkey v2 and Kanata instead of KWin/Krohnkite.  See
 By default the deployer does **not** install unrelated applications.  The
 Linux installation configures:
 
-- Krohnkite tiling.  The latest release is downloaded from Codeberg on
-  demand and cached locally; `--krohnkite-version TAG` pins a release and
-  `--krohnkite-bundled` uses the vendored 0.9.10.0 fallback.
-- Layout order Tile -> Spiral -> Floating.
+- Krohnkite tiling from the Plasmarchy fork
+  ([XelorR/Krohnkite](https://github.com/XelorR/Krohnkite)).  The pinned fork
+  build is downloaded from GitHub on demand and cached locally;
+  `--krohnkite-version TAG` selects another fork tag or branch and
+  `--krohnkite-bundled` uses the vendored 0.9.11.1 fallback.
+- Layout order Dwindle -> Columns -> Floating.  Dwindle inserts a new window
+  into the focused tile and keeps unrelated branches and split ratios intact.
+- Directional focus stays inside the current virtual desktop.  At an edge
+  `Meta+Left`/`Meta+Right` stops instead of wrapping or switching desktops.
 - Hyprland-like daily-driver shortcuts for navigation, resize, layout and
   workspace movement.
 - Server-side decoration with a 2 px border, an active cyan to green
@@ -144,8 +149,8 @@ session.
 | `--skip-packages`          | Alias for `--packages none`.                               |
 | `--no-backup`              | Skip the pre-deploy snapshot.                              |
 | `--skip-krohnkite`         | Do not install or configure Krohnkite.                     |
-| `--krohnkite-version TAG`  | Download a specific Krohnkite tag; default is latest.      |
-| `--krohnkite-bundled`      | Use the copy shipped in `vendor/` instead of downloading.   |
+| `--krohnkite-version REF`  | Fork tag or branch; default is pinned `0.9.11.1`. `latest` means the fork's `master`. |
+| `--krohnkite-bundled`      | Use the vendored fork build instead of downloading.        |
 | `--skip-theme`             | Do not install or activate the border theme.               |
 | `--skip-focus`             | Do not change focus behaviour.                             |
 | `--skip-shortcuts`         | Do not change shortcuts.                                   |
@@ -187,8 +192,8 @@ a new window in the default browser, never to a tab in the last window.
 open viewer.  The runtime copy is installed to
 `~/.local/share/plasmarchy/docs/plasmarchy-shortcuts.html`.
 
-The remaining Omarchy gaps, including the analysis of a custom Krohnkite
-dwindle layout, are tracked in [`docs/parity-roadmap.md`](docs/parity-roadmap.md).
+The remaining Omarchy gaps and the implemented Dwindle layout are tracked in
+[`docs/parity-roadmap.md`](docs/parity-roadmap.md).
 
 Check the shortcut map:
 
@@ -240,7 +245,14 @@ underlying helpers are `scripts/create-backup.sh` and
 - Theme did not apply: check `/usr/lib/plasma-apply-aurorae --list-themes` and
   `kwriteconfig6` theme keys.
 - No tiling: verify `kreadconfig6 --file kwinrc --group Plugins --key krohnkiteEnabled`
-  and `kreadconfig6 --file kwinrc --group Script-krohnkite --key screenDefaultLayout`.
+  and `kreadconfig6 --file kwinrc --group Script-krohnkite --key screenDefaultLayout`
+  (it should print `:DwindleLayout`).
+- Wrong layout cycle: check `dwindleLayoutEnabled`, `columnsLayoutEnabled` and
+  `floatingLayoutEnabled` are `true` and every other `*LayoutEnabled` key in
+  `[Script-krohnkite]` is `false`.
+- Focus keys switch desktops: all four of `focusMoveScreensNormal`,
+  `focusMoveVDesktopsNormal`, `focusMoveScreensMeta` and
+  `focusMoveVDesktopsMeta` must be `false`.
 - Focus logger: check `journalctl --user -n 200 _COMM=kwin_wayland`.
 - Animations remain: verify `AnimationDurationFactor=0`,
   `[Windows] ElectricBorderTiling=false` and the loaded Plasma effects.
@@ -272,7 +284,7 @@ underlying helpers are `scripts/create-backup.sh` and
 | `docs/`                    | Generated shortcut reference (HTML, text and PDF).     |
 | `theme/plasmarchy/`        | Aurorae border theme.                                  |
 | `windows11/`               | Windows 11 implementation and specification.           |
-| `vendor/`                  | Offline fallback Krohnkite and its checksum.           |
+| `vendor/`                  | Offline fallback Krohnkite fork build and its checksum. |
 
 Backups are deliberately ignored by Git because they contain personal system
 state.  Do not commit them to a public repository.

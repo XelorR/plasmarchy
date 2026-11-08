@@ -67,7 +67,7 @@ Meta+Shift+Minus			KrohnkiteShrinkHeight: Shrink height
 Meta+Equal			KrohnkiteShrinkWidth: Shrink width
 Meta+Minus			KrohnkitegrowWidth: Grow width
 Meta+T			KrohnkiteToggleFloat: Toggle floating
-Meta+L			KrohnkiteNextLayout: Cycle layout: Tile -> Spiral -> Floating
+Meta+L			KrohnkiteNextLayout: Cycle layout: Dwindle -> Columns -> Floating
 Meta+Alt+L			KrohnkitePreviousLayout: Cycle layout in reverse
 Meta+J			KrohnkiteRotate: Toggle split orientation (rotate layout)
 Meta+Return			_launch: Konsole

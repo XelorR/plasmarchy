@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""Reload the installed Krohnkite fork without restarting KWin or logging out.
+
+KWin keeps a compiled QML/JS component cache keyed by the imported URLs.  After
+a package upgrade, asking the same path to run again can reuse the old cache even
+when the source file has changed.  This helper stages a complete fresh-path
+bundle, so KWin reads every changed file again.
+
+The source is an installed KWin package directory; pass it with --source.
+"""
+
+import argparse
+import fcntl
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+SERVICE = "org.kde.KWin"
+INTERFACE = "org.kde.kwin.Scripting"
+PLUGIN = "krohnkite"
+REQUIRED = ("contents/ui/main.qml", "contents/code/script.js", "metadata.json")
+
+RELOAD_ERRORS = (ValueError, RuntimeError, OSError, subprocess.CalledProcessError)
+
+
+def run(method, *args):
+    return subprocess.run(
+        ["qdbus6", SERVICE, "/Scripting", f"{INTERFACE}.{method}", *args],
+        check=True,
+        text=True,
+        capture_output=True,
+    ).stdout.strip()
+
+
+def is_loaded():
+    try:
+        return run("isScriptLoaded", PLUGIN) == "true"
+    except subprocess.CalledProcessError:
+        return False
+
+
+def stage(source):
+    for rel in REQUIRED:
+        path = source / rel
+        if not path.is_file():
+            raise ValueError(f"missing {path} in Krohnkite package")
+    script = (source / "contents/code/script.js").read_text(errors="ignore")
+    if "DwindleLayout" not in script:
+        raise ValueError("the installed Krohnkite package does not contain DwindleLayout")
+
+    cache = Path(os.environ.get("XDG_CACHE_HOME", str(Path.home() / ".cache")))
+    cache = cache / "plasmarchy" / "krohnkite-staged"
+    cache.mkdir(parents=True, exist_ok=True)
+
+    lock = cache / "reload.lock"
+    handle = lock.open("w")
+    try:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        bundle = Path(tempfile.mkdtemp(prefix="reload-", dir=cache))
+        try:
+            shutil.copytree(source, bundle, dirs_exist_ok=True)
+        except Exception:
+            shutil.rmtree(bundle, ignore_errors=True)
+            raise
+        main_qml = bundle / "contents" / "ui" / "main.qml"
+        if not main_qml.is_file():
+            shutil.rmtree(bundle, ignore_errors=True)
+            raise ValueError("staged bundle is missing contents/ui/main.qml")
+
+        last_good = cache / "last-good-main-qml"
+        previous = None
+        try:
+            previous = Path(last_good.read_text().strip())
+        except OSError:
+            previous = None
+        loaded = is_loaded()
+        if loaded:
+            try:
+                run("unloadScript", PLUGIN)
+            except subprocess.CalledProcessError as exc:
+                shutil.rmtree(bundle, ignore_errors=True)
+                raise RuntimeError(f"KWin refused to unload Krohnkite: {exc}") from exc
+
+        try:
+            run("loadDeclarativeScript", str(main_qml), PLUGIN)
+            run("start")
+        except (subprocess.CalledProcessError, RuntimeError) as exc:
+            shutil.rmtree(bundle, ignore_errors=True)
+            if loaded and previous and previous.is_file():
+                try:
+                    run("loadDeclarativeScript", str(previous), PLUGIN)
+                    run("start")
+                    raise RuntimeError(
+                        f"replacement failed: {exc}; recovered the previous Krohnkite bundle"
+                    )
+                except subprocess.CalledProcessError as recovery_exc:
+                    raise RuntimeError(
+                        f"replacement and recovery failed: {recovery_exc}"
+                    ) from recovery_exc
+            raise RuntimeError(f"KWin refused to load Krohnkite: {exc}") from exc
+
+        try:
+            last_good.write_text(str(main_qml))
+        except OSError:
+            pass
+        print(f"Krohnkite reloaded from a fresh path: {main_qml}")
+
+        kept = {main_qml.parent.parent.parent.resolve()}
+        try:
+            if previous and previous.is_file():
+                kept.add(previous.parent.parent.parent.resolve())
+        except OSError:
+            pass
+        for candidate in cache.glob("reload-*"):
+            if not candidate.is_dir():
+                continue
+            try:
+                if candidate.resolve() not in kept:
+                    shutil.rmtree(candidate, ignore_errors=True)
+            except OSError:
+                continue
+        return True
+    finally:
+        fcntl.flock(handle, fcntl.LOCK_UN)
+        handle.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--source",
+        default=os.environ.get("KROHNKITE_SOURCE", os.path.expanduser("~/.local/share/kwin/scripts/krohnkite")),
+        help="installed Krohnkite package directory",
+    )
+    parser.add_argument(
+        "--only-if-loaded",
+        action="store_true",
+        help="do nothing if Krohnkite is not currently loaded",
+    )
+    args = parser.parse_args()
+
+    source = Path(args.source)
+    if args.only_if_loaded and not is_loaded():
+        print("Krohnkite is not loaded; nothing to reload.")
+        return 3
+    try:
+        stage(source)
+    except RELOAD_ERRORS as exc:
+        message = getattr(exc, "stderr", None) or str(exc)
+        print(f"Could not reload Krohnkite: {message}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+

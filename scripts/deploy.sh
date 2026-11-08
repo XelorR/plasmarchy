@@ -12,8 +12,9 @@
 #   --skip-packages       Alias for --packages none
 #   --no-backup           Do not create a pre-deploy snapshot
 #   --skip-krohnkite      Do not install/enable/configure Krohnkite
-#   --krohnkite-version V Tag to download, default latest
-#   --krohnkite-bundled   Use the copy shipped in vendor/ instead of downloading
+#   --krohnkite-version V Fork tag or branch to download (default 0.9.11.1;
+#                         latest means the fork's master branch)
+#   --krohnkite-bundled   Use the vendored fork build instead of downloading
 #   --skip-theme          Do not install/activate the Plasmarchy decoration
 #   --skip-focus          Do not configure focus-follows-mouse / pointer follow
 #   --skip-shortcuts      Do not change any shortcuts
@@ -27,9 +28,10 @@
 #   -h, --help            Show this help
 #
 # The script is intentionally idempotent.  It backs up the Plasma/KWin state,
-# installs packages (optional), installs the pinned Krohnkite release, writes
-# Krohnkite/KWin configuration, installs the custom decoration, generates the
-# command wrappers, and applies the shortcut map through KGlobalAccel.
+# installs packages (optional), installs the pinned Plasmarchy Krohnkite fork
+# build, writes Krohnkite/KWin configuration, installs the custom decoration,
+# generates the command wrappers, and applies the shortcut map through
+# KGlobalAccel.
 #
 # It never runs as root.  Package installation uses sudo only for pacman.
 
@@ -60,9 +62,15 @@ RESTORE_BACKUP=0
 RESTORE_SNAPSHOT=""
 DICTATION_LANGS=""
 
-KROHNKITE_REF="${KROHNKITE_REF:-latest}"
+KROHNKITE_FORK_REPO="XelorR/Krohnkite"
+KROHNKITE_DEFAULT_VERSION="0.9.11.1"
+KROHNKITE_REF="${KROHNKITE_REF:-$KROHNKITE_DEFAULT_VERSION}"
 KROHNKITE_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/plasmarchy"
-KROHNKITE_VERSION="$KROHNKITE_REF"
+if [[ "$KROHNKITE_REF" == "bundled" ]]; then
+    KROHNKITE_VERSION="$KROHNKITE_DEFAULT_VERSION"
+else
+    KROHNKITE_VERSION="$KROHNKITE_REF"
+fi
 KROHNKITE_ASSET=""
 KROHNKITE_DIR="$DATA_HOME/kwin/scripts/krohnkite"
 AURORAE_THEME="__aurorae__svg__plasmarchy"
@@ -102,10 +110,10 @@ while (($#)); do
         --no-backup) BACKUP=0; shift ;;
         --skip-krohnkite) SKIP_KROHNKITE=1; shift ;;
         --krohnkite-version)
-            [[ $# -ge 2 ]] || die "--krohnkite-version requires latest or a tag"
-            KROHNKITE_REF="$2"; KROHNKITE_VERSION="$2"; shift 2
+            [[ $# -ge 2 ]] || die "--krohnkite-version requires latest, a tag, or a branch"
+            KROHNKITE_REF="$2"; shift 2
             ;;
-        --krohnkite-bundled) KROHNKITE_REF="bundled"; KROHNKITE_VERSION="bundled"; shift ;;
+        --krohnkite-bundled) KROHNKITE_REF="bundled"; shift ;;
         --skip-theme) SKIP_THEME=1; shift ;;
         --skip-focus) SKIP_FOCUS=1; shift ;;
         --skip-shortcuts) SKIP_SHORTCUTS=1; shift ;;
@@ -200,7 +208,7 @@ session_ok() {
 preflight() {
     log "Preflight"
     printf 'Repository: %s\n' "$ROOT"
-    printf 'Krohnkite:  %s (downloaded on demand, cached locally)\n' "$KROHNKITE_REF"
+    printf 'Krohnkite:  %s (%s fork, downloaded on demand and cached locally)\n' "$KROHNKITE_REF" "$KROHNKITE_FORK_REPO"
     printf 'Shortcut map entries: %s\n' "$(count_map_entries)"
     printf 'Packages:   %s\n' "$PACKAGES"
     printf 'Focus:      %s\n' "$([[ $SKIP_FOCUS == 1 ]] && echo skip || echo 'focus-follows-mouse + Krohnkite pointer follow')"
@@ -347,95 +355,103 @@ install_runtime_files() {
         fi
     done
     install -m 0755 "$ROOT/bin/plasmarchy-apply-krohnkite" "$RUNTIME/bin/plasmarchy-apply-krohnkite"
+    install -m 0755 "$ROOT/bin/plasmarchy-reload-krohnkite" "$RUNTIME/bin/plasmarchy-reload-krohnkite"
     install -m 0644 "$ROOT/manifests/shortcuts.tsv" "$RUNTIME/shortcuts.tsv"
     install -m 0644 "$ROOT/manifests/commands.tsv" "$RUNTIME/commands.tsv"
     install -m 0644 "$ROOT/manifests/packages-required.txt" "$RUNTIME/manifests/packages-required.txt"
     install -m 0644 "$ROOT/manifests/packages-optional.txt" "$RUNTIME/manifests/packages-optional.txt"
 }
 
+krohnkite_asset_info() {
+    python3 - "$1" <<'PY'
+import json
+import sys
+import zipfile
+
+try:
+    with zipfile.ZipFile(sys.argv[1]) as archive:
+        broken = archive.testzip()
+        if broken is not None:
+            raise ValueError(f"corrupt archive member: {broken}")
+        for required in (
+            "metadata.json",
+            "contents/code/script.js",
+            "contents/ui/main.qml",
+            "contents/config/main.xml",
+        ):
+            archive.getinfo(required)
+        script = archive.read("contents/code/script.js")
+        if b"DwindleLayout" not in script:
+            raise ValueError("archive does not contain DwindleLayout")
+        metadata = json.loads(archive.read("metadata.json"))
+        version = metadata.get("KPlugin", {}).get("Version", "").strip()
+        if not version:
+            raise ValueError("archive metadata has no version")
+        print(version)
+except Exception as exc:
+    sys.stderr.write(f"{sys.argv[1]}: {exc}\n")
+    raise SystemExit(1)
+PY
+}
+
+use_vendored_krohnkite() {
+    KROHNKITE_VERSION="$KROHNKITE_DEFAULT_VERSION"
+    KROHNKITE_ASSET="$ROOT/vendor/krohnkite-$KROHNKITE_VERSION.kwinscript"
+    [[ -f "$KROHNKITE_ASSET" ]] ||
+        die "missing vendored Krohnkite fork build: $KROHNKITE_ASSET"
+    (cd "$ROOT/vendor" && sha256sum -c SHA256SUMS) ||
+        die "vendored Krohnkite fork build failed its checksum"
+    krohnkite_asset_info "$KROHNKITE_ASSET" >/dev/null ||
+        die "vendored Krohnkite fork build is not a usable package"
+}
+
 install_krohnkite() {
     ((SKIP_KROHNKITE)) && { log "Skipping Krohnkite"; return; }
     if ((DRY_RUN)); then
-        log "Would install Krohnkite from $KROHNKITE_REF"
+        log "Would install Krohnkite $KROHNKITE_REF from the $KROHNKITE_FORK_REPO fork"
         return
     fi
 
     if [[ "$KROHNKITE_REF" == "bundled" ]]; then
-        KROHNKITE_VERSION="0.9.10.0"
-        KROHNKITE_ASSET="$ROOT/vendor/krohnkite-$KROHNKITE_VERSION.kwinscript"
-        [[ -f "$KROHNKITE_ASSET" ]] || die "missing vendored Krohnkite asset: $KROHNKITE_ASSET"
-        (cd "$ROOT/vendor" && sha256sum -c SHA256SUMS)
+        use_vendored_krohnkite
     else
-        local api_url
-        if [[ "$KROHNKITE_REF" == "latest" ]]; then
-            api_url="https://codeberg.org/api/v1/repos/anametologin/Krohnkite/releases/latest"
-        else
-            api_url="https://codeberg.org/api/v1/repos/anametologin/Krohnkite/releases/tags/$KROHNKITE_REF"
-        fi
+        local ref="$KROHNKITE_REF"
+        [[ "$ref" == "latest" ]] && ref="master"
+        [[ "$ref" =~ ^[A-Za-z0-9._/-]+$ ]] ||
+            die "invalid Krohnkite fork ref: $ref"
 
-        log "Resolving Krohnkite release: $KROHNKITE_REF"
-        local meta
-        if ! meta="$(curl -fsSL --max-time 20 "$api_url" | python3 - <<'PY'
-import json, sys
-try:
-    d = json.load(sys.stdin)
-    if isinstance(d, list):
-        if not d:
-            raise ValueError("no releases")
-        d = d[0]
-    tag = d.get("tag_name", "").strip()
-    asset = None
-    url = None
-    for item in d.get("assets", []):
-        name = item.get("name", "")
-        if name.endswith(".kwinscript"):
-            asset = name
-            url = item.get("browser_download_url") or item.get("download_url")
-            break
-    if not tag or not asset or not url:
-        raise ValueError("Krohnkite release did not expose a .kwinscript asset")
-    print(tag)
-    print(asset)
-    print(url)
-except Exception as exc:
-    sys.stderr.write(str(exc) + "\n")
-    raise SystemExit(1)
-PY
-        )"; then
-            if [[ -f "$ROOT/vendor/krohnkite-0.9.10.0.kwinscript" ]]; then
-                warn "network resolution failed; falling back to vendored Krohnkite 0.9.10.0"
-                KROHNKITE_VERSION="0.9.10.0"
-                KROHNKITE_ASSET="$ROOT/vendor/krohnkite-$KROHNKITE_VERSION.kwinscript"
-            else
-                die "could not resolve or download Krohnkite"
-            fi
+        local url="https://raw.githubusercontent.com/$KROHNKITE_FORK_REPO/$ref/dist/krohnkite.kwinscript"
+        local cache="$KROHNKITE_CACHE_DIR/krohnkite-fork-${ref//\//-}.kwinscript"
+        mkdir -p "$KROHNKITE_CACHE_DIR"
+
+        if [[ -f "$cache" ]] && krohnkite_asset_info "$cache" >/dev/null 2>&1; then
+            log "Using cached Krohnkite fork build: $ref"
         else
-            local tag asset url
-            tag="$(printf '%s\n' "$meta" | sed -n '1p')"
-            asset="$(printf '%s\n' "$meta" | sed -n '2p')"
-            url="$(printf '%s\n' "$meta" | sed -n '3p')"
-            KROHNKITE_VERSION="$tag"
-            mkdir -p "$KROHNKITE_CACHE_DIR"
-            KROHNKITE_ASSET="$KROHNKITE_CACHE_DIR/krohnkite-$tag-$asset"
-            if [[ ! -f "$KROHNKITE_ASSET" ]]; then
-                log "Downloading Krohnkite $tag"
-                [[ -n "$url" ]] || die "Krohnkite download URL is empty"
-                if ! curl -fsSL "$url" -o "$KROHNKITE_ASSET"; then
-                    if [[ -f "$ROOT/vendor/krohnkite-0.9.10.0.kwinscript" ]]; then
-                        warn "download failed; falling back to vendored Krohnkite 0.9.10.0"
-                        KROHNKITE_VERSION="0.9.10.0"
-                        KROHNKITE_ASSET="$ROOT/vendor/krohnkite-$KROHNKITE_VERSION.kwinscript"
-                    else
-                        die "could not download Krohnkite"
-                    fi
-                fi
+            rm -f "$cache" "$cache.part"
+            log "Downloading Krohnkite fork build: $ref"
+            if ! curl -fsSL --max-time 60 "$url" -o "$cache.part"; then
+                rm -f "$cache.part"
+                warn "download failed; using the vendored Krohnkite fork $KROHNKITE_DEFAULT_VERSION"
+                use_vendored_krohnkite
+            elif ! krohnkite_asset_info "$cache.part" >/dev/null; then
+                rm -f "$cache.part"
+                warn "downloaded package is invalid; using the vendored Krohnkite fork $KROHNKITE_DEFAULT_VERSION"
+                use_vendored_krohnkite
+            else
+                mv "$cache.part" "$cache"
             fi
+        fi
+        if [[ -z "$KROHNKITE_ASSET" ]]; then
+            KROHNKITE_ASSET="$cache"
+            KROHNKITE_VERSION="$(krohnkite_asset_info "$cache")" ||
+                die "could not read the Krohnkite fork version"
         fi
     fi
 
     [[ -f "$KROHNKITE_ASSET" ]] || die "Krohnkite asset is missing: $KROHNKITE_ASSET"
 
     local installed=""
+    local installed_has_dwindle=0
     if [[ -f "$KROHNKITE_DIR/metadata.json" ]]; then
         installed="$(python3 - "$KROHNKITE_DIR/metadata.json" <<'PY'
 import json, sys
@@ -445,10 +461,13 @@ except Exception:
     print("")
 PY
 )"
+        if grep -q "DwindleLayout" "$KROHNKITE_DIR/contents/code/script.js" 2>/dev/null; then
+            installed_has_dwindle=1
+        fi
     fi
 
-    log "Krohnkite asset: $KROHNKITE_ASSET"
-    if [[ "$installed" == "$KROHNKITE_VERSION" ]]; then
+    log "Krohnkite asset: $KROHNKITE_ASSET ($KROHNKITE_VERSION)"
+    if [[ "$installed" == "$KROHNKITE_VERSION" && "$installed_has_dwindle" == 1 ]]; then
         log "Krohnkite $KROHNKITE_VERSION is already installed"
     elif [[ -n "$installed" ]]; then
         log "Upgrading Krohnkite $installed -> $KROHNKITE_VERSION"
@@ -458,13 +477,14 @@ PY
         log "Installing Krohnkite $KROHNKITE_VERSION"
         kpackagetool6 --type KWin/Script --install "$KROHNKITE_ASSET"
     fi
+
 }
 
 
 write_krohnkite_config() {
     ((SKIP_KROHNKITE)) && return
     if ((DRY_RUN)); then
-        log "Would write Krohnkite config (Tile -> Spiral -> Floating, gaps 10/5)"
+        log "Would write Krohnkite config (Dwindle -> Columns -> Floating, gaps 10/5, isolated focus)"
         return
     fi
     log "Writing Krohnkite config"
@@ -476,21 +496,38 @@ write_krohnkite_config() {
         kwriteconfig6 --file kwinrc --group Script-krohnkite --key "$1" --type bool "$2"
     }
 
-    # Only three layouts are enabled, in this order.  Its layout list is what
-    # KrohnkiteNextLayout cycles through.
-    kc tileLayoutOrder 1
-    kc spiralLayoutOrder 2
+    # Only three layouts are enabled, in this order.  The layout list is what
+    # KrohnkiteNextLayout cycles through.  Every order stays valid and unique
+    # so re-enabling another layout later does not produce ties or warnings.
+    kcb dwindleLayoutEnabled true
+    kc dwindleLayoutOrder 1
+    kcb columnsLayoutEnabled true
+    kc columnsLayoutOrder 2
+    kcb floatingLayoutEnabled true
     kc floatingLayoutOrder 3
-    kc monocleLayoutOrder 0
-    kc threeColumnLayoutOrder 0
-    kc quarterLayoutOrder 0
-    kc stackedLayoutOrder 0
-    kc columnsLayoutOrder 0
-    kc spreadLayoutOrder 0
-    kc stairLayoutOrder 0
-    kc binaryTreeLayoutOrder 0
-    kc cascadeLayoutOrder 0
-    kc screenDefaultLayout ":Tile"
+
+    local layout
+    for layout in tile monocle threeColumn spiral quarter stacked spread stair binaryTree cascade; do
+        kcb "${layout}LayoutEnabled" false
+    done
+    kc tileLayoutOrder 4
+    kc monocleLayoutOrder 5
+    kc threeColumnLayoutOrder 6
+    kc spiralLayoutOrder 7
+    kc quarterLayoutOrder 8
+    kc stackedLayoutOrder 9
+    kc spreadLayoutOrder 10
+    kc stairLayoutOrder 11
+    kc binaryTreeLayoutOrder 12
+    kc cascadeLayoutOrder 13
+    kc screenDefaultLayout ":DwindleLayout"
+
+    # Keep directional focus inside the current tiled surface.  At an edge the
+    # shortcut stops instead of wrapping or switching virtual desktops.
+    kcb focusMoveScreensNormal false
+    kcb focusMoveVDesktopsNormal false
+    kcb focusMoveScreensMeta false
+    kcb focusMoveVDesktopsMeta false
 
     kc screenGapLeft 10
     kc screenGapRight 10
@@ -852,12 +889,9 @@ load_krohnkite() {
     ((DRY_RUN)) && return 1
 
     log "Loading Krohnkite in the running KWin"
-    local loaded
-    loaded="$(qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.isScriptLoaded krohnkite 2>/dev/null || true)"
-    if [[ "$loaded" != "true" ]]; then
-        qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.loadDeclarativeScript \
-            "$KROHNKITE_DIR/contents/ui/main.qml" krohnkite >/dev/null 2>&1 || true
-        qdbus6 org.kde.KWin /Scripting org.kde.kwin.Scripting.start >/dev/null 2>&1 || true
+    if ! "$RUNTIME/bin/plasmarchy-reload-krohnkite" --source "$KROHNKITE_DIR"; then
+        warn "live Krohnkite reload failed; a logout or login is required"
+        return 1
     fi
 
     local i
@@ -951,10 +985,10 @@ summary() {
     cat <<EOF
 
 Applied:
-  - Krohnkite:  $([[ $SKIP_KROHNKITE == 1 ]] && echo skipped || echo "$KROHNKITE_VERSION, Tile -> Spiral -> Floating, gaps 10/5")
+  - Krohnkite:  $([[ $SKIP_KROHNKITE == 1 ]] && echo skipped || echo "$KROHNKITE_VERSION fork, Dwindle -> Columns -> Floating, gaps 10/5")
   - Theme:      $([[ $SKIP_THEME == 1 ]] && echo skipped || echo "plasmarchy (2 px border, no titlebar, server-side decoration)")
   - Rules:      server-side borders for normal windows; browser tiling fix
-  - Focus:      $([[ $SKIP_FOCUS == 1 ]] && echo skipped || echo "focus follows mouse + mouse follows focus")
+  - Focus:      $([[ $SKIP_FOCUS == 1 ]] && echo skipped || echo "focus follows mouse + pointer warp; directional focus stays on the current desktop")
   - Animations: disabled (0 duration, no slide/fade/scale)
   - Clipboard:  Meta+C/X/V via ydotool, terminal-aware
   - Shortcuts:  $([[ $SKIP_SHORTCUTS == 1 ]] && echo skipped || echo "see manifests/shortcuts.tsv")
@@ -969,11 +1003,14 @@ Next steps:
      live) Krohnkite.
   2. After login, test: Meta+Space, Meta+Return, Meta+Left/Right,
      Meta+L, Meta+T, Meta+1..9, Alt+Tab, Print, Meta+Ctrl+C.
-  3. Test clipboard: Meta+C / Meta+V in a GUI app and in Konsole.  The
+  3. Test Dwindle: open four windows, focus a tile, then open a fifth.
+     Only the focused tile should split; Meta+Left/Right must stop at an
+     edge instead of wrapping or changing desktops.
+  4. Test clipboard: Meta+C / Meta+V in a GUI app and in Konsole.  The
      focus logger is installed as the plasmarchy-focus KWin script.
-  4. If Krohnkite shortcuts were deferred, the one-shot autostart applies
+  5. If Krohnkite shortcuts were deferred, the one-shot autostart applies
      them automatically at login.
-  5. $([[ $WITH_DICTATION == 1 ]] && echo "Dictation is installed. Hold F9 to dictate, or press Alt+Space to toggle." || echo "Dictation is opt-in: rerun ./deploy.sh --with-dictation.")
+  6. $([[ $WITH_DICTATION == 1 ]] && echo "Dictation is installed. Hold F9 to dictate, or press Alt+Space to toggle." || echo "Dictation is opt-in: rerun ./deploy.sh --with-dictation.")
 
 Rollback:
   - Shortcuts/theme/config: ./install.sh restore latest --reload
