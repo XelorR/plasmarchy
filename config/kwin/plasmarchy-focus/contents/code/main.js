@@ -8,6 +8,7 @@
 
 var lastClass = null;
 var lastPid = 0;
+var lastCaption = "";
 
 function activeClass(window) {
     if (!window) {
@@ -25,9 +26,10 @@ function report(window) {
     var caption = (window && !window.deleted && window.caption) ? window.caption : "";
     // Report on each focus change or process change, not only on a class
     // change.  Same-app switching otherwise kept a stale source window.
-    if (cls !== lastClass || pid !== lastPid) {
+    if (cls !== lastClass || pid !== lastPid || caption !== lastCaption) {
         lastClass = cls;
         lastPid = pid;
+        lastCaption = caption;
         print("PLASMARCHY-FOCUS " + cls + " " + pid + " " + caption);
         print("PLASMARCHY-WINDOW " + pid + " " + cls + " | " + caption);
     }
