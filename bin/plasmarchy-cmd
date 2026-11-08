@@ -66,6 +66,14 @@ EOF
     printf '%s' "${out#PLASMARCHY-FOCUS-QUERY }"
 }
 
+is_dolphin_class() {
+    local cls="${1,,}"
+    case "$cls" in
+        *dolphin*) return 0 ;;
+    esac
+    return 1
+}
+
 is_terminal_class() {
     local cls="${1,,}"
     case "$cls" in
@@ -513,6 +521,18 @@ tmux_install_hint() {
 
 case "${1:-}" in
     terminal)
+        # Dolphin's own Shift+F4 opens a terminal in the currently visible
+        # directory.  Use it instead of guessing the path from a stale window.
+        cur_class="$(focus_class)"
+        if is_dolphin_class "$cur_class"; then
+            if have ydotool; then
+                ydotool key 125:0 126:0 >/dev/null 2>&1 || true
+                sleep 0.05
+                ydotool key 42:1 62:1 62:0 42:0 >/dev/null 2>&1 || true
+                exit 0
+            fi
+        fi
+
         dir="$(context_dir)"
         if [[ -n "$dir" && "$dir" != "/" ]] && have konsole; then
             exec konsole --workdir "$dir"
