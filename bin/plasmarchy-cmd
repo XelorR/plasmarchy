@@ -147,6 +147,7 @@ dolphin_current_dir() {
     [[ -n "${decoded:-}" ]] || return 0
     decoded="${decoded#file://}"
     [[ -d "$decoded" ]] && printf '%s' "$decoded"
+    return 0
 }
 
 context_dir() {
@@ -175,9 +176,10 @@ context_dir() {
             fi
             ;;
         *kate*)
-            [[ -r "/proc/$pid/cwd" ]] && readlink -f "/proc/$pid/cwd" 2>/dev/null
+            [[ -r "/proc/$pid/cwd" ]] && readlink -f "/proc/$pid/cwd" 2>/dev/null || true
             ;;
     esac
+    return 0
 }
 
 # Unlike focus_class(), keep pid and caption so context-aware launchers know
