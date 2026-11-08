@@ -665,6 +665,34 @@ case "${1:-}" in
         ;;
     kate)
         command_exists_or_fail kate "Kate"
+        # When launched from Dolphin, its folder can be derived from the
+        # terminal that Dolphin's DBus action opens for the visible directory.
+        if command -v qdbus6 >/dev/null 2>&1; then
+            dolphin_svc="$(pgrep -x dolphin | tail -n 1)"
+            if [[ -n "${dolphin_svc:-}" ]] && qdbus6 "org.kde.dolphin-$dolphin_svc" /dolphin/Dolphin_1/actions/open_terminal_here org.qtproject.Qt.QAction.trigger >/dev/null 2>&1; then
+                before="$(pgrep -x konsole | tr '\\n' ' ')"
+                for _ in 1 2 3 4 5 6 7 8; do
+                    sleep 0.1
+                    newkp="$(pgrep -x konsole | grep -v -E "^(${before// /|}))\$" | tail -n 1)"
+                    [[ -n "$newkp" ]] && break
+                done
+                if [[ -n "${newkp:-}" ]]; then
+                    sid="$(qdbus6 "org.kde.konsole-$newkp" /Windows/1 currentSession 2>/dev/null || true)"
+                    sid="${sid//[!0-9]/}"
+                    fp="${newkp}"
+                    if [[ -n "$sid" ]]; then
+                        ffpid="$(qdbus6 "org.kde.konsole-$newkp" "/Sessions/$sid" foregroundProcessId 2>/dev/null || true)"
+                        [[ -n "${ffpid//[!0-9]/}" ]] && fp="${ffpid//[!0-9]/}"
+                    fi
+                    dir="$(readlink -f "/proc/$fp/cwd" 2>/dev/null || true)"
+                    kill "$newkp" >/dev/null 2>&1 || true
+                    if [[ -n "${dir:-}" && "$dir" != "/" ]]; then
+                        exec kate "$dir"
+                    fi
+                fi
+            fi
+        fi
+
         dir="$(context_dir)"
         [[ -z "${dir:-}" ]] && dir="$HOME"
         if [[ -n "${dir:-}" && "$dir" != "/" ]]; then
