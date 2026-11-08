@@ -537,6 +537,7 @@ case "${1:-}" in
                 for _ in 1 2 3; do
                     ydotool key 125:0 126:0 >/dev/null 2>&1 || true
                 done
+                sleep 0.12
                 ydotool key 42:1 62:1 62:0 42:0 >/dev/null 2>&1 || true
                 exit 0
             fi
