@@ -621,11 +621,14 @@ configure_default_image_viewer() {
         return
     fi
 
-    local viewer="plasmarchy-image-viewer.desktop"
-    install -m 0755 "$ROOT/bin/plasmarchy-open-image" "$RUNTIME/bin/plasmarchy-open-image"
-    install -m 0644 "$ROOT/config/applications/plasmarchy-image-viewer.desktop" \
-        "$APPLICATIONS/plasmarchy-image-viewer.desktop"
-    if ! command -v imv >/dev/null 2>&1 && ! command -v nsxiv >/dev/null 2>&1; then
+    local viewer=""
+    if [[ -f /usr/share/applications/imv-dir.desktop ]] && command -v imv >/dev/null 2>&1; then
+        viewer="imv-dir.desktop"
+    elif command -v imv >/dev/null 2>&1; then
+        viewer="imv.desktop"
+    elif command -v nsxiv >/dev/null 2>&1; then
+        viewer="nsxiv.desktop"
+    else
         warn "neither imv nor nsxiv is installed; leaving the default image viewer unchanged"
         return
     fi
