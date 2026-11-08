@@ -202,12 +202,9 @@ context_dir() {
             [[ -n "${fp:-}" ]] && readlink -f "/proc/$fp/cwd" 2>/dev/null
             ;;
         *dolphin*)
-            cand="$(dolphin_current_dir)"
-            if [[ -n "${cand:-}" ]]; then
-                printf '%s' "$cand"
-            elif [[ -r "/proc/$pid/cwd" ]]; then
-                readlink -f "/proc/$pid/cwd" 2>/dev/null
-            fi
+            # Dolphin does not expose a reliable live folder; keep the plain
+            # fallback instead of pretending we found one.
+            return 0
             ;;
         *kate*)
             [[ -r "/proc/$pid/cwd" ]] && readlink -f "/proc/$pid/cwd" 2>/dev/null || true
