@@ -157,17 +157,23 @@ dolphin_current_dir() {
         candidate="$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
     fi
 
-    # Escape clauses: if Dolphin navigated one level deeper since its launch,
-    # the session jump may lag.  The title is "Folder — Dolphin", so try a
-    # sibling incrementally from the last known location first.
+    # Dolphin's session file is stale during normal browsing.  Infer the
+    # directory from its window title and the last known directory:
+    # 1. "Sound — Dolphin": go one level deeper;
+    # 2. "Downloads — Dolphin": stay at the last directory if its name matches;
+    # 3. go one level up when the title is the parent of the last location.
     lastdir="$(cat "$STATE_HOME/dolphin-last-dir" 2>/dev/null || true)"
     base="${caption%% — Dolphin}"
     base="${base%%—Dolphin}"
     base="${base%% — Dolphin}"
-    if [[ -n "${lastdir:-}" && -n "${base:-}" && "$base" != "$lastdir" && -d "$lastdir/$base" ]]; then
-        candidate="$lastdir/$base"
-    elif [[ -n "${lastdir:-}" && "${lastdir##*/}" == "$base" ]]; then
-        candidate="$lastdir"
+    if [[ -n "${lastdir:-}" && -n "${base:-}" ]]; then
+        if [[ -d "$lastdir/$base" ]]; then
+            candidate="$lastdir/$base"
+        elif [[ "${lastdir##*/}" == "$base" ]]; then
+            candidate="$lastdir"
+        elif [[ "$(basename "$(dirname "$lastdir")")" == "$base" ]]; then
+            candidate="$(dirname "$lastdir")"
+        fi
     fi
 
     if [[ -d "${candidate:-}" ]]; then
