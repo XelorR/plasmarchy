@@ -12,7 +12,7 @@
 #   --skip-packages       Alias for --packages none
 #   --no-backup           Do not create a pre-deploy snapshot
 #   --skip-krohnkite      Do not install/enable/configure Krohnkite
-#   --krohnkite-version V Fork tag or branch to download (default 0.9.11.2;
+#   --krohnkite-version V Fork tag or branch to download (default 0.9.11.3;
 #                         latest means the fork's master branch)
 #   --krohnkite-bundled   Use the vendored fork build instead of downloading
 #   --skip-theme          Do not install/activate the Plasmarchy decoration

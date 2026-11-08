@@ -136,7 +136,7 @@ the same tree, child-order and split semantics inside KWin.
 - The layout cycle is `Dwindle -> Columns -> Floating`; every other Krohnkite
   layout is disabled.  `Floating` is the "window" state of the cycle.
 - `screenDefaultLayout` is `:DwindleLayout`.
-- The fork build is pinned as `vendor/krohnkite-0.9.11.2.kwinscript` with a
+- The fork build is pinned as `vendor/krohnkite-0.9.11.3.kwinscript` with a
   SHA256 checksum.  The same fixed-path asset is published at
   `dist/krohnkite.kwinscript` on the fork's tag and `master`, so the deployer
   can download it without GitHub releases or API authentication.
