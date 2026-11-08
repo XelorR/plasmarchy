@@ -532,23 +532,6 @@ case "${1:-}" in
                 grep -vE 'PLASMARCHY-FOCUS (plasmashell|kwin_wayland|krunner) ' |
                 tail -n 1 | awk '{print $1}' || true)"
         fi
-        if is_dolphin_class "$cur_class"; then
-            _pid="${cur_class##* }"
-            _pid="${_pid//[!0-9]/}"
-            if [[ -z "$_pid" ]]; then
-                _pid="$(journalctl --user -n 1000 --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
-                    grep -F 'PLASMARCHY-FOCUS ' |
-                    grep -E 'org\.kde\.dolphin ' |
-                    tail -n 1 | awk '{print $2}' || true)"
-            fi
-            if [[ -z "$_pid" ]]; then
-                _pid="$(pgrep -x dolphin | tail -n 1 || true)"
-            fi
-            if [[ -n "$_pid" ]] && qdbus6 "org.kde.dolphin-$_pid" /dolphin/Dolphin_1/actions/open_terminal_here org.qtproject.Qt.QAction.trigger >/dev/null 2>&1; then
-                exit 0
-            fi
-        fi
-
         dir="$(context_dir)"
         if [[ -n "$dir" && "$dir" != "/" ]] && have konsole; then
             exec konsole --workdir "$dir"
