@@ -122,10 +122,9 @@ the same tree, child-order and split semantics inside KWin.
 - The split is side-by-side when `width > height * split_width_multiplier` and
   top/bottom otherwise.  A square area is top/bottom, matching Hyprland's
   strict comparison with the default multiplier of 1.0.
-- A new split uses the default 0.5 ratio and is unlocked, mirroring
-  `default_split_ratio = 1.0` and `preserve_split = false`.  `Meta+J` and
-  `RotatePart` lock an explicit orientation; an unlocked split reorients when
-  its area changes shape.
+- A new split uses the default 0.5 ratio and starts locked, mirroring Omarchy's
+  `preserve_split = true`: resizing changes split sizes, never the orientation.
+  `Meta+J` and `RotatePart` change the direction and keep it locked.
 - Closing a window replaces its parent with the sibling.  Resizing adjusts
   the nearest ancestor split that can consume the delta.
 - `Meta+Left`/`Meta+Right` use the rendered geometry.  With all four
@@ -137,7 +136,7 @@ the same tree, child-order and split semantics inside KWin.
 - The layout cycle is `Dwindle -> Columns -> Floating`; every other Krohnkite
   layout is disabled.  `Floating` is the "window" state of the cycle.
 - `screenDefaultLayout` is `:DwindleLayout`.
-- The fork build is pinned as `vendor/krohnkite-0.9.11.1.kwinscript` with a
+- The fork build is pinned as `vendor/krohnkite-0.9.11.2.kwinscript` with a
   SHA256 checksum.  The same fixed-path asset is published at
   `dist/krohnkite.kwinscript` on the fork's tag and `master`, so the deployer
   can download it without GitHub releases or API authentication.

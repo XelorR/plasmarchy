@@ -65,7 +65,7 @@ Linux installation configures:
   ([XelorR/Krohnkite](https://github.com/XelorR/Krohnkite)).  The pinned fork
   build is downloaded from GitHub on demand and cached locally;
   `--krohnkite-version TAG` selects another fork tag or branch and
-  `--krohnkite-bundled` uses the vendored 0.9.11.1 fallback.
+  `--krohnkite-bundled` uses the vendored 0.9.11.2 fallback.
 - Layout order Dwindle -> Columns -> Floating.  Dwindle inserts a new window
   into the focused tile and keeps unrelated branches and split ratios intact.
 - Directional focus stays inside the current virtual desktop.  At an edge
@@ -149,7 +149,7 @@ session.
 | `--skip-packages`          | Alias for `--packages none`.                               |
 | `--no-backup`              | Skip the pre-deploy snapshot.                              |
 | `--skip-krohnkite`         | Do not install or configure Krohnkite.                     |
-| `--krohnkite-version REF`  | Fork tag or branch; default is pinned `0.9.11.1`. `latest` means the fork's `master`. |
+| `--krohnkite-version REF`  | Fork tag or branch; default is pinned `0.9.11.2`. `latest` means the fork's `master`. |
 | `--krohnkite-bundled`      | Use the vendored fork build instead of downloading.        |
 | `--skip-theme`             | Do not install or activate the border theme.               |
 | `--skip-focus`             | Do not change focus behaviour.                             |

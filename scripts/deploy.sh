@@ -12,7 +12,7 @@
 #   --skip-packages       Alias for --packages none
 #   --no-backup           Do not create a pre-deploy snapshot
 #   --skip-krohnkite      Do not install/enable/configure Krohnkite
-#   --krohnkite-version V Fork tag or branch to download (default 0.9.11.1;
+#   --krohnkite-version V Fork tag or branch to download (default 0.9.11.2;
 #                         latest means the fork's master branch)
 #   --krohnkite-bundled   Use the vendored fork build instead of downloading
 #   --skip-theme          Do not install/activate the Plasmarchy decoration
@@ -63,7 +63,7 @@ RESTORE_SNAPSHOT=""
 DICTATION_LANGS=""
 
 KROHNKITE_FORK_REPO="XelorR/Krohnkite"
-KROHNKITE_DEFAULT_VERSION="0.9.11.1"
+KROHNKITE_DEFAULT_VERSION="52c1ebf915bec46bc6bde3ba40c5dc9aecc348d6"
 KROHNKITE_REF="${KROHNKITE_REF:-$KROHNKITE_DEFAULT_VERSION}"
 KROHNKITE_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/plasmarchy"
 if [[ "$KROHNKITE_REF" == "bundled" ]]; then
