@@ -210,8 +210,26 @@ context_dir() {
             [[ -n "${fp:-}" ]] && readlink -f "/proc/$fp/cwd" 2>/dev/null
             ;;
         *dolphin*)
-            # Dolphin does not expose a reliable live folder; keep the plain
-            # fallback instead of pretending we found one.
+            # Try to infer the current folder from Dolphin's title and its last
+            # known directory.  Navigation is not available over DBus, but this
+            # works when the focused title matches the previous/current entry.
+            local lastdir base
+            lastdir="$(cat "$STATE_HOME/dolphin-last-dir" 2>/dev/null || true)"
+            base="${caption%% — Dolphin}"
+            if [[ -n "$lastdir" && -n "$base" ]]; then
+                if [[ -d "$lastdir/$base" ]]; then
+                    printf '%s' "$lastdir/$base"
+                elif [[ "${lastdir##*/}" == "$base" ]]; then
+                    printf '%s' "$lastdir"
+                elif [[ -d "$(dirname "$lastdir")/$base" ]]; then
+                    printf '%s' "$(dirname "$lastdir")/$base"
+                elif [[ -d "$(dirname "$lastdir")" ]] && [[ "$(basename "$(dirname "$lastdir")")" == "$base" ]]; then
+                    printf '%s' "$(dirname "$lastdir")"
+                fi
+            fi
+            if [[ -r "/proc/$pid/cwd" ]]; then
+                readlink -f "/proc/$pid/cwd" 2>/dev/null
+            fi
             return 0
             ;;
         *kate*)
