@@ -587,6 +587,11 @@ case "${1:-}" in
         ;;
     kate)
         command_exists_or_fail kate "Kate"
+        dir="$(context_dir)"
+        [[ -z "${dir:-}" ]] && dir="$HOME"
+        if [[ -n "${dir:-}" && "$dir" != "/" ]]; then
+            cd "$dir" 2>/dev/null || true
+        fi
         exec kate
         ;;
     x)
