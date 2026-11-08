@@ -135,20 +135,48 @@ invoke_kwin_shortcut() {
 }
 
 dolphin_current_dir() {
-    local sf url decoded
-    # KDE stores the currently open URL in Dolphin's session file.
-    sf="$(find "$HOME/.config/session" -maxdepth 1 -name 'dolphin_*' -type f -printf '%T@ %p\n' 2>/dev/null |
+    local sf url candidate lastdir base
+    # Dolphin does not expose its current URL on DBus.  Recover it in this order:
+    # 1. The most appropriate KDE session entry saved by Dolphin.
+    # 2. The directory it was launched from (/proc cwd).
+    # 3. A child navigation step inferred from the previous known directory.
+    sf="$(find "$HOME/.config/session" -maxdepth 1 -name 'dolphin_*' -type f -printf '%T@ %p
+' 2>/dev/null |
         sort -rn | sed -n '1s/^[^ ]* //p')"
-    [[ -f "${sf:-}" ]] || return 0
-    url="$(grep -ao 'file:///[^[:space:]]*' "$sf" 2>/dev/null | sed -n '1p')"
-    url="${url%%\\*}"
-    [[ -n "${url:-}" ]] || return 0
-    decoded="$(python3 -c 'import sys,urllib.parse; print(urllib.parse.unquote(sys.argv[1].removeprefix("file://"))) if hasattr(sys.argv[1], "removeprefix") else print(urllib.parse.unquote(sys.argv[1].replace("file://", "", 1)))' "$url" 2>/dev/null || true)"
-    [[ -n "${decoded:-}" ]] || return 0
-    decoded="${decoded#file://}"
-    [[ -d "$decoded" ]] && printf '%s' "$decoded"
+    candidate=""
+    if [[ -f "${sf:-}" ]]; then
+        url="$(grep -ao 'file:///[^[:space:]]*' "$sf" 2>/dev/null | sed -n '1p')"
+        url="${url%%\*}"
+        if [[ -n "${url:-}" ]]; then
+            candidate="$(python3 -c 'import sys,urllib.parse; print(urllib.parse.unquote(sys.argv[1].replace("file://", "", 1)))' "$url" 2>/dev/null || true)"
+            [[ -d "${candidate:-}" ]] || candidate=""
+        fi
+    fi
+
+    if [[ -z "${candidate:-}" ]] && [[ -r "/proc/${pid}/cwd" ]]; then
+        candidate="$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)"
+    fi
+
+    # Escape clauses: if Dolphin navigated one level deeper since its launch,
+    # the session jump may lag.  The title is "Folder — Dolphin", so try a
+    # sibling incrementally from the last known location first.
+    lastdir="$(cat "$STATE_HOME/dolphin-last-dir" 2>/dev/null || true)"
+    base="${caption%% — Dolphin}"
+    base="${base%%—Dolphin}"
+    base="${base%% — Dolphin}"
+    if [[ -n "${lastdir:-}" && -n "${base:-}" && "$base" != "$lastdir" && -d "$lastdir/$base" ]]; then
+        candidate="$lastdir/$base"
+    elif [[ -n "${lastdir:-}" && "${lastdir##*/}" == "$base" ]]; then
+        candidate="$lastdir"
+    fi
+
+    if [[ -d "${candidate:-}" ]]; then
+        printf '%s' "$candidate"
+        printf '%s\n' "$candidate" > "$STATE_HOME/dolphin-last-dir" 2>/dev/null || true
+    fi
     return 0
 }
+
 
 context_dir() {
     local line cls pid caption service sid fp dir cand
