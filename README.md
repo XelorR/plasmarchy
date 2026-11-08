@@ -175,8 +175,13 @@ dictation language list can be forced with `--dictation-languages`.
 
 `F9` is push-to-talk: hold it while speaking and release it to transcribe.
 `Alt+Space` toggles dictation on and off; `Meta+Ctrl+X` remains an alias.
+Dictation uses the multilingual Parakeet v3 (`parakeet-tdt-0.6b-v3-int8`)
+model: on an AVX2-only machine it is fast enough and avoids the Whisper
+memory footprint.
 Voxtype reads `F9` directly through `/dev/input`, so the input group must be
-active for that key to work.
+active for that key to work.  Parakeet needs the ONNX backend: run
+`sudo voxtype setup onnx --enable` once after installation, then restart
+`voxtype.service`.
 
 ## Applications and shortcuts
 

@@ -160,11 +160,13 @@ the same tree, child-order and split semantics inside KWin.
 
 ## Backlog
 
-- Voice dictation (voxtype) hold-to-talk on **F9**.  A quick press or the
-  toggle shortcut works, but simply holding F9 to record and then releasing it
-  does not, even though the service reports itself as correctly installed.
-  Confirm that the Dwindle integration and its focused-leaf insertion tests
-  are working as intended before investigating this one.
+- Voice dictation hold-to-talk on **F9** has now been addressed.  The root cause
+  was that Plasmarchy explicitly disabled Voxtype's own evdev hotkey listener:
+  only `Meta+Ctrl+X`/`Alt+Space` called `voxtype record toggle`, while holding
+  F9 arrived at KGlobalAccel and did not start or stop a recording.  The fix
+  enables Voxtype's built-in F9 push-to-talk and uses the multilingual Parakeet
+  v3 int8 model on the AVX2 ONNX backend; use `sudo voxtype setup onnx --enable`
+  if the daemon is still the Whisper binary.
 
 ## Suggested milestones
 

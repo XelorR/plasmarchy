@@ -1,9 +1,14 @@
 # Plasmarchy Voxtype configuration.
 #
-# Voxtype owns F9 as a push-to-talk key through its built-in evdev listener:
-# hold F9 while speaking and release it to transcribe.  Alt+Space (and the
+# Multilingual Parakeet v3 is used for dictation.  The push-to-talk key is F9:
+# hold it while speaking and release it to transcribe.  Alt+Space (and the
 # Meta+Ctrl+X alias) toggles dictation through KGlobalAccel.
+#
+# The built-in hotkey reads F9 directly through /dev/input.  The input group
+# is required, so log out and back in once after adding the user to it.
 state_file = "auto"
+
+engine = "parakeet"
 
 [hotkey]
 enabled = true
@@ -16,10 +21,18 @@ sample_rate = 16000
 max_duration_secs = 120
 pause_media = true
 
+[parakeet]
+# Multilingual Parakeet v3: use the int8 quantization; it is fast enough for
+# the AVX2-only CPU on this machine and keeps a low memory footprint.
+model = "parakeet-tdt-0.6b-v3-int8"
+model_type = "tdt"
+on_demand_loading = false
+
 [whisper]
-# Multilingual model: English and Russian dictation.
+# Retained as a fallback engine.  Keep base model; English and Russian are
+# the primary dictation languages.
 model = "base"
-language = ["en", "ru"]
+language = "en,ru"
 translate = false
 
 [output]

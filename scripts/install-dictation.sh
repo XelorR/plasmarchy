@@ -6,7 +6,7 @@
 #
 # Voxtype is an AUR package (voxtype-bin).  The installer:
 #   - installs voxtype-bin, ydotool, wl-clipboard and libnotify;
-#   - writes ~/.config/voxtype/config.toml (English/Russian, paste mode);
+#   - writes ~/.config/voxtype/config.toml (Parakeet v3 int8, F9 push-to-talk);
 #   - binds F9 as push-to-talk in Voxtype and leaves Alt+Space to KGlobalAccel;
 #   - adds the user to the input group and enables ydotool;
 #   - downloads the Whisper base model and enables voxtype.service.
@@ -85,7 +85,7 @@ if ((DRY_RUN)); then
     echo "would write $VOXTYPE_DIR/config.toml (F9 push-to-talk)"
     echo "would add $USER to the input group"
     echo "would enable ydotool.service and voxtype.service"
-    ((DOWNLOAD_MODEL)) && echo "would download the Whisper base model"
+    ((DOWNLOAD_MODEL)) && echo "would download the Parakeet v3 int8 model"
     echo "dictation languages: $LANGUAGES"
     exit 0
 fi
@@ -164,9 +164,13 @@ else
 fi
 
 if ((DOWNLOAD_MODEL)); then
-    log "Downloading the Whisper base model"
-    voxtype setup --download --no-post-install ||
-        warn "model download failed; run 'voxtype setup --download --no-post-install' later"
+    log "Downloading the multilingual Parakeet v3 (int8) model"
+    if [[ -x /usr/lib/voxtype/voxtype-onnx-avx2 ]]; then
+        /usr/lib/voxtype/voxtype-onnx-avx2 setup --download --model parakeet-tdt-0.6b-v3-int8 --no-post-install ||
+            warn "model download failed; run '/usr/lib/voxtype/voxtype-onnx-avx2 setup --download --model parakeet-tdt-0.6b-v3-int8 --no-post-install' later"
+    else
+        warn "the ONNX variant is missing; Parakeet dictation will be unavailable until voxtype-bin is installed"
+    fi
 fi
 
 log "Installing the Voxtype user service"
