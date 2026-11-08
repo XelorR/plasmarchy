@@ -1,11 +1,11 @@
 # Vendored Krohnkite
 
-`krohnkite-0.9.11.2.kwinscript` is the Plasmarchy Krohnkite fork build from:
+`krohnkite-0.9.11.3.kwinscript` is the Plasmarchy Krohnkite fork build from:
 
 - Project: https://github.com/XelorR/Krohnkite
-- Tag: `0.9.11.2`
+- Tag: `0.9.11.3`
 - Asset: `dist/krohnkite.kwinscript`
-- SHA256: `5cb18ac7db24d2858f1e00c8c1ce389b26fba3de397f5d210c4e2cc4e3f73dfa`
+- SHA256: `4eeddce1377bb89518ba9e1577d90411094e4346dc1820233faafad073ee66e9`
 
 The fork adds the Hyprland-compatible `DwindleLayout`, which is Plasmarchy's
 default layout.  The upstream project remains
@@ -18,7 +18,7 @@ installing the archive with `kpackagetool6`.
 The same file is published at:
 
 ```
-https://raw.githubusercontent.com/XelorR/Krohnkite/0.9.11.2/dist/krohnkite.kwinscript
+https://raw.githubusercontent.com/XelorR/Krohnkite/0.9.11.3/dist/krohnkite.kwinscript
 https://raw.githubusercontent.com/XelorR/Krohnkite/master/dist/krohnkite.kwinscript
 ```
 
