@@ -649,6 +649,17 @@ configure_window_rules() {
     # allow the user to press F11 or use Meta+F later.
     kwriteconfig6 --file kwinrulesrc --group "$browsers" --key fullscreen --type bool false
     kwriteconfig6 --file kwinrulesrc --group "$browsers" --key fullscreenrule 1
+
+    # Gwenview images routinely arrive with large intrinsic sizes.  Keep the
+    # initial window inside the screen (about 90%) until Krohnkite tiles it.
+    local gwenview=plasmarchy-gwenview
+    kwriteconfig6 --file kwinrulesrc --group "$gwenview" --key Description \
+        "Plasmarchy: keep Gwenview's initial window on screen"
+    kwriteconfig6 --file kwinrulesrc --group "$gwenview" --key types 1
+    kwriteconfig6 --file kwinrulesrc --group "$gwenview" --key wmclass 'org.kde.gwenview'
+    kwriteconfig6 --file kwinrulesrc --group "$gwenview" --key wmclassmatch 3
+    kwriteconfig6 --file kwinrulesrc --group "$gwenview" --key size "2304,1296"
+    kwriteconfig6 --file kwinrulesrc --group "$gwenview" --key sizerule 1
     kwriteconfig6 --file kwinrulesrc --group "$browsers" --key noborder --type bool false
     kwriteconfig6 --file kwinrulesrc --group "$browsers" --key noborderrule 2
     kwriteconfig6 --file kwinrulesrc --group "$browsers" --key skiptaskbar --type bool false
@@ -661,10 +672,11 @@ configure_window_rules() {
     local order legacy combined entry
     order="$(kreadconfig6 --file kwinrulesrc --group General --key Order --default '' 2>/dev/null || true)"
     legacy="$(kreadconfig6 --file kwinrulesrc --group General --key rules --default '' 2>/dev/null || true)"
-    combined="$ssd,$browsers"
+    combined="$ssd,$browsers,$gwenview"
     local -A seen=()
     seen[$ssd]=1
     seen[$browsers]=1
+    seen[$gwenview]=1
     for entry in ${order//,/ } ${legacy//,/ }; do
         [[ -n "$entry" && -z "${seen[$entry]:-}" ]] || continue
         seen[$entry]=1
