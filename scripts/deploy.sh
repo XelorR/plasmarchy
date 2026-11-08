@@ -961,6 +961,23 @@ OnlyShowIn=KDE;
 EOF
 }
 
+save_prewarm_desktop() {
+    ((SKIP_SHORTCUTS)) && return 0
+    ((DRY_RUN)) && return 0
+    mkdir -p "$CONFIG_HOME/autostart"
+    cat > "$CONFIG_HOME/autostart/plasmarchy-prewarm.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Plasmarchy: prewarm service cache
+Exec=$RUNTIME/bin/plasmarchy-cmd warm
+Terminal=false
+NoDisplay=true
+StartupNotify=false
+OnlyShowIn=KDE;
+X-KDE-AutostartScript=true
+EOF
+}
+
 apply_shortcuts() {
     ((SKIP_SHORTCUTS)) && { log "Skipping shortcuts"; return; }
     if ((DRY_RUN)); then
@@ -1096,6 +1113,7 @@ install_tmux_config
 install_konsole_config
 install_dictation
 generate_desktops
+save_prewarm_desktop
 
 if ((SKIP_KROHNKITE)); then
     :

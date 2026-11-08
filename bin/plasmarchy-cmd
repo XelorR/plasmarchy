@@ -938,6 +938,20 @@ case "${1:-}" in
     desktop-move-silent-[1-9])
         desktop_move silent "${1##*-}"
         ;;
+    warm)
+        # Warm journal/d-bus cache without opening any windows or apps.
+        if have journalctl; then
+            journalctl --user -n 2 --no-pager --output cat >/dev/null 2>&1 || true
+        fi
+        if have qdbus6; then
+            qdbus6 org.kde.KWin /KWin org.kde.KWin.currentDesktop >/dev/null 2>&1 || true
+            qdbus6 org.kde.kglobalaccel /kglobalaccel org.kde.KGlobalAccel.allActions >/dev/null 2>&1 || true
+        fi
+        if have kbuildsycoca6; then
+            kbuildsycoca6 --noincremental >/dev/null 2>&1 || true
+        fi
+        exit 0
+        ;;
     *)
         printf 'error: unknown plasmarchy command: %s\n' "${1:-}" >&2
         exit 2
