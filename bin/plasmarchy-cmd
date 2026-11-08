@@ -536,11 +536,8 @@ case "${1:-}" in
             if have ydotool; then
                 for _ in 1 2 3; do
                     ydotool key 125:0 126:0 >/dev/null 2>&1 || true
-                    sleep 0.04
                 done
-                sleep 0.15
                 ydotool key 42:1 62:1 62:0 42:0 >/dev/null 2>&1 || true
-                sleep 0.12
                 exit 0
             fi
         fi
