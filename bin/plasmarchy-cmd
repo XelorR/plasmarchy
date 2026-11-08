@@ -160,10 +160,16 @@ context_dir() {
 # Unlike focus_class(), keep pid and caption so context-aware launchers know
 # which window was active.
 focus_class_full() {
-    local line=""
+    local line="" meaningful=""
     if have journalctl; then
-        line="$(journalctl --user -n 1000 --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
-            grep -F 'PLASMARCHY-FOCUS ' | tail -n 1 || true)"
+        meaningful="$(journalctl --user -n 1000 --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
+            grep -E 'PLASMARCHY-FOCUS .*org\.(kde\.konsole|kde\.dolphin|kate)' | tail -n 1 || true)"
+        if [[ -n "$meaningful" ]]; then
+            line="$meaningful"
+        else
+            line="$(journalctl --user -n 1000 --no-pager -o cat _COMM=kwin_wayland 2>/dev/null |
+                grep -F 'PLASMARCHY-FOCUS ' | tail -n 1 || true)"
+        fi
     fi
     line="${line#PLASMARCHY-FOCUS }"
     printf '%s' "${line%%$'\r'}"
