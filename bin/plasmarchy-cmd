@@ -134,8 +134,23 @@ invoke_kwin_shortcut() {
         fail "Could not invoke KWin shortcut: $1"
 }
 
+dolphin_current_dir() {
+    local sf url decoded
+    # KDE stores the currently open URL in Dolphin's session file.
+    sf="$(find "$HOME/.config/session" -maxdepth 1 -name 'dolphin_*' -type f -printf '%T@ %p\n' 2>/dev/null |
+        sort -rn | sed -n '1s/^[^ ]* //p')"
+    [[ -f "${sf:-}" ]] || return 0
+    url="$(grep -ao 'file:///[^[:space:]]*' "$sf" 2>/dev/null | sed -n '1p')"
+    url="${url%%\\*}"
+    [[ -n "${url:-}" ]] || return 0
+    decoded="$(python3 -c 'import sys,urllib.parse; print(urllib.parse.unquote(sys.argv[1].removeprefix("file://"))) if hasattr(sys.argv[1], "removeprefix") else print(urllib.parse.unquote(sys.argv[1].replace("file://", "", 1)))' "$url" 2>/dev/null || true)"
+    [[ -n "${decoded:-}" ]] || return 0
+    decoded="${decoded#file://}"
+    [[ -d "$decoded" ]] && printf '%s' "$decoded"
+}
+
 context_dir() {
-    local line cls pid caption service sid fp dir
+    local line cls pid caption service sid fp dir cand
     line="$(focus_class_full)" 2>/dev/null || true
     [[ -n "${line:-}" ]] || return 0
     read -r cls pid caption <<<"$line"
@@ -151,7 +166,15 @@ context_dir() {
             fi
             [[ -n "${fp:-}" ]] && readlink -f "/proc/$fp/cwd" 2>/dev/null
             ;;
-        *dolphin*|*kate*)
+        *dolphin*)
+            cand="$(dolphin_current_dir)"
+            if [[ -n "${cand:-}" ]]; then
+                printf '%s' "$cand"
+            elif [[ -r "/proc/$pid/cwd" ]]; then
+                readlink -f "/proc/$pid/cwd" 2>/dev/null
+            fi
+            ;;
+        *kate*)
             [[ -r "/proc/$pid/cwd" ]] && readlink -f "/proc/$pid/cwd" 2>/dev/null
             ;;
     esac
