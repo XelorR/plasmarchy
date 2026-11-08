@@ -590,7 +590,7 @@ case "${1:-}" in
         dir="$(context_dir)"
         [[ -z "${dir:-}" ]] && dir="$HOME"
         if [[ -n "${dir:-}" && "$dir" != "/" ]]; then
-            cd "$dir" 2>/dev/null || true
+            exec kate "$dir"
         fi
         exec kate
         ;;
