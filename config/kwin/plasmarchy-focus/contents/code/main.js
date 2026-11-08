@@ -7,6 +7,7 @@
 // Only changes are logged; an initial line is emitted when the script loads.
 
 var lastClass = null;
+var lastPid = 0;
 
 function activeClass(window) {
     if (!window) {
@@ -20,18 +21,15 @@ function activeClass(window) {
 
 function report(window) {
     var cls = activeClass(window);
-    if (cls !== lastClass) {
+    var pid = (window && !window.deleted && window.pid) ? window.pid : 0;
+    var caption = (window && !window.deleted && window.caption) ? window.caption : "";
+    // Report on each focus change or process change, not only on a class
+    // change.  Same-app switching otherwise kept a stale source window.
+    if (cls !== lastClass || pid !== lastPid) {
         lastClass = cls;
-        var pid = (window && !window.deleted && window.pid) ? window.pid : 0;
-        var caption = (window && !window.deleted && window.caption) ? window.caption : "";
-        // Keep the class as the first token for backward compatibility.
-        // Also publish the window caption because it is often the only place
-    // that exposes the current Dolphin/Konsole/Kate location.
-    // Preserve the original PLASMARCHY-FOCUS line.
-    print("PLASMARCHY-FOCUS " + cls + " " + pid + " " + caption);
-
-    // A diagnostics line may be parsed by context-aware launchers.
-    print("PLASMARCHY-WINDOW " + pid + " " + cls + " | " + caption);
+        lastPid = pid;
+        print("PLASMARCHY-FOCUS " + cls + " " + pid + " " + caption);
+        print("PLASMARCHY-WINDOW " + pid + " " + cls + " | " + caption);
     }
 }
 
