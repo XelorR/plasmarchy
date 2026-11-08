@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Open an image together with every sibling image in its directory.  imv and
+# nsxiv can only move between the files given on the command line, so this
+# wrapper turns a single clicked file into the full directory while keeping the
+# requested image first.
+set -u
+
+[[ $# -ge 1 ]] || exit 0
+file=$1
+dir=$(dirname -- "$file")
+base=$(basename -- "$file")
+cd -- "$dir" || exit 1
+
+viewer=""
+if command -v imv >/dev/null 2>&1; then viewer="imv"
+elif command -v nsxiv >/dev/null 2>&1; then viewer="nsxiv"
+else exit 1
+fi
+
+shopt -s nocaseglob
+siblings=()
+for f in *; do
+    [[ -f "$f" ]] || continue
+    [[ "$f" == "$base" ]] && continue
+    case "$f" in
+        *.jpg|*.jpeg|*.jpe|*.png|*.gif|*.bmp|*.webp|*.tif|*.tiff|*.svg|*.heic|*.heif)
+            siblings+=("$f")
+            ;;
+    esac
+done
+
+exec "$viewer" -- "$base" "${siblings[@]}"
+EOF

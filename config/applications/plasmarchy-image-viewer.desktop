@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Image viewer
+GenericName=Directory-aware image viewer
+Comment=Opens an image together with its siblings in imv/nsxiv
+Exec=plasmarchy-open-image %f
+Terminal=false
+Categories=Graphics;Viewer;
+MimeType=image/jpeg;image/jpg;image/pjpeg;image/jfif;image/png;image/gif;image/bmp;image/tiff;image/heic;image/heif;image/webp;image/svg+xml;image/x-eps;

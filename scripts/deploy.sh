@@ -355,6 +355,7 @@ install_runtime_files() {
         fi
     done
     install -m 0755 "$ROOT/bin/plasmarchy-apply-krohnkite" "$RUNTIME/bin/plasmarchy-apply-krohnkite"
+    install -m 0755 "$ROOT/bin/plasmarchy-open-image" "$RUNTIME/bin/plasmarchy-open-image"
     install -m 0755 "$ROOT/bin/plasmarchy-reload-krohnkite" "$RUNTIME/bin/plasmarchy-reload-krohnkite"
     install -m 0644 "$ROOT/manifests/shortcuts.tsv" "$RUNTIME/shortcuts.tsv"
     install -m 0644 "$ROOT/manifests/commands.tsv" "$RUNTIME/commands.tsv"
@@ -620,14 +621,11 @@ configure_default_image_viewer() {
         return
     fi
 
-    local viewer=""
-    if command -v imv >/dev/null 2>&1; then
-        install -m 0644 "$ROOT/config/applications/imv.desktop" "$APPLICATIONS/imv.desktop"
-        viewer="imv.desktop"
-    elif command -v nsxiv >/dev/null 2>&1; then
-        install -m 0644 "$ROOT/config/applications/nsxiv.desktop" "$APPLICATIONS/nsxiv.desktop"
-        viewer="nsxiv.desktop"
-    else
+    local viewer="plasmarchy-image-viewer.desktop"
+    install -m 0755 "$ROOT/bin/plasmarchy-open-image" "$RUNTIME/bin/plasmarchy-open-image"
+    install -m 0644 "$ROOT/config/applications/plasmarchy-image-viewer.desktop" \
+        "$APPLICATIONS/plasmarchy-image-viewer.desktop"
+    if ! command -v imv >/dev/null 2>&1 && ! command -v nsxiv >/dev/null 2>&1; then
         warn "neither imv nor nsxiv is installed; leaving the default image viewer unchanged"
         return
     fi
